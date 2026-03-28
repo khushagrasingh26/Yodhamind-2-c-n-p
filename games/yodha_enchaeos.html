@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Optimized viewport to prevent accidental pinch-zoom on mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Yodha Echoes - Sonic Therapy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -36,13 +37,14 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            overscroll-behavior-y: none; /* Prevents pull-to-refresh on mobile */
         }
 
         /* --- Navigation --- */
         nav {
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(10px);
-            padding: 15px 25px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -50,18 +52,28 @@
             z-index: 100;
         }
 
-        .logo {
-            font-weight: 700;
-            font-size: 1.2rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
+        /* Minimalist Ghost Buttons */
+        .ghost-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
+            display: flex; 
+            align-items: center; 
+            gap: 6px;
         }
-
-        .controls-top {
-            display: flex;
-            gap: 15px;
+        .ghost-btn:hover, .ghost-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
         /* --- Main Layout --- */
@@ -72,13 +84,16 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            padding: 10px;
+            width: 100%;
         }
 
         /* The Sequencer */
         .echo-circle-wrapper {
             position: relative;
-            width: min(90vw, 500px);
-            height: min(90vw, 500px);
+            /* Uses both vw and vh to ensure it fits completely on small screens without pushing controls off */
+            width: min(90vw, 55vh, 500px);
+            height: min(90vw, 55vh, 500px);
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.02);
             box-shadow: 0 0 50px rgba(102, 126, 234, 0.1);
@@ -91,6 +106,7 @@
             cursor: pointer;
             width: 100%;
             height: 100%;
+            touch-action: none; /* critical for fluid mobile canvas drawing */
         }
 
         /* Overlay Text */
@@ -105,20 +121,25 @@
             text-align: center;
             opacity: 0.8;
             transition: opacity 0.5s;
+            padding: 0 15px;
         }
 
         /* Bottom Toolbar */
         .toolbar {
-            margin-top: 30px;
+            margin-top: 25px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(10px);
-            padding: 12px 25px;
-            border-radius: 50px;
+            padding: 15px 25px;
+            border-radius: 30px;
             display: flex;
+            flex-wrap: wrap; /* Allows wrap on mobile */
+            justify-content: center;
             gap: 20px;
             align-items: center;
             z-index: 50;
+            width: 95%;
+            max-width: 600px;
         }
 
         .tool-btn {
@@ -133,7 +154,7 @@
             transition: all 0.2s;
             min-width: 60px;
         }
-        .tool-btn:hover { color: white; transform: translateY(-3px); }
+        .tool-btn:hover, .tool-btn:active { color: white; transform: translateY(-3px); }
         .tool-btn.active { color: #a78bfa; }
 
         .icon {
@@ -145,15 +166,23 @@
             border: 1px solid transparent;
             transition: all 0.3s;
         }
-        .tool-btn:hover .icon { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
-        .tool-btn.active .icon { background: var(--primary-gradient); color: white; box-shadow: 0 0 15px rgba(102, 126, 234, 0.4); }
+        .tool-btn:hover .icon, .tool-btn:active .icon { 
+            background: rgba(255,255,255,0.1); 
+            border-color: rgba(255,255,255,0.2); 
+        }
+        .tool-btn.active .icon { 
+            background: var(--primary-gradient); 
+            color: white; 
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.4); 
+        }
 
-        .tool-label { font-size: 0.7rem; letter-spacing: 0.5px; }
+        .tool-label { font-size: 0.75rem; letter-spacing: 0.5px; }
 
         /* Tempo Slider */
         .tempo-control {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             padding: 0 15px;
             border-left: 1px solid var(--glass-border);
@@ -166,10 +195,11 @@
             background: rgba(255,255,255,0.1);
             border-radius: 2px;
             appearance: none;
+            -webkit-appearance: none;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px; height: 12px;
+            width: 14px; height: 14px;
             background: #a78bfa;
             border-radius: 50%;
             cursor: pointer;
@@ -179,14 +209,15 @@
         .start-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 200;
             transition: opacity 0.5s;
+            text-align: center;
         }
         .start-btn {
             background: var(--primary-gradient);
@@ -202,28 +233,77 @@
         }
         @keyframes pulse-btn { 0%{transform:scale(1);} 50%{transform:scale(1.05);} 100%{transform:scale(1);} }
 
-        /* Minimalist Ghost Buttons */
-.ghost-btn {
-    position: absolute; top: 25px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.8);
-    padding: 8px 16px;
-    border-radius: 30px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.9rem;
-    cursor: pointer;
-    z-index: 100;
-    transition: all 0.3s;
-    backdrop-filter: blur(4px);
-    display: flex; align-items: center; gap: 6px;
+        /* Mobile Adjustments */
+        @media (max-width: 500px) {
+            .toolbar {
+                gap: 10px;
+                padding: 12px 10px;
+                border-radius: 20px;
+            }
+            .tool-btn {
+                min-width: 50px;
+            }
+            .icon {
+                width: 40px; height: 40px;
+                font-size: 1.2rem;
+            }
+            .tempo-control {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--glass-border);
+                padding: 12px 0 0 0;
+                margin: 5px 0 0 0;
+            }
+            input[type="range"] {
+                width: 150px; /* Slightly wider since it's on its own row now */
+            }
+            .status-text {
+                font-size: 0.8rem;
+            }
+            nav {
+                padding: 12px;
+            }
+        }
+
+        /* --- Floating Sound Button Positioning & Style --- */
+[id*="sound"], 
+[class*="sound"] {
+    position: fixed !important;
+    bottom: 25px !important;
+    right: 25px !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 9999 !important;
+    
+    /* Styling to match the Echoes dark glass theme */
+    background: rgba(15, 23, 42, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #f8fafc !important;
+    padding: 12px !important;
+    border-radius: 50px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    transition: transform 0.2s ease, background 0.2s ease !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
-.ghost-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+
+[id*="sound"]:hover, 
+[class*="sound"]:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* On very small screens, tuck it tighter into the corner so it doesn't overlap the toolbar */
+@media (max-width: 500px) {
+    [id*="sound"], [class*="sound"] {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
 }
 
     </style>
@@ -231,12 +311,12 @@
 <body>
 
     <nav>
-    <button class="ghost-btn" onclick="window.location.href='../pages/index.html'" style="left: 25px;">
-    🏠 Home
-</button>
-<button class="ghost-btn" onclick="window.location.href='../pages/games.html'" style="right: 25px;">
-    ✕ Exit
-</button>
+        <button class="ghost-btn" onclick="window.location.href='../pages/index.html'">
+            🏠 Home
+        </button>
+        <button class="ghost-btn" onclick="window.location.href='../pages/games.html'">
+            ✕ Exit
+        </button>
     </nav>
 
     <div class="app-container">
@@ -244,7 +324,7 @@
         <div class="echo-circle-wrapper">
             <canvas id="musicCanvas"></canvas>
             <div class="status-text" id="statusText">
-                Click anywhere to place a star.<br>Listen to the echo.
+                Tap anywhere to place a star.<br>Listen to the echo.
             </div>
         </div>
 
@@ -272,7 +352,7 @@
 
         <!-- Audio Start Overlay (Browser Policy) -->
         <div class="start-overlay" id="startOverlay">
-            <h2 style="margin-bottom:20px; font-weight:300;">Find your rhythm.</h2>
+            <h2 style="margin-bottom:20px; font-weight:300; padding: 0 20px;">Find your rhythm.</h2>
             <button class="start-btn" onclick="startEngine()">Enter Echoes</button>
         </div>
 
@@ -281,7 +361,7 @@
     <script>
         /**
          * Yodha Echoes Engine
-         * A circular music sequencer based on spatial harmonics.
+         * Optimized for High-DPI Mobile Displays
          */
 
         // --- Config ---
@@ -289,7 +369,6 @@
         const ctx = canvas.getContext('2d');
         
         // Pentatonic Scale Frequencies (C Major Pentatonic: C, D, E, G, A)
-        // Spread across octaves for depth
         const SCALE = [
             130.81, 146.83, 164.81, 196.00, 220.00, // C3 - A3
             261.63, 293.66, 329.63, 392.00, 440.00, // C4 - A4
@@ -301,32 +380,58 @@
         let speed = 0.015;
         let isPlaying = false;
         let audioCtx = null;
-        let centerX, centerY, radius;
+        
+        // Canvas coordinate tracking variables
+        let cssWidth, cssHeight, centerX, centerY, radius;
 
         // --- Setup ---
         function init() {
             resize();
             window.addEventListener('resize', resize);
             
-            // Listeners
+            // Interaction Listeners
             canvas.addEventListener('mousedown', addNode);
+            
+            // Touch specific listeners
             canvas.addEventListener('touchstart', (e) => {
-                e.preventDefault();
+                e.preventDefault(); // Prevents touch from bubbling and scrolling
                 addNode(e.touches[0]);
-            });
+            }, { passive: false });
+
+            // Stop screen from moving if user swipes over canvas
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
 
             document.getElementById('speedSlider').addEventListener('input', (e) => {
                 speed = parseFloat(e.target.value);
             });
+            
+            // Initial render call to draw center point
+            renderFrame(); 
         }
 
         function resize() {
             const rect = document.querySelector('.echo-circle-wrapper').getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-            centerX = canvas.width / 2;
-            centerY = canvas.height / 2;
-            radius = (canvas.width / 2) - 10;
+            
+            // Fix for blurry canvas on high pixel density mobile screens
+            const dpr = window.devicePixelRatio || 1;
+            
+            cssWidth = rect.width;
+            cssHeight = rect.height;
+
+            // Set physical pixel dimensions
+            canvas.width = cssWidth * dpr;
+            canvas.height = cssHeight * dpr;
+            
+            // Normalize coordinate system to CSS pixels
+            ctx.scale(dpr, dpr);
+
+            centerX = cssWidth / 2;
+            centerY = cssHeight / 2;
+            radius = (cssWidth / 2) - 10;
+            
+            if (!isPlaying) renderFrame(); // redraw if paused
         }
 
         function startEngine() {
@@ -349,20 +454,18 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             
-            // Choose frequency based on distance from center (inner = lower pitch, outer = higher)
             const dist = Math.sqrt(Math.pow(node.x - centerX, 2) + Math.pow(node.y - centerY, 2));
-            const normalizedDist = dist / radius; // 0 to 1
+            const normalizedDist = dist / radius; 
             const index = Math.floor(normalizedDist * SCALE.length);
             const freq = SCALE[Math.min(index, SCALE.length - 1)];
 
-            osc.type = 'sine'; // Soft tone
+            osc.type = 'sine';
             osc.frequency.value = freq;
             
-            // Envelope
             const now = audioCtx.currentTime;
             gain.gain.setValueAtTime(0, now);
-            gain.gain.linearRampToValueAtTime(0.2, now + 0.05); // Attack
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5); // Long decay (Reverb-ish)
+            gain.gain.linearRampToValueAtTime(0.2, now + 0.05); 
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
 
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -370,35 +473,39 @@
             osc.start(now);
             osc.stop(now + 1.5);
 
-            // Visual Feedback
             node.active = 1.0;
         }
 
         // --- Interaction ---
         function addNode(e) {
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            // Reliably capture both mouse and touch coordinates
+            const clientX = e.clientX !== undefined ? e.clientX : e.touches[0].clientX;
+            const clientY = e.clientY !== undefined ? e.clientY : e.touches[0].clientY;
             
-            // Check bounds
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            
             const dist = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
             if(dist > radius) return;
 
-            // Hide help text
             document.getElementById('statusText').style.opacity = '0';
 
             nodes.push({
                 x: x,
                 y: y,
                 angle: Math.atan2(y - centerY, x - centerX),
-                active: 0 // Animation state
+                active: 0 
             });
+            
+            if(!isPlaying) renderFrame(); // Show the new node immediately if paused
         }
 
         function clearSky() {
             if(confirm("Clear all stars?")) {
                 nodes = [];
                 document.getElementById('statusText').style.opacity = '0.8';
+                if(!isPlaying) renderFrame();
             }
         }
 
@@ -406,7 +513,7 @@
             nodes = [];
             document.getElementById('statusText').style.opacity = '0';
             for(let i=0; i<8; i++) {
-                const r = Math.random() * radius * 0.8; // Keep slightly inward
+                const r = Math.random() * radius * 0.8; 
                 const a = Math.random() * Math.PI * 2;
                 nodes.push({
                     x: centerX + Math.cos(a) * r,
@@ -415,6 +522,7 @@
                     active: 0
                 });
             }
+            if(!isPlaying) renderFrame();
         }
 
         function togglePlay() {
@@ -424,9 +532,11 @@
             const label = btn.querySelector('.tool-label');
             
             if(isPlaying) {
+                if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
                 btn.classList.add('active');
                 icon.innerText = '⏸';
                 label.innerText = 'Pause';
+                animate();
             } else {
                 btn.classList.remove('active');
                 icon.innerText = '▶️';
@@ -434,20 +544,14 @@
             }
         }
 
-        // --- Animation Loop ---
-        function animate() {
-            if(!isPlaying) {
-                requestAnimationFrame(animate);
-                return;
-            }
+        // --- Render Logic (Extracted for paused/playing use) ---
+        function renderFrame() {
+            // Use cssWidth and cssHeight instead of canvas.width due to High-DPI scaling
+            ctx.clearRect(0, 0, cssWidth, cssHeight);
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Radar Line
             const radarX = centerX + Math.cos(angle) * radius;
             const radarY = centerY + Math.sin(angle) * radius;
             
-            // Radar Gradient
             const grad = ctx.createLinearGradient(centerX, centerY, radarX, radarY);
             grad.addColorStop(0, 'rgba(167, 139, 250, 0)');
             grad.addColorStop(1, 'rgba(167, 139, 250, 0.5)');
@@ -459,63 +563,58 @@
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // Process Nodes
-            // We need to detect if the radar line passed a node in this frame
-            // We do this by checking angular difference
-            const prevAngle = angle - speed;
-            
             nodes.forEach(node => {
-                // Normalize node angle to match current rotation cycle
-                let nodeA = node.angle;
-                // Handle wrap around logic roughly
-                // (To be precise requires detailed math, but simplistic check works for visuals)
-                
-                // Check collision: is node angle between prevAngle and current angle?
-                // We use a small tolerance based on speed
-                let diff = angle - nodeA;
-                // Normalize diff to -PI to +PI
-                while (diff <= -Math.PI) diff += Math.PI*2;
-                while (diff > Math.PI) diff -= Math.PI*2;
-
-                if (diff >= 0 && diff < speed) {
-                    playTone(node);
-                }
-
-                // Draw Node
                 ctx.beginPath();
                 ctx.arc(node.x, node.y, 6, 0, Math.PI * 2);
                 ctx.fillStyle = 'white';
                 ctx.fill();
 
-                // Draw Ripple if active
                 if(node.active > 0) {
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, 6 + (1-node.active)*40, 0, Math.PI * 2);
                     ctx.strokeStyle = `rgba(167, 139, 250, ${node.active})`;
                     ctx.lineWidth = 2;
                     ctx.stroke();
-                    node.active -= 0.02; // Decay animation
+                    node.active -= 0.02; 
                 }
             });
 
-            // Update rotation
-            angle += speed;
-            if(angle > Math.PI * 2) angle -= Math.PI * 2;
-
-            // Draw Center Decoration
             ctx.beginPath();
             ctx.arc(centerX, centerY, 4, 0, Math.PI*2);
             ctx.fillStyle = 'rgba(255,255,255,0.5)';
             ctx.fill();
+        }
+
+        // --- Animation Loop ---
+        function animate() {
+            if(!isPlaying) return;
+
+            const prevAngle = angle - speed;
+            
+            nodes.forEach(node => {
+                let nodeA = node.angle;
+                let diff = angle - nodeA;
+                while (diff <= -Math.PI) diff += Math.PI*2;
+                while (diff > Math.PI) diff -= Math.PI*2;
+
+                if (diff >= 0 && diff < speed) {
+                    playTone(node);
+                }
+            });
+
+            renderFrame();
+
+            angle += speed;
+            if(angle > Math.PI * 2) angle -= Math.PI * 2;
 
             requestAnimationFrame(animate);
         }
 
-        init();
+        // Launch Setup
+        window.addEventListener('load', init);
 
     </script>
+    <script src="../shared/game-sound-toggle.js"></script>
     <script src="../shared/crisis-support.js"></script>
 </body>
 </html>
-
-

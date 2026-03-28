@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yodha Check-in</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-color: #ffffff;
+            --primary: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text: #1f2937;
+        }
+
+        * { box-sizing: border-box; user-select: none; touch-action: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0; padding: 0;
+            background: var(--bg-color);
+            font-family: 'Outfit', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; width: 100vw;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        /* --- UI Layers --- */
+        .top-bar {
+            position: absolute; top: 0; width: 100%;
+            padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 10;
+        }
+
+        .progress-pill {
+            background: rgba(0,0,0,0.05);
+            padding: 5px 15px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 600; color: #6b7280;
+        }
+
+        .close-btn {
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #374151;
+        }
+
+        /* --- Card Stack --- */
+        .stack-container {
+            position: relative;
+            width: 90%; max-width: 360px;
+            height: 60vh; max-height: 500px;
+            display: flex; align-items: center; justify-content: center;
+            perspective: 1000px;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: var(--card-color);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.1s; /* Fast transition for drag */
+            cursor: grab;
+            will-change: transform, opacity;
+            transform-origin: 50% 100%;
+        }
+
+        .card h2 { font-size: 1.8rem; margin-bottom: 10px; color: var(--text); line-height: 1.3; }
+        .card p { color: #6b7280; font-size: 1rem; margin-top: 0; }
+        .card-icon { font-size: 4rem; margin-bottom: 20px; }
+
+        /* Status stamps that appear on swipe */
+        .stamp {
+            position: absolute; top: 40px;
+            border: 4px solid; border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 2rem; font-weight: 800; text-transform: uppercase;
+            opacity: 0; transform: scale(0.5);
+            transition: all 0.2s;
+        }
+        .stamp-nope { right: 40px; color: var(--danger); border-color: var(--danger); transform: rotate(15deg); }
+        .stamp-like { left: 40px; color: var(--success); border-color: var(--success); transform: rotate(-15deg); }
+
+        /* --- Controls --- */
+        .controls {
+            margin-top: 30px;
+            display: flex; gap: 30px;
+            z-index: 10;
+        }
+
+        .action-btn {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 1.5rem; cursor: pointer;
+            transition: transform 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .action-btn:active { transform: scale(0.9); }
+        .btn-no { color: var(--danger); }
+        .btn-yes { color: var(--success); }
+
+        /* --- End Screen --- */
+        .end-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            animation: fadeIn 0.5s;
+        }
+        .score-circle {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+        .score-number { font-size: 2.5rem; font-weight: 800; }
+        .score-label { font-size: 0.8rem; opacity: 0.9; }
+        
+        .restart-btn {
+            background: var(--text); color: white;
+            padding: 15px 30px; border-radius: 30px;
+            border: none; font-weight: 600; font-size: 1rem;
+            cursor: pointer; margin-top: 20px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="progress-pill" id="progress">1 / 10</div>
+        <button class="close-btn" onclick="exitGame()">✕</button>
+    </div>
+
+    <div class="stack-container" id="stack">
+        </div>
+
+    <div class="controls" id="controls">
+        <button class="action-btn btn-no" onclick="triggerSwipe('left')">✕</button>
+        <button class="action-btn btn-yes" onclick="triggerSwipe('right')">✓</button>
+    </div>
+
+    <div class="end-screen" id="endScreen">
+        <div class="score-circle">
+            <span class="score-number" id="finalScore">0</span>
+            <span class="score-label">Positive</span>
+        </div>
+        <h2 id="finalTitle">Well Done!</h2>
+        <p id="finalMsg" style="color:#6b7280; margin-bottom: 20px;">You've completed your daily check-in.</p>
+        <button class="restart-btn" onclick="init()">Check Again</button>
+    </div>
+
+    <script>
+        /**
+         * Yodha Cards - Mobile Optimized
+         * Features: Touch Physics, Wellness Questions, Dynamic Feedback
+         */
+        
+        const stack = document.getElementById('stack');
+        const progressEl = document.getElementById('progress');
+        const controls = document.getElementById('controls');
+        const endScreen = document.getElementById('endScreen');
+
+        // Relevant Wellness Questions
+        const questions = [
+            { id: 1, text: "Did you get enough sleep last night?", sub: "7-8 hours is ideal.", icon: "😴" },
+            { id: 2, text: "Have you drank water recently?", sub: "Hydration fuels the brain.", icon: "💧" },
+            { id: 3, text: "Are you feeling stressed right now?", sub: "Be honest with yourself.", icon: "⚡", reverse: true }, // 'No' is good
+            { id: 4, text: "Did you move your body today?", sub: "Even a walk counts.", icon: "🏃" },
+            { id: 5, text: "Have you connected with a friend?", sub: "Socializing boosts mood.", icon: "💬" },
+            { id: 6, text: "Are you holding onto tension?", sub: "Check your shoulders and jaw.", icon: "😬", reverse: true },
+            { id: 7, text: "Did you eat something healthy?", sub: "Fuel your vessel.", icon: "🍎" },
+            { id: 8, text: "Did you learn something new?", sub: "Growth mindset.", icon: "🧠" },
+            { id: 9, text: "Are you being kind to yourself?", sub: "No negative self-talk.", icon: "❤️" },
+            { id: 10, text: "Are you ready to own the day?", sub: "Let's go!", icon: "🚀" }
+        ];
+
+        let activeIndex = 0;
+        let positiveCount = 0;
+
+        function init() {
+            activeIndex = 0;
+            positiveCount = 0;
+            stack.innerHTML = '';
+            stack.style.display = 'flex';
+            controls.style.display = 'flex';
+            endScreen.style.display = 'none';
+            
+            // Load cards in reverse order so first is on top
+            for (let i = questions.length - 1; i >= 0; i--) {
+                createCard(questions[i], i);
+            }
+            updateProgress();
+        }
+
+        function createCard(q, index) {
+            const el = document.createElement('div');
+            el.className = 'card';
+            el.style.zIndex = 100 - index; // Stack order
+            // Scale effect for depth
+            if (index > 0) {
+                el.style.transform = `scale(${1 - index * 0.05}) translateY(${index * 10}px)`;
+                el.style.opacity = 1 - index * 0.2;
+            }
+
+            el.innerHTML = `
+                <div class="stamp stamp-nope">NOPE</div>
+                <div class="stamp stamp-like">YES</div>
+                <div class="card-icon">${q.icon}</div>
+                <h2>${q.text}</h2>
+                <p>${q.sub}</p>
+            `;
+            
+            // Touch Physics
+            initCardEvents(el, q);
+            stack.appendChild(el);
+        }
+
+        function initCardEvents(card, data) {
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+
+            const onStart = (e) => {
+                if(activeIndex >= questions.length) return;
+                // Only allow dragging top card
+                if(card !== stack.lastElementChild) return;
+
+                isDragging = true;
+                startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                card.style.transition = 'none';
+            };
+
+            const onMove = (e) => {
+                if (!isDragging) return;
+                e.preventDefault(); // Prevent scroll
+                
+                const x = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                currentX = x - startX;
+                const rotate = currentX * 0.1; // Rotate while dragging
+                
+                card.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
+
+                // Opacity of Stamps
+                const nope = card.querySelector('.stamp-nope');
+                const like = card.querySelector('.stamp-like');
+                
+                if (currentX > 0) {
+                    like.style.opacity = Math.min(currentX / 100, 1);
+                    nope.style.opacity = 0;
+                    document.body.style.background = `rgba(16, 185, 129, ${Math.min(currentX/500, 0.2)})`; // Green tint
+                } else {
+                    nope.style.opacity = Math.min(Math.abs(currentX) / 100, 1);
+                    like.style.opacity = 0;
+                    document.body.style.background = `rgba(239, 68, 68, ${Math.min(Math.abs(currentX)/500, 0.2)})`; // Red tint
+                }
+            };
+
+            const onEnd = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                card.style.transition = 'transform 0.3s ease-out';
+                document.body.style.background = '#f3f4f6'; // Reset bg
+
+                const threshold = 100; // Pixel distance to trigger swipe
+
+                if (currentX > threshold) {
+                    dismissCard(card, 'right', data);
+                } else if (currentX < -threshold) {
+                    dismissCard(card, 'left', data);
+                } else {
+                    // Reset position
+                    card.style.transform = `translateX(0) rotate(0)`;
+                    card.querySelector('.stamp-nope').style.opacity = 0;
+                    card.querySelector('.stamp-like').style.opacity = 0;
+                }
+            };
+
+            card.addEventListener('mousedown', onStart);
+            card.addEventListener('touchstart', onStart);
+            
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('touchmove', onMove, {passive: false});
+            
+            window.addEventListener('mouseup', onEnd);
+            window.addEventListener('touchend', onEnd);
+        }
+
+        // Button Trigger
+        window.triggerSwipe = (dir) => {
+            const card = stack.lastElementChild;
+            if(!card) return;
+            const data = questions[activeIndex];
+            dismissCard(card, dir, data);
+        };
+
+        function dismissCard(card, dir, data) {
+            const x = dir === 'right' ? window.innerWidth : -window.innerWidth;
+            const rotate = dir === 'right' ? 30 : -30;
+            
+            card.style.transform = `translateX(${x}px) rotate(${rotate}deg)`;
+            
+            // Logic
+            const isYes = dir === 'right';
+            // If question is regular: Yes = +1. If reverse (e.g. Stress): No = +1
+            if (data.reverse) {
+                if (!isYes) positiveCount++;
+            } else {
+                if (isYes) positiveCount++;
+            }
+
+            activeIndex++;
+            
+            setTimeout(() => {
+                card.remove();
+                updateStackVisuals();
+                updateProgress();
+                
+                if (activeIndex >= questions.length) {
+                    showEndScreen();
+                }
+            }, 300);
+        }
+
+        function updateStackVisuals() {
+            // Move remaining cards up
+            const remaining = stack.querySelectorAll('.card');
+            remaining.forEach((c, i) => {
+                const depth = remaining.length - 1 - i;
+                c.style.transition = 'transform 0.3s';
+                c.style.transform = `scale(${1 - depth * 0.05}) translateY(${depth * 10}px)`;
+                c.style.opacity = 1 - depth * 0.2;
+            });
+        }
+
+        function updateProgress() {
+            progressEl.innerText = `${Math.min(activeIndex + 1, questions.length)} / ${questions.length}`;
+        }
+
+        function showEndScreen() {
+            stack.style.display = 'none';
+            controls.style.display = 'none';
+            endScreen.style.display = 'block';
+            
+            const scoreEl = document.getElementById('finalScore');
+            const titleEl = document.getElementById('finalTitle');
+            const msgEl = document.getElementById('finalMsg');
+            
+            // Animate Score
+            let s = 0;
+            const timer = setInterval(() => {
+                s++;
+                scoreEl.innerText = s;
+                if(s >= positiveCount) clearInterval(timer);
+            }, 50);
+
+            // Dynamic Feedback
+            if(positiveCount >= 8) {
+                titleEl.innerText = "Yodha Master! 🌟";
+                msgEl.innerText = "You are in great balance today. Keep this energy flowing.";
+            } else if (positiveCount >= 5) {
+                titleEl.innerText = "Good Balance 🌱";
+                msgEl.innerText = "You're doing okay, but there's room to treat yourself better.";
+            } else {
+                titleEl.innerText = "Take a Breath 🍃";
+                msgEl.innerText = "It seems like a tough day. Try to rest and drink some water.";
+            }
+        }
+
+        function exitGame() {
+            window.location.href = '../pages/games.html';
+        }
+
+        // Start
+        init();
+
+    </script>
+    <script src="../shared/game-sound-toggle.js"></script>
+</body>
+</html>

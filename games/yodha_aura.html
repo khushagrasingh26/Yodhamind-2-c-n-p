@@ -98,6 +98,29 @@
             .ui-layer { bottom: 30px; padding: 6px 10px; }
             .instruction { font-size: 0.8rem; }
         }
+
+/* Catch-all to find the injected sound button, ignoring the buttons we already know */
+body > button:not(.ghost-btn):not(.mode-btn),
+body > div[onclick*="sound"], 
+body > div[onclick*="audio"],
+body > div[id*="sound"] {
+    position: absolute !important;
+    top: 80px !important;       /* Places it right below the Home button */
+    left: 25px !important; 
+    transform: none !important;
+    z-index: 9999 !important;
+    bottom: auto !important;
+    right: auto !important;
+    
+    /* Styling to match your theme */
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 30px !important;
+    padding: 8px 16px !important;
+    color: white !important;
+    backdrop-filter: blur(4px) !important;
+}
+
     </style>
 </head>
 <body>
@@ -353,6 +376,7 @@
         init();
 
     </script>
+    <script src="../shared/game-sound-toggle.js"></script>
     <script src="../shared/crisis-support.js"></script>
 </body>
 </html>

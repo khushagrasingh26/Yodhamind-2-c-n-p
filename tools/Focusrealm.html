@@ -280,7 +280,7 @@
     <div class="nav-controls" style="display:flex; gap:10px;">
         <button class="nav-btn-styled" onclick="toggleTheme()" title="Theme">🌗</button>
         <button class="nav-btn-styled" onclick="toggleZen()" title="Zen">👁️</button>
-        <button class="nav-btn-styled exit-active" onclick="window.location.href='../games.html'" title="Exit">✕</button>
+        <button class="nav-btn-styled exit-active" onclick="window.location.href='../pages/games.html'" title="Exit">✕</button>
     </div>
 </nav>
 
@@ -361,9 +361,9 @@
             <div id="breakTimerDisplay" style="font-size: 2.5rem; font-weight: 700; color: var(--primary); margin: 15px 0;">05:00</div>
             <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 15px;">Relax or play a quick game:</p>
             <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 20px;">
-                <button class="btn-modal btn-cancel" onclick="window.location.href='../games/Yodhaflow.html'">Yodha Flow</button>
-                <button class="btn-modal btn-cancel" onclick="window.location.href='../games/cosmic_shredder_game.html'">Cosmic Shredder</button>
-                <button class="btn-modal btn-cancel" onclick="window.location.href='../games/yodha_mandala.html'">Yodha Mandala</button>
+                <button class="btn-modal btn-cancel" onclick="window.location.href='Yodhaflow.html'">Yodha Flow</button>
+                <button class="btn-modal btn-cancel" onclick="window.location.href='cosmic_shredder_game.html'">Cosmic Shredder</button>
+                <button class="btn-modal btn-cancel" onclick="window.location.href='yodha_mandala.html'">Yodha Mandala</button>
             </div>
             <button class="btn-main" style="width:100%; padding: 10px;" id="nextSessionBtn" onclick="closeBreakModal()">Skip Break</button>
         </div>
@@ -730,6 +730,7 @@
         init();
 
     </script>
+    <script src="../shared/game-sound-toggle.js"></script>
     <script src="../shared/crisis-support.js"></script>
 </body>
 </html>

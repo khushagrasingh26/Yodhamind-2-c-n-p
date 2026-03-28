@@ -1,6 +1,9 @@
 (function () {
   'use strict';
 
+  var path = (window.location && window.location.pathname ? window.location.pathname : '').toLowerCase();
+  if (path.indexOf('/games/') !== -1) return;
+
   if (window.__ymCrisisSupportMounted) return;
   window.__ymCrisisSupportMounted = true;
 

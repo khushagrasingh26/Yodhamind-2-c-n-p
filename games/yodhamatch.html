@@ -332,6 +332,47 @@
             .logo { font-size: 1rem; }
             .btn-zen span { display: none; } /* Hide icon on very small screens to save space */
         }
+
+            /* --- Floating Sound Button Positioning & Style --- */
+[id*="sound"], 
+[class*="sound"] {
+    position: fixed !important;
+    bottom: 25px !important;
+    right: 25px !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 9999 !important;
+    
+    /* Styling to match the Yodha Match Light/Dark glass theme */
+    background: var(--glass) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-main) !important;
+    padding: 12px !important;
+    border-radius: 50px !important; /* Circular/Pill shape */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+[id*="sound"]:hover, 
+[class*="sound"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* On very small screens, tuck it slightly tighter into the corner */
+@media (max-width: 500px) {
+    [id*="sound"], [class*="sound"] {
+        bottom: 15px !important;
+        right: 15px !important;
+        padding: 10px !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -721,6 +762,7 @@
         // Note: initGame() is no longer called immediately.
         // The user must select a difficulty first via the modal.
     </script>
+    <script src="../shared/game-sound-toggle.js"></script>
     <script src="../shared/crisis-support.js"></script>
 </body>
 </html>

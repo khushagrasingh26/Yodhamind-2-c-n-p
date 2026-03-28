@@ -223,6 +223,47 @@
             .meta-card span { font-size: 1rem; }
             #grid { gap: 8px; padding: 8px; width: min(100%, calc(100vh - 250px)); }
         }
+
+        /* --- Floating Sound Button Positioning & Style --- */
+[id*="sound"], 
+[class*="sound"] {
+    position: fixed !important;
+    bottom: 25px !important;
+    right: 25px !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 9999 !important;
+    
+    /* Styling to match the Memory Matrix dark theme */
+    background: rgba(30, 41, 59, 0.85) !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    color: #e2e8f0 !important;
+    padding: 12px !important;
+    border-radius: 50px !important; /* Makes it pill-shaped/circular */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(8px) !important;
+    transition: transform 0.2s ease, background 0.2s ease !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+[id*="sound"]:hover, 
+[class*="sound"]:hover {
+    background: rgba(51, 65, 85, 0.95) !important;
+    transform: scale(1.05) !important;
+}
+
+/* On very small screens, tuck it slightly tighter into the corner */
+@media (max-width: 520px) {
+    [id*="sound"], [class*="sound"] {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+}
+
+        
     </style>
 </head>
 <body>
@@ -410,6 +451,7 @@
             resetGame();
         });
     </script>
+    <script src="../shared/game-sound-toggle.js"></script>
     <script src="../shared/crisis-support.js"></script>
 </body>
 </html>

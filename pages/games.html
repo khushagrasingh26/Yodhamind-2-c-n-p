@@ -80,27 +80,6 @@
             gap: 15px;
         }
 
-        .btn-audio {
-            background: white;
-            border: 1px solid #ddd;
-            color: var(--text-light);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.3s;
-            font-family: inherit;
-        }
-        .btn-audio.playing {
-            background: var(--soft);
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
         .btn-home {
             background: white;
             color: var(--text) !important;
@@ -411,19 +390,13 @@
 
 <body>
 
-    <!-- Ambient Audio Source (Nature/Rain lo-fi placeholder) -->
-    <audio id="ambient-audio" loop>
-        <!-- Using a free placeholder relaxing sound. In production, replace with your own asset -->
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/16/audio_9ed1b34375.mp3?filename=soft-rain-ambient-111154.mp3" type="audio/mpeg">
-    </audio>
-
     <nav>
         <div class="nav-container">
             <a href="../pages/index.html" class="logo">✨ YodhaMind</a>
             <div class="nav-controls">
-                <button class="btn-audio" id="audioToggle" onclick="toggleAudio()">
-                    <span>🎵</span> Sound: Off
-                </button>
+                <a href="../pages/dashboard.html" class="btn-home" style="border-color: var(--primary); color: var(--primary) !important;">
+                    📊 Dashboard
+                </a>
                 <a href="../pages/index.html" class="btn-home">
                     Exit Gym ✕
                 </a>
@@ -455,7 +428,7 @@
         <div class="games-grid" id="gamesGrid">
             
             <!-- Game 11 (Moved to First) -->
-            <a href="../games/yodha_enchaeos.html" class="game-card" data-mood="okay tired" onclick="trackGameClick()">
+            <a href="../games/yodha.html" class="game-card" data-mood="okay tired" onclick="trackGameClick()">
                 <div class="card-visual visual-cards"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -497,7 +470,7 @@
             </a>
 
             <!-- Game 3 -->
-            <a href="../games/yodha_lumina.html" class="game-card" data-mood="stress anger" onclick="trackGameClick()">
+            <a href="../games/yodha_break.html" class="game-card" data-mood="stress anger" onclick="trackGameClick()">
                 <div class="card-visual visual-break"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -626,27 +599,10 @@
     <div class="mobile-nav">
         <a href="../pages/index.html"><span>🏠</span>Home</a>
         <a href="#" style="color:var(--primary)"><span>🎮</span>Mind Gym</a>
+        <a href="dashboard.html"><span>📊</span>Dashboard</a>
     </div>
 
     <script>
-        /* ================= AMBIENT AUDIO LOGIC ================= */
-        const audioEl = document.getElementById('ambient-audio');
-        const audioBtn = document.getElementById('audioToggle');
-        let isPlaying = false;
-
-        function toggleAudio() {
-            if (isPlaying) {
-                audioEl.pause();
-                audioBtn.innerHTML = '<span>🎵</span> Sound: Off';
-                audioBtn.classList.remove('playing');
-            } else {
-                audioEl.play().catch(e => console.log("Audio play blocked by browser."));
-                audioBtn.innerHTML = '<span>🔊</span> Sound: On';
-                audioBtn.classList.add('playing');
-            }
-            isPlaying = !isPlaying;
-        }
-
         /* ================= MOOD FILTER LOGIC ================= */
         function filterGames(mood, btn) {
             // UI Button Active State
