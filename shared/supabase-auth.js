@@ -94,7 +94,7 @@
       '    <div class="ym-avatar-dropdown__email" id="ymDropdownEmail">user@email.com</div>',
       '  </div>',
       '  <a href="/student-dashboard" class="ym-avatar-dropdown__item">📊 My Dashboard</a>',
-      isAdmin ? '  <a href="/dev_admin.html" class="ym-avatar-dropdown__item" id="ymAdminDropdownLink">⚙️ Developer Dashboard</a>' : '',
+      isAdmin ? '  <a href="/dev-admin" class="ym-avatar-dropdown__item" id="ymAdminDropdownLink">⚙️ Developer Dashboard</a>' : '',
       '  <a href="/dashboard" class="ym-avatar-dropdown__item">🏠 Wellness Hub</a>',
       '  <a href="/journal" class="ym-avatar-dropdown__item">📝 Journal</a>',
       '  <div class="ym-avatar-dropdown__divider"></div>',
@@ -270,7 +270,7 @@
               var sidebarNav = $('.ym-sidebar__nav');
               if (sidebarNav && !$('#ymAdminSidebarLink')) {
                 var adminLink = document.createElement('a');
-                adminLink.href = '/dev_admin.html';
+                adminLink.href = '/dev-admin';
                 adminLink.className = 'ym-sidebar__link';
                 adminLink.id = 'ymAdminSidebarLink';
                 adminLink.innerHTML = '<span class="ym-sidebar__link-icon">⚙️</span>Developer Dashboard';

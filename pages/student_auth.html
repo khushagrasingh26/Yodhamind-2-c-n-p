@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (data?.role === 'student') window.top.location.href = 'student_dashboard.html';
       else if (data?.role === 'psychologist') window.top.location.href = 'psychologist.html';
-      else if (data?.role === 'admin') window.top.location.href = 'dev_admin.html';
+      else if (data?.role === 'admin') window.top.location.href = '/dev-admin';
     }
   } catch(err) {
     console.error("Auth session check failed:", err.message);
@@ -489,7 +489,7 @@ async function doLogin() {
     setLoading('login', false);
     return showAlert('err', 'This portal is for students. Psychologists please use the practitioner login.');
   } else if (uRow.role === 'admin') {
-    window.top.location.href = '/dev_admin.html';
+    window.top.location.href = '/dev-admin';
     return;
   }
   
