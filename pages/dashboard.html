@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -68,7 +68,7 @@
         .logo {
             font-size: 1.5rem; font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
             text-decoration: none; display: flex; align-items: center; gap: 8px;
         }
         .nav-right { display: flex; align-items: center; gap: 12px; }
@@ -164,10 +164,12 @@
         .mood-emoji-btn {
             flex: 1; border: 2px solid rgba(0,0,0,0.06);
             border-radius: 16px; background: var(--soft);
-            font-size: 1.5rem; padding: 10px 4px;
+            font-size: 1.5rem; padding: 12px 4px;
             cursor: pointer; display: flex; flex-direction: column;
             align-items: center; gap: 4px;
             transition: all 0.2s; font-family: inherit;
+            min-height: 52px;
+            -webkit-tap-highlight-color: transparent;
         }
         .mood-emoji-btn .mood-label {
             font-size: 0.6rem; font-weight: 700;
@@ -177,6 +179,9 @@
             border-color: var(--primary); background: white;
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(124,92,191,0.15);
+        }
+        .mood-emoji-btn:active {
+            transform: scale(0.95);
         }
         .mood-done-msg {
             display: none; text-align: center; padding: 12px;
@@ -288,6 +293,7 @@
             text-align: left;
         }
         .quick-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .quick-card:active { transform: scale(0.97); opacity: 0.9; }
 
         .quick-icon {
             width: 44px; height: 44px; border-radius: 14px;
@@ -418,7 +424,7 @@
         }
         .journal-entry-text {
             font-size: 0.87rem; color: var(--text); line-height: 1.55;
-            display: -webkit-box; -webkit-line-clamp: 2;
+            display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2;
             -webkit-box-orient: vertical; overflow: hidden;
         }
 
@@ -474,17 +480,20 @@
             border-top: 1px solid rgba(0,0,0,0.05);
             justify-content: space-around;
             padding: 10px 0 max(10px, env(safe-area-inset-bottom));
-            z-index: 1000;
+            z-index: 1200;
         }
         .mobile-nav a {
             text-decoration: none; color: var(--text-light);
             display: flex; flex-direction: column;
             align-items: center; gap: 3px;
             font-size: 0.68rem; font-weight: 700;
-            min-width: 50px; transition: color 0.2s;
+            min-width: 50px; min-height: 48px;
+            justify-content: center;
+            transition: color 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
         .mobile-nav a.active { color: var(--primary); }
-        .mobile-nav a span   { font-size: 1.25rem; line-height: 1; }
+        .mobile-nav a span   { font-size: 1.4rem; line-height: 1; }
         @media (max-width: 768px) { .mobile-nav { display: flex; } }
 
         /* =====================================================
@@ -588,28 +597,60 @@
         .fade-up { animation: fadeUp 0.45s ease both; }
 
     </style>
+    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
 <body>
 
-    <!-- ═══════════════ NAV ═══════════════ -->
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">✨ YodhaMind</a>
-            <div class="nav-right">
-                <div class="streak-pill hidden" id="streakPill">
-                    🔥 <span id="streakNum">0</span>-day streak
-                </div>
-                <div class="nav-links">
-                    <a href="games.html">Mind Gym</a>
-                    <a href="dashboard.html" class="active">Dashboard</a>
-                    <a href="#" style="opacity: 0.6; cursor: not-allowed;">Support (Coming Soon)</a>
-                    <button class="btn-cta" onclick="openJournalModal()">+ Journal</button>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <!-- ═══════════ YM SIDEBAR ═══════════ -->
+    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
+    <aside class="ym-sidebar" id="ymSidebar">
+      <div class="ym-sidebar__header">
+        <span style="font-size:1.4rem;">🧠</span>
+        <span class="ym-sidebar__logo">YodhaMind</span>
+      </div>
+      <nav class="ym-sidebar__nav">
+        <div class="ym-sidebar__section-label">Navigate</div>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Wellness</div>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+<div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Support</div>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+      </nav>
+      <div class="ym-sidebar__footer">
+        © 2026 YodhaMind<br>
+        Made with 💛 for Indian students<br>
+        <a href="/pages/privacy.html">Privacy Policy</a>
+      </div>
+    </aside>
 
-    <!-- ═══════════════ MAIN PAGE ═══════════════ -->
+    <!-- ═══════════ YM TOPBAR ═══════════ -->
+    <header class="ym-topbar" id="ymTopbar">
+      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="ym-topbar__logo">
+        <span class="ym-topbar__logo-icon">🧠</span>
+        YodhaMind
+      </a>
+      <div class="ym-topbar__right">
+        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
+        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
+        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
+      </div>
+    </header>
+
+
+    <!-- ═══════════════ NAV ═══════════════ -->
+<!-- ═══════════════ MAIN PAGE ═══════════════ -->
     <main class="page">
 
         <!-- GREETING -->
@@ -693,7 +734,7 @@
             </div>
             <div class="wellness-bottom">
                 <button class="wellness-assess-btn"
-                    onclick="window.location.href='assessment.html'">
+                    onclick="window.location.href='/assessment'">
                     📋 Take or update your assessment →
                 </button>
             </div>
@@ -704,7 +745,7 @@
             Quick Access
         </div>
         <div class="quick-grid section-gap">
-            <a href="games.html" class="quick-card">
+            <a href="/games" class="quick-card">
                 <div class="quick-icon tint-purple">🎮</div>
                 <div>
                     <div class="quick-name">Mind Gym</div>
@@ -720,11 +761,11 @@
                 </div>
                 <span class="quick-arrow">›</span>
             </button>
-            <a href="/tools/Yodhaflow.html" class="quick-card">
+            <a href="/tools/spirit-breathing-tool.html" class="quick-card">
                 <div class="quick-icon tint-orange">🌬️</div>
                 <div>
                     <div class="quick-name">Breathe</div>
-                    <div class="quick-sub">Yodha Flow</div>
+                    <div class="quick-sub">Spirit Breathing Tool</div>
                 </div>
                 <span class="quick-arrow">›</span>
             </a>
@@ -752,16 +793,16 @@
         <!-- ── GAMES ROW ── -->
         <div style="font-size:1rem; font-weight:800; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;" class="section-gap">
             Mind Gym Games
-            <a href="games.html" class="card-link">See all →</a>
+            <a href="/games" class="card-link">See all →</a>
         </div>
         <div class="games-row section-gap">
-            <a href="../games/yodhamatch.html"    class="game-chip"><div class="game-chip-icon">🃏</div><div class="game-chip-name">Yodha Match</div><div class="game-chip-sub">Memory</div></a>
-            <a href="../games/yodha_break.html"  class="game-chip"><div class="game-chip-icon">💡</div><div class="game-chip-name">Lumina</div><div class="game-chip-sub">Pattern</div></a>
-            <a href="../games/yodha_enchaeos.html"class="game-chip"><div class="game-chip-icon">⚡</div><div class="game-chip-name">Enchaeos</div><div class="game-chip-sub">Reaction</div></a>
-            <a href="../games/yodha_aura.html"    class="game-chip"><div class="game-chip-icon">🌀</div><div class="game-chip-name">Aura</div><div class="game-chip-sub">Focus</div></a>
-            <a href="../games/yodha_mandala.html" class="game-chip"><div class="game-chip-icon">🪷</div><div class="game-chip-name">Mandala</div><div class="game-chip-sub">Zen Art</div></a>
-            <a href="../games/untangle.html"      class="game-chip"><div class="game-chip-icon">🕸️</div><div class="game-chip-name">Untangle</div><div class="game-chip-sub">Puzzle</div></a>
-            <a href="../games/memory_matrix.html"    class="game-chip"><div class="game-chip-icon">🟨</div><div class="game-chip-name">Memory Matrix</div><div class="game-chip-sub">Memory</div></a>
+            <a href="/games/yodhamatch.html"    class="game-chip"><div class="game-chip-icon">🃏</div><div class="game-chip-name">Yodha Match</div><div class="game-chip-sub">Memory</div></a>
+            <a href="/games/yodha_break.html"  class="game-chip"><div class="game-chip-icon">💡</div><div class="game-chip-name">Lumina</div><div class="game-chip-sub">Pattern</div></a>
+            <a href="/games/yodha_enchaeos.html"class="game-chip"><div class="game-chip-icon">⚡</div><div class="game-chip-name">Enchaeos</div><div class="game-chip-sub">Reaction</div></a>
+            <a href="/games/yodha_aura.html"    class="game-chip"><div class="game-chip-icon">🌀</div><div class="game-chip-name">Aura</div><div class="game-chip-sub">Focus</div></a>
+            <a href="/games/yodha_mandala.html" class="game-chip"><div class="game-chip-icon">🪷</div><div class="game-chip-name">Mandala</div><div class="game-chip-sub">Zen Art</div></a>
+            <a href="/games/untangle.html"      class="game-chip"><div class="game-chip-icon">🕸️</div><div class="game-chip-name">Untangle</div><div class="game-chip-sub">Puzzle</div></a>
+            <a href="/games/memory_matrix.html"    class="game-chip"><div class="game-chip-icon">🟨</div><div class="game-chip-name">Memory Matrix</div><div class="game-chip-sub">Memory</div></a>
         </div>
 
         <!-- ── SELF-ASSESSMENT ── -->
@@ -782,11 +823,11 @@
         </div>
 
         <!-- ── PSYCHOLOGIST CTA ── -->
-        <div class="psych-card section-gap" style="opacity: 0.8; pointer-events: none;">
+        <div class="psych-card section-gap">
             <div>
-                <div class="psych-title">Talk to a Verified Counselor (Coming Soon)</div>
+                <div class="psych-title">Talk to a Verified Counselor</div>
                 <div class="psych-sub">
-                    Licensed psychologists will be available for 1-on-1 sessions soon.
+                    Licensed psychologists available for 1-on-1 sessions. Request priority access to join the waitlist.
                 </div>
                 <div class="psych-avatars">
                     <div class="psych-av" style="background:#FDE68A;">👩‍⚕️</div>
@@ -795,7 +836,7 @@
                     <div class="psych-av psych-av-more">+4</div>
                 </div>
             </div>
-            <button class="btn-psych" style="background: #94a3b8;">Coming Soon</button>
+            <button class="btn-psych" id="psychologistAccessBtn">Request Priority Access</button>
         </div>
 
         <!-- ── JOURNAL PREVIEW ── -->
@@ -826,7 +867,7 @@
                 <div class="anon-meta"><span>😔 Anonymous</span><span>❤️ 47 relate</span></div>
             </div>
             <div class="anon-post">
-                "The YodhaFlow breathing exercise actually helped during my panic attack before the exam."
+                "The Spirit Breathing Tool exercise actually helped during my panic attack before the exam."
                 <div class="anon-meta"><span>🌿 Anonymous</span><span>❤️ 83 relate</span></div>
             </div>
             <div class="anon-post">
@@ -847,10 +888,10 @@
 
     <!-- ═══════════════ MOBILE NAV ═══════════════ -->
     <nav class="mobile-nav">
-        <a href="dashboard.html" class="active"><span>🏠</span>Home</a>
-        <a href="games.html"><span>🎮</span>Games</a>
-        <a href="assessment.html"><span>📋</span>Assess</a>
-        <a href="psychologist.html"><span>💬</span>Support</a>
+        <a href="/dashboard" class="active"><span>🏠</span>Home</a>
+        <a href="/games"><span>🎮</span>Games</a>
+        <a href="/assessment"><span>📋</span>Assess</a>
+        <a href="/connect"><span>💬</span>Support</a>
         <a href="#" onclick="openJournalModal(); return false;"><span>📝</span>Journal</a>
     </nav>
 
@@ -1212,6 +1253,26 @@
     }
 
     /* ──────────────────────────────────────────
+       PSYCHOLOGIST ACCESS
+    ────────────────────────────────────────── */
+    function requestPsychologistAccess() {
+        const btn = document.getElementById('psychologistAccessBtn');
+        // Disable button and change appearance
+        btn.disabled = true;
+        btn.style.background = '#cbd5e1';
+        btn.style.cursor = 'not-allowed';
+        btn.textContent = '✓ Request Submitted';
+        
+        // Show confirmation toast
+        showToast('✓ Request submitted! We\'ll notify you when slots are available.');
+        
+        // Redirect after delay
+        setTimeout(() => {
+            window.location.href = '/psychologist.html';
+        }, 2000);
+    }
+
+    /* ──────────────────────────────────────────
        INIT
     ────────────────────────────────────────── */
     document.addEventListener('DOMContentLoaded', () => {
@@ -1221,11 +1282,57 @@
         renderWellnessScore();
         renderMoodChart();
         renderJournalPreview();
+        
+        // Attach psychologist access button listener
+        const psychBtn = document.getElementById('psychologistAccessBtn');
+        if (psychBtn) {
+            psychBtn.addEventListener('click', requestPsychologistAccess);
+        }
     });
     </script>
 
 <script src="../shared/nav-component.js"></script>
     <script src="../shared/crisis-support.js"></script>
+
+    <script src="../shared/supabase-auth.js"></script>
+    <script>
+      /* ── Sidebar toggle ── */
+      (function() {
+        var hamburger = document.getElementById('ymHamburger');
+        var sidebar = document.getElementById('ymSidebar');
+        var backdrop = document.getElementById('ymSidebarBackdrop');
+        var topbar = document.getElementById('ymTopbar');
+
+        function toggleSidebar() {
+          var isOpen = sidebar.classList.contains('open');
+          sidebar.classList.toggle('open');
+          backdrop.classList.toggle('open');
+          hamburger.classList.toggle('open');
+          document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+
+        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+
+        /* ── Scroll shadow ── */
+        if (topbar) {
+          window.addEventListener('scroll', function() {
+            topbar.classList.toggle('scrolled', window.scrollY > 10);
+          }, { passive: true });
+        }
+
+        /* ── Highlight active sidebar link ── */
+        var currentPath = window.location.pathname;
+        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+    <!-- Analytics Tracking -->
+    <script src="/shared/ym-track.js"></script>
 </body>
 </html>
 

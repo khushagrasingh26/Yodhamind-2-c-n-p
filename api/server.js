@@ -42,9 +42,12 @@ const gamesRoute         = require('./routes/games');
 const psychologistsRoute = require('./routes/psychologists');
 const appointmentsRoute  = require('./routes/appointments');
 const communityRoute     = require('./routes/community');
+const trackRoute         = require('./routes/track');
+const adminRoute         = require('./routes/admin');
 
 const app  = express();
-const PORT = process.env.PORT || 3001;
+const PORT = 3001; // Hardcoded for verification
+
 
 /* ══════════════════════════════════════════════
    TRUST PROXY
@@ -59,22 +62,29 @@ app.set('trust proxy', 1);
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc:  ["'self'"],
-      scriptSrc:   ["'self'", "'unsafe-inline'"],   // allow inline scripts on HTML pages
-      styleSrc:    ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc:      ["'self'", 'data:', 'https:'],
-      connectSrc:  ["'self'", 'https://api.anthropic.com'],  // allow AI advisor calls
-      frameSrc:    ["'none'"],
-      objectSrc:   ["'none'"]
+      defaultSrc:     ["'self'"],
+      scriptSrc:      ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://cdn.jsdelivr.net"],
+      styleSrc:       ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', "https://unpkg.com", "https://cdn.jsdelivr.net"],
+      fontSrc:        ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc:         ["'self'", 'data:', 'https:'],
+      connectSrc:     ["'self'", 'https://api.anthropic.com', 'https://unpkg.com', 'https://*.supabase.co'],
+      frameSrc:       ["'none'"],
+      objectSrc:      ["'none'"],
+      baseUri:        ["'self'"],              // prevent base-tag hijacking
+      formAction:     ["'self'"],              // restrict form submissions
+      frameAncestors: ["'none'"],              // prevent clickjacking (supplement X-Frame-Options)
+      upgradeInsecureRequests: []               // auto-upgrade HTTP → HTTPS requests
     }
   },
-  // Disable X-Powered-By (helmet does this by default)
   hidePoweredBy: true,
-  // Force HTTPS in production
   hsts: process.env.NODE_ENV === 'production'
-    ? { maxAge: 31536000, includeSubDomains: true }
-    : false
+    ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+    : false,
+  // Additional helmet protections
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  crossOriginEmbedderPolicy: false,  // keep false — breaks external font/image loading
+  crossOriginOpenerPolicy: { policy: 'same-origin' },
+  crossOriginResourcePolicy: { policy: 'cross-origin' }  // allow cross-origin fonts/images
 }));
 
 /* ══════════════════════════════════════════════
@@ -100,6 +110,10 @@ app.options('*', cors());
 app.use(compression());
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
+
+// Stricter body limit for auth routes (login/register payloads are small)
+const authBodyLimit = express.json({ limit: '10kb' });
+app.use('/api/auth', authBodyLimit);
 
 /* ══════════════════════════════════════════════
    LOGGING
@@ -139,6 +153,8 @@ app.use('/api/games',         gamesRoute);
 app.use('/api/psychologists', psychologistsRoute);
 app.use('/api/appointments',  appointmentsRoute);
 app.use('/api/community',     communityRoute);
+app.use('/api/track',         trackRoute);
+app.use('/api/admin',         adminRoute);
 
 /* ══════════════════════════════════════════════
    AI ADVISOR PROXY
@@ -284,7 +300,10 @@ if (process.env.NODE_ENV !== 'production' || process.env.SERVE_STATIC === 'true'
     { path: '/community', file: 'pages/community.html' },
     { path: '/games', file: 'pages/games.html' },
     { path: '/chat', file: 'pages/chat.html' },
-    { path: '/student-auth', file: 'pages/student_auth.html' }
+    { path: '/student-auth', file: 'pages/student_auth.html' },
+    { path: '/login', file: 'pages/student_auth.html' },
+    { path: '/signup', file: 'pages/student_auth.html' },
+    { path: '/dev-admin', file: 'pages/dev_admin.html' }
   ];
 
   routes.forEach(route => {
@@ -330,19 +349,45 @@ app.use((err, req, res, next) => {
 const db = require('./db');
 
 async function startServer() {
-  // Verify DB connection
+  // ── Environment validation ─────────────────────────
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+    if (isProduction) {
+      console.error('[server] FATAL: JWT_SECRET must be at least 32 characters in production.');
+      console.error('[server] Generate one:  node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
+      process.exit(1);
+    } else {
+      console.warn('[server] ⚠️  JWT_SECRET is weak or missing. Set a 32+ char secret for production.');
+    }
+  }
+
+  if (!process.env.DATABASE_URL) {
+    console.error('[server] FATAL: DATABASE_URL is not set. Check your .env file.');
+    if (isProduction) process.exit(1);
+  }
+
+  if (process.env.ANON_SALT === 'replace_with_any_random_string_32_chars_min' ||
+      process.env.ANON_SALT === 'yodhamind-default-salt') {
+    console.warn('[server] ⚠️  ANON_SALT is using a default value. Set a unique random string.');
+  }
+
+  if (process.env.CORS_ORIGIN === '*' && isProduction) {
+    console.warn('[server] ⚠️  CORS_ORIGIN is set to *. Restrict to your domain in production.');
+  }
+
+  // ── Verify DB connection ───────────────────────────
   try {
     await db.query('SELECT 1');
     console.log('[server] ✅ Database connected');
   } catch (err) {
     console.error('[server] ❌ Database connection failed:', err.message);
     console.error('[server] Check DATABASE_URL in .env');
-    // Don't exit — let Vercel serverless handle cold starts gracefully
   }
 
   // Only listen in non-serverless environments
-  if (process.env.NODE_ENV !== 'production' || process.env.LISTEN_IN_PROD === 'true') {
-    app.listen(PORT, () => {
+  if (!isProduction || process.env.LISTEN_IN_PROD === 'true') {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`[server] 🚀 YodhaMind API running on http://localhost:${PORT}`);
       console.log(`[server]    Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`[server]    Health:      http://localhost:${PORT}/api/health`);

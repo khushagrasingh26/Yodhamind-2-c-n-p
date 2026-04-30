@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -64,6 +64,7 @@
             font-size: 1.5rem; font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none; display: flex; align-items: center; gap: 8px;
         }
         .nav-controls { display: flex; align-items: center; gap: 12px; }
@@ -426,17 +427,18 @@
             border-top: 1px solid rgba(0,0,0,0.05);
             justify-content: space-around;
             padding: 10px 0 max(10px, env(safe-area-inset-bottom));
-            z-index: 1000;
+            z-index: 1200;
         }
         .mobile-nav a {
             text-decoration: none; color: var(--text-light);
             display: flex; flex-direction: column;
             align-items: center; gap: 3px;
             font-size: 0.68rem; font-weight: 700; min-width: 50px;
-            transition: color 0.2s;
+            min-height: 48px; justify-content: center;
+            -webkit-tap-highlight-color: transparent;
         }
         .mobile-nav a.active { color: var(--primary); }
-        .mobile-nav a span  { font-size: 1.25rem; line-height: 1; }
+        .mobile-nav a span  { font-size: 1.4rem; line-height: 1; }
         @media (max-width: 768px) { .mobile-nav { display: flex; } }
 
         /* ════════════════════════════════
@@ -465,24 +467,60 @@
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     </style>
+    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
 <body>
 
-    <!-- ═══ NAV ═══ -->
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">✨ YodhaMind</a>
-            <div class="nav-controls">
-                <div class="nav-desktop" style="display:flex;gap:12px;align-items:center;">
-                    <a href="games.html"    class="btn-nav">🎮 Mind Gym</a>
-                    <a href="dashboard.html" class="btn-nav">🏠 Dashboard</a>
-                </div>
-                <a href="dashboard.html" class="btn-cta">← Back</a>
-            </div>
-        </div>
-    </nav>
+    <!-- ═══════════ YM SIDEBAR ═══════════ -->
+    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
+    <aside class="ym-sidebar" id="ymSidebar">
+      <div class="ym-sidebar__header">
+        <span style="font-size:1.4rem;">🧠</span>
+        <span class="ym-sidebar__logo">YodhaMind</span>
+      </div>
+      <nav class="ym-sidebar__nav">
+        <div class="ym-sidebar__section-label">Navigate</div>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Wellness</div>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+<div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Support</div>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+      </nav>
+      <div class="ym-sidebar__footer">
+        © 2026 YodhaMind<br>
+        Made with 💛 for Indian students<br>
+        <a href="/pages/privacy.html">Privacy Policy</a>
+      </div>
+    </aside>
 
-    <!-- ═══ MAIN ═══ -->
+    <!-- ═══════════ YM TOPBAR ═══════════ -->
+    <header class="ym-topbar" id="ymTopbar">
+      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="ym-topbar__logo">
+        <span class="ym-topbar__logo-icon">🧠</span>
+        YodhaMind
+      </a>
+      <div class="ym-topbar__right">
+        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
+        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
+        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
+      </div>
+    </header>
+
+
+    <!-- ═══ NAV ═══ -->
+<!-- ═══ MAIN ═══ -->
     <main class="page">
 
         <!-- ─────────────────────────────────────
@@ -585,7 +623,7 @@
 
             <!-- Action buttons -->
             <div class="result-actions">
-                <a href="dashboard.html" class="btn-primary">← Back to Dashboard</a>
+                <a href="/dashboard" class="btn-primary">← Back to Dashboard</a>
                 <button class="btn-secondary" onclick="retakeTest()">Retake this test</button>
                 <button class="btn-secondary" onclick="goToHub()">Try a different test</button>
             </div>
@@ -612,11 +650,11 @@
 
     <!-- MOBILE NAV -->
     <nav class="mobile-nav">
-        <a href="dashboard.html"><span>🏠</span>Home</a>
-        <a href="games.html"><span>🎮</span>Games</a>
-        <a href="assessment.html" class="active"><span>📋</span>Assess</a>
-        <a href="psychologist.html"><span>💬</span>Support</a>
-        <a href="dashboard.html" onclick="/* journal */"><span>📝</span>Journal</a>
+        <a href="/dashboard"><span>🏠</span>Home</a>
+        <a href="/games"><span>🎮</span>Games</a>
+        <a href="/assessment" class="active"><span>📋</span>Assess</a>
+        <a href="/connect"><span>💬</span>Support</a>
+        <a href="/dashboard" onclick="/* journal */"><span>📝</span>Journal</a>
     </nav>
 
     <!-- TOAST -->
@@ -682,7 +720,7 @@
                     desc:     'You\'re experiencing noticeable stress. A few targeted tools can help significantly.',
                     crisis:   false,
                     suggestions: [
-                        { icon: '🌬️', text: 'Try 5 minutes of guided breathing daily. It directly lowers cortisol.', link: 'Yodhaflow.html', linkText: 'Open Yodha Flow →' },
+                        { icon: '🌬️', text: 'Try 5 minutes of guided breathing daily. It directly lowers cortisol.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' },
                         { icon: '⏱️', text: 'Use the Pomodoro timer to break study into manageable chunks.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
                         { icon: '📖', text: 'Journal your stress triggers — writing them down reduces their power.', link: 'dashboard.html', linkText: 'Write in Journal →' }
                     ]
@@ -694,7 +732,7 @@
                     desc:     'Your stress levels are high. We strongly recommend talking to a counselor.',
                     suggestions: [
                         { icon: '💬', text: 'Counselor network starting soon. This will be your most important step.', link: '#', linkText: 'Coming Soon' },
-                        { icon: '🌬️', text: 'Start right now — open Yodha Flow and do one breathing round.', link: 'Yodhaflow.html', linkText: 'Breathe Now →' },
+                        { icon: '🌬️', text: 'Start right now — Open Spirit Breathing Tool and do one breathing round.', link: 'spirit-breathing-tool.html', linkText: 'Breathe Now →' },
                         { icon: '🪷', text: 'Mandala drawing is proven to reduce acute stress. Try 5 minutes.', link: 'yodha_mandala.html', linkText: 'Open Mandala →' }
                     ]
                 };
@@ -743,7 +781,7 @@
                     desc:     'Mild anxiety is common. Targeted daily habits can reduce it significantly.',
                     crisis:   false,
                     suggestions: [
-                        { icon: '🌬️', text: 'Practice 4-7-8 breathing daily. It activates the parasympathetic system.', link: 'Yodhaflow.html', linkText: 'Try Yodha Flow →' },
+                        { icon: '🌬️', text: 'Practice 4-7-8 breathing daily. It activates the parasympathetic system.', link: 'spirit-breathing-tool.html', linkText: 'Try Spirit Breathing Tool →' },
                         { icon: '📱', text: 'Reduce social media browsing — limit to 20 minutes per day.', link: null, linkText: null },
                         { icon: '🃏', text: 'Yodha Match gently redirects racing thoughts through focused memory work.', link: 'yodhamatch.html', linkText: 'Play Yodha Match →' }
                     ]
@@ -755,7 +793,7 @@
                     desc:     'Moderate anxiety needs active attention. Please consider speaking with a professional.',
                     suggestions: [
                         { icon: '💬', text: 'Our counselor network is coming soon to help you develop strategies.', link: '#', linkText: 'Coming Soon' },
-                        { icon: '🌬️', text: 'Use Yodha Flow morning and night — consistency is key at this level.', link: 'Yodhaflow.html', linkText: 'Open Yodha Flow →' },
+                        { icon: '🌬️', text: 'Use Spirit Breathing Tool morning and night — consistency is key at this level.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' },
                         { icon: '📖', text: 'Journal your anxiety triggers. Naming them reduces their emotional charge.', link: 'dashboard.html', linkText: 'Open Journal →' }
                     ]
                 };
@@ -766,7 +804,7 @@
                     desc:     'Your anxiety score is high. Please reach out for support — you don\'t have to manage this alone.',
                     suggestions: [
                         { icon: '💬', text: 'Our counselor network is coming soon. Please use a helpline today.', link: '#', linkText: 'Coming Soon' },
-                        { icon: '🌬️', text: 'Open Yodha Flow right now and complete one full breathing session.', link: 'Yodhaflow.html', linkText: 'Breathe Now →' },
+                        { icon: '🌬️', text: 'Open Spirit Breathing Tool right now and complete one full breathing session.', link: 'spirit-breathing-tool.html', linkText: 'Breathe Now →' },
                         { icon: '🪷', text: 'Mandala drawing has been shown to reduce acute anxiety within minutes.', link: 'yodha_mandala.html', linkText: 'Open Mandala →' }
                     ]
                 };
@@ -830,7 +868,7 @@
                     suggestions: [
                         { icon: '💬', text: 'Please speak to a counselor urgently. Burnout worsens without intervention.', link: '#', linkText: 'Coming Soon' },
                         { icon: '📅', text: 'Take a mandatory rest day this week. Block it in your calendar now.', link: null, linkText: null },
-                        { icon: '🌬️', text: 'Start each morning with one Yodha Flow breathing session.', link: 'Yodhaflow.html', linkText: 'Open Yodha Flow →' }
+                        { icon: '🌬️', text: 'Start each morning with one Spirit Breathing Tool breathing session.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' }
                     ]
                 };
             }
@@ -944,7 +982,7 @@
                     suggestions: [
                         { icon: '🚶‍♀️', text: 'Try to get 15 minutes of sunlight and gentle movement today.', link: null, linkText: null },
                         { icon: '💬', text: 'Reach out to the anonymous community — you are not alone in feeling this way.', link: 'community.html', linkText: 'Open Community →' },
-                        { icon: '🧘', text: 'Use Yodha Flow for basic emotional grounding.', link: '../tools/Yodhaflow.html', linkText: 'Try Breathing →' }
+                        { icon: '🧘', text: 'Use Spirit Breathing Tool for basic emotional grounding.', link: '../tools/spirit-breathing-tool.html', linkText: 'Try Breathing →' }
                     ]
                 };
                 if (raw <= 14) return {
@@ -1314,6 +1352,46 @@
 
 <script src="../shared/nav-component.js"></script>
     <script src="../shared/crisis-support.js"></script>
+
+    <script src="../shared/supabase-auth.js"></script>
+    <script>
+      /* ── Sidebar toggle ── */
+      (function() {
+        var hamburger = document.getElementById('ymHamburger');
+        var sidebar = document.getElementById('ymSidebar');
+        var backdrop = document.getElementById('ymSidebarBackdrop');
+        var topbar = document.getElementById('ymTopbar');
+
+        function toggleSidebar() {
+          var isOpen = sidebar.classList.contains('open');
+          sidebar.classList.toggle('open');
+          backdrop.classList.toggle('open');
+          hamburger.classList.toggle('open');
+          document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+
+        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+
+        /* ── Scroll shadow ── */
+        if (topbar) {
+          window.addEventListener('scroll', function() {
+            topbar.classList.toggle('scrolled', window.scrollY > 10);
+          }, { passive: true });
+        }
+
+        /* ── Highlight active sidebar link ── */
+        var currentPath = window.location.pathname;
+        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+    <!-- Analytics Tracking -->
+    <script src="/shared/ym-track.js"></script>
 </body>
 </html>
 

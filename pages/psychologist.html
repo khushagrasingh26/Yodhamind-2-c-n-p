@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -910,9 +910,58 @@
       }
     }
   </style>
+    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
 
 <body>
+
+    <!-- ═══════════ YM SIDEBAR ═══════════ -->
+    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
+    <aside class="ym-sidebar" id="ymSidebar">
+      <div class="ym-sidebar__header">
+        <span style="font-size:1.4rem;">🧠</span>
+        <span class="ym-sidebar__logo">YodhaMind</span>
+      </div>
+      <nav class="ym-sidebar__nav">
+        <div class="ym-sidebar__section-label">Navigate</div>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Wellness</div>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+<div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Support</div>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+      </nav>
+      <div class="ym-sidebar__footer">
+        © 2026 YodhaMind<br>
+        Made with 💛 for Indian students<br>
+        <a href="/pages/privacy.html">Privacy Policy</a>
+      </div>
+    </aside>
+
+    <!-- ═══════════ YM TOPBAR ═══════════ -->
+    <header class="ym-topbar" id="ymTopbar">
+      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="ym-topbar__logo">
+        <span class="ym-topbar__logo-icon">🧠</span>
+        YodhaMind
+      </a>
+      <div class="ym-topbar__right">
+        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
+        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
+        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
+      </div>
+    </header>
+
 
   <div id="authGuard">
     <div class="guard-spin"></div>
@@ -940,24 +989,7 @@
           <div class="online-dot"></div> Active
         </div>
       </div>
-      <nav class="sb-nav">
-        <div class="nav-label">Overview</div>
-        <button class="nav-item active" onclick="switchView('overview',this)"><span class="ico">📊</span>
-          Dashboard</button>
-        <div class="nav-label">Sessions</div>
-        <button class="nav-item" onclick="switchView('requests',this)">
-          <span class="ico">📥</span> Incoming Requests
-          <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
-        </button>
-        <button class="nav-item" onclick="switchView('history',this)"><span class="ico">📅</span> Session
-          History</button>
-        <div class="nav-label">My Practice</div>
-        <button class="nav-item" onclick="switchView('profile',this)"><span class="ico">👤</span> My Profile</button>
-        <button class="nav-item" onclick="switchView('availability',this)"><span class="ico">🕐</span>
-          Availability</button>
-        <button class="nav-item" onclick="switchView('pricing',this)"><span class="ico">💰</span> Pricing</button>
-      </nav>
-      <div class="sb-footer">
+<div class="sb-footer">
         <button class="btn-logout" onclick="doLogout()"><span>🚪</span> Sign Out</button>
       </div>
     </aside>
@@ -1200,7 +1232,7 @@
     // ── Auth Guard ──────────────────────────────────────────────
     (async () => {
       const { data: { session } } = await sb.auth.getSession();
-      if (!session) return go('psychologist_login.html');
+      if (!session) return go('/student-auth');
 
       me = session.user;
       const { data: uRow } = await sb.from('users').select('role').eq('id', me.id).single();
@@ -1215,7 +1247,7 @@
           This portal is for verified psychologists only.
           ${uRow?.role === 'student' ? 'As a student, please use the student dashboard.' : 'Please log in with a practitioner account.'}
         </p>
-        <a href="${uRow?.role === 'student' ? 'student_dashboard.html' : 'psychologist_login.html'}" 
+        <a href="${uRow?.role === 'student' ? '/student-dashboard' : '/student-auth'}" 
            style="display:inline-block;padding:10px 24px;background:var(--ink,#0f0e17);color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:.9rem;">
           ${uRow?.role === 'student' ? 'Go to Student Dashboard' : 'Go to Login'}
         </a>
@@ -1228,7 +1260,7 @@
       document.getElementById('dashLayout').style.display = 'flex';
       await boot();
 
-      sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT') go('psychologist_login.html'); });
+      sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT') go('/student-auth'); });
     })();
 
     function go(url) { window.location.href = url; }
@@ -1444,7 +1476,7 @@
       document.getElementById('sidebarOverlay').classList.toggle('active');
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    async function doLogout() { await sb.auth.signOut(); go('psychologist_login.html'); }
+    async function doLogout() { await sb.auth.signOut(); go('/student-auth'); }
 
     let _tt;
     function toast(msg, type = '') {
@@ -1465,6 +1497,44 @@
     function initials(name) { const c = name.replace(/^(Dr\.|Mr\.|Ms\.|Mrs\.)\s*/i, '').trim(); const p = c.split(/\s+/); return (p.length === 1 ? p[0][0] : (p[0][0] + p[p.length - 1][0])).toUpperCase(); }
   </script>
     <script src="../shared/crisis-support.js"></script>
+
+    <script src="../shared/supabase-auth.js"></script>
+    <script>
+      /* ── Sidebar toggle ── */
+      (function() {
+        var hamburger = document.getElementById('ymHamburger');
+        var sidebar = document.getElementById('ymSidebar');
+        var backdrop = document.getElementById('ymSidebarBackdrop');
+        var topbar = document.getElementById('ymTopbar');
+
+        function toggleSidebar() {
+          var isOpen = sidebar.classList.contains('open');
+          sidebar.classList.toggle('open');
+          backdrop.classList.toggle('open');
+          hamburger.classList.toggle('open');
+          document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+
+        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+
+        /* ── Scroll shadow ── */
+        if (topbar) {
+          window.addEventListener('scroll', function() {
+            topbar.classList.toggle('scrolled', window.scrollY > 10);
+          }, { passive: true });
+        }
+
+        /* ── Highlight active sidebar link ── */
+        var currentPath = window.location.pathname;
+        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
 </body>
 
 </html>

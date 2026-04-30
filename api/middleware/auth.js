@@ -194,7 +194,7 @@ function generateTokens(user) {
       algorithm: 'HS256',
       issuer:    'yodhamind',
       audience:  'yodhamind-client',
-      expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+      expiresIn: process.env.JWT_EXPIRES_IN || '15m'
     }
   );
 
@@ -213,7 +213,7 @@ function generateTokens(user) {
   return {
     accessToken,
     refreshToken,
-    expiresIn: 7 * 24 * 60 * 60   // seconds — 7 days
+    expiresIn: 15 * 60   // seconds — 15 minutes
   };
 }
 

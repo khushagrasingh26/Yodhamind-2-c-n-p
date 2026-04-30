@@ -288,7 +288,352 @@
      INIT — run on DOMContentLoaded
   ══════════════════════════════════════════ */
 
+  
+  /* ══════════════════════════════════════════
+     10. GLOBAL BREATHING MODAL
+  ══════════════════════════════════════════ */
+  function initGlobalBreathingModal() {
+    if (document.getElementById('breathModal')) return; // already injected
+    
+    // Inject HTML
+    const modalWrapper = document.createElement('div');
+    modalWrapper.innerHTML = `<!-- Breathing Modal -->
+    <div class="breath-modal-overlay" id="breathModal">
+        <div class="breath-modal-content">
+            <button class="close-modal" id="closeBreathModal" aria-label="Close modal">&times;</button>
+            <div class="modal-header">
+                <h3>Calm Breathing</h3>
+                <button class="sound-toggle" id="soundToggle" aria-label="Toggle ambient sound">🔈</button>
+            </div>
+            
+            <div class="breath-visual-container">
+                <div class="breath-glow" id="breathGlow"></div>
+                <div class="breath-circle" id="breathCircle">
+                    <!-- The exact liquid canvas blob from outside -->
+                    <canvas id="modalSpiritCanvas" width="360" height="360"></canvas>
+                </div>
+            </div>`;
+    document.body.appendChild(modalWrapper.firstElementChild);
+    
+    // Inject logic
+    /* ── Interactive Spirit Breathing Logic ── */
+        
+        const breathModal = document.getElementById('breathModal');
+        const closeBreathModal = document.getElementById('closeBreathModal');
+        const startBreathBtn = document.getElementById('startBreathBtn');
+        const patternBtn = document.getElementById('patternBtn');
+        const breathText = document.getElementById('breathText');
+        const breathCircle = document.getElementById('breathCircle');
+        const breathGlow = document.getElementById('breathGlow');
+        const soundToggle = document.getElementById('soundToggle');
+
+        let isBreathing = false;
+        let breathTimeout;
+        let audioCtx, masterGain, synthFilter;
+        let isSoundOn = false;
+
+        /* ── Liquid Modal Spirit Animation ── */
+        const modalCanvas = document.getElementById('modalSpiritCanvas');
+        const modalCtx = modalCanvas.getContext('2d');
+        let modalTime = 0;
+        let spiritState = 'default';
+        let faceOffsetY = 0;
+        let targetFaceOffset = 0;
+        let isModalBlinking = false;
+        let modalBlinkCountdown = 280;
+
+        function drawModalBlob(cx, cy, baseR, fill, speed, complexity) {
+            modalCtx.fillStyle = fill;
+            modalCtx.beginPath();
+            for (let i = 0; i <= Math.PI * 2; i += 0.1) {
+                const r = baseR
+                    + Math.sin(i * 3 + modalTime * speed) * (5 * complexity)
+                    + Math.cos(i * 5 - modalTime * speed) * (5 * complexity)
+                    + Math.sin(i * 7 + modalTime) * (2 * complexity);
+                const x = cx + Math.cos(i) * r;
+                const y = cy + Math.sin(i) * r;
+                i === 0 ? modalCtx.moveTo(x, y) : modalCtx.lineTo(x, y);
+            }
+            modalCtx.closePath(); modalCtx.fill();
+        }
+
+        function animateModalSpirit() {
+            const w = modalCanvas.width, h = modalCanvas.height;
+            const cx = w / 2, cy = h / 2;
+            
+            modalCtx.clearRect(0, 0, w, h);
+            modalTime += 0.015;
+
+            modalCtx.shadowColor = 'rgba(124,92,191,0.35)'; 
+            modalCtx.shadowBlur = 25;
+            modalCtx.shadowOffsetY = 10;
+            
+            const body = modalCtx.createLinearGradient(cx - 80, cy - 80, cx + 80, cy + 80);
+            body.addColorStop(0, '#56CFB2'); 
+            body.addColorStop(1, '#7C5CBF');
+            
+            drawModalBlob(cx, cy, 88, body, 0.5, 0.4);
+            
+            modalCtx.shadowBlur = 0;
+            modalCtx.shadowOffsetY = 0;
+
+            faceOffsetY += (targetFaceOffset - faceOffsetY) * 0.1;
+            modalCtx.save();
+            modalCtx.translate(0, faceOffsetY);
+            modalCtx.fillStyle = 'white';
+            modalCtx.strokeStyle = 'white';
+            modalCtx.lineCap = 'round';
+            modalCtx.lineJoin = 'round';
+
+            modalBlinkCountdown--;
+            if (modalBlinkCountdown <= 0 && spiritState === 'default') {
+                isModalBlinking = true; 
+                modalBlinkCountdown = Math.random() * 200 + 150;
+                setTimeout(() => isModalBlinking = false, 150);
+            }
+
+            if (spiritState === 'inhale') {
+                modalCtx.beginPath(); modalCtx.ellipse(cx - 30, cy - 12, 11, 17, 0, 0, Math.PI*2); modalCtx.fill();
+                modalCtx.beginPath(); modalCtx.ellipse(cx + 30, cy - 12, 11, 17, 0, 0, Math.PI*2); modalCtx.fill();
+                modalCtx.lineWidth = 3.5;
+                modalCtx.beginPath(); modalCtx.arc(cx, cy + 14, 5, 0, Math.PI*2); modalCtx.stroke();
+            } else if (spiritState === 'hold') {
+                modalCtx.lineWidth = 4;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 42, cy - 6); modalCtx.quadraticCurveTo(cx - 30, cy - 16, cx - 18, cy - 6); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.moveTo(cx + 18, cy - 6); modalCtx.quadraticCurveTo(cx + 30, cy - 16, cx + 42, cy - 6); modalCtx.stroke();
+                
+                modalCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                modalCtx.beginPath(); modalCtx.ellipse(cx - 44, cy + 6, 8, 4, 0, 0, Math.PI*2); modalCtx.fill();
+                modalCtx.beginPath(); modalCtx.ellipse(cx + 44, cy + 6, 8, 4, 0, 0, Math.PI*2); modalCtx.fill();
+
+                modalCtx.lineWidth = 3;
+                modalCtx.beginPath(); modalCtx.arc(cx, cy + 6, 3, 0, Math.PI, false); modalCtx.stroke();
+            } else if (spiritState === 'exhale') {
+                modalCtx.lineWidth = 4;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 40, cy - 12); modalCtx.quadraticCurveTo(cx - 30, cy - 4, cx - 20, cy - 12); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.moveTo(cx + 20, cy - 12); modalCtx.quadraticCurveTo(cx + 30, cy - 4, cx + 40, cy - 12); modalCtx.stroke();
+                
+                modalCtx.lineWidth = 3;
+                modalCtx.beginPath(); modalCtx.arc(cx, cy + 12, 4, 0, Math.PI*2); modalCtx.stroke();
+                
+                modalCtx.lineWidth = 2.5;
+                modalCtx.strokeStyle = `rgba(255, 255, 255, ${0.2 + 0.8 * Math.sin(modalTime * 8)})`;
+                modalCtx.beginPath(); modalCtx.moveTo(cx, cy + 22); modalCtx.lineTo(cx, cy + 32); modalCtx.stroke();
+            } else {
+                if (!isModalBlinking) {
+                    modalCtx.fillStyle = 'white';
+                    modalCtx.beginPath(); modalCtx.ellipse(cx - 30, cy - 9, 9, 14, 0, 0, Math.PI * 2); modalCtx.fill();
+                    modalCtx.beginPath(); modalCtx.ellipse(cx + 30, cy - 9, 9, 14, 0, 0, Math.PI * 2); modalCtx.fill();
+                    
+                    modalCtx.fillStyle = 'rgba(255,255,255,0.8)';
+                    modalCtx.beginPath(); modalCtx.arc(cx - 25, cy - 14, 3.5, 0, Math.PI * 2); modalCtx.fill();
+                    modalCtx.beginPath(); modalCtx.arc(cx + 35, cy - 14, 3.5, 0, Math.PI * 2); modalCtx.fill();
+                } else {
+                    modalCtx.lineWidth = 3.5;
+                    modalCtx.beginPath(); modalCtx.moveTo(cx - 40, cy - 4); modalCtx.quadraticCurveTo(cx - 30, cy + 6, cx - 20, cy - 4); modalCtx.stroke();
+                    modalCtx.beginPath(); modalCtx.moveTo(cx + 20, cy - 4); modalCtx.quadraticCurveTo(cx + 30, cy + 6, cx + 40, cy - 4); modalCtx.stroke();
+                }
+                
+                modalCtx.strokeStyle = 'white';
+                modalCtx.lineWidth = 2.5;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 6, cy + 12); modalCtx.quadraticCurveTo(cx, cy + 16, cx + 6, cy + 12); modalCtx.stroke();
+            }
+            modalCtx.restore();
+
+            // 3D Gloss / Specular Highlight
+            modalCtx.save();
+            drawModalBlob(cx, cy, 88, 'transparent', 0.5, 0.4); 
+            modalCtx.clip();
+            
+            const highlight = modalCtx.createRadialGradient(cx - 40, cy - 40, 0, cx, cy, 120);
+            highlight.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+            highlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            modalCtx.fillStyle = highlight;
+            modalCtx.fill();
+            modalCtx.restore();
+
+            requestAnimationFrame(animateModalSpirit);
+        }
+        animateModalSpirit();
+
+        // Initialize Audio
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = 0;
+                masterGain.connect(audioCtx.destination);
+
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                osc1.type = 'sine'; osc2.type = 'sine';
+                
+                osc1.frequency.value = 174; 
+                osc2.frequency.value = 178;
+
+                synthFilter = audioCtx.createBiquadFilter();
+                synthFilter.type = 'lowpass';
+                synthFilter.frequency.value = 300;
+
+                osc1.connect(synthFilter);
+                osc2.connect(synthFilter);
+                synthFilter.connect(masterGain);
+                
+                osc1.start(); osc2.start();
+            }
+        }
+
+        // Event Listeners
+        soundToggle.addEventListener('click', () => {
+            if (!audioCtx) initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            isSoundOn = !isSoundOn;
+            soundToggle.textContent = isSoundOn ? '🔊' : '🔈';
+            if (isSoundOn && isBreathing) {
+                masterGain.gain.setTargetAtTime(0.15, audioCtx.currentTime, 1);
+            } else if (!isSoundOn && masterGain) {
+                masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1);
+            }
+        });
+
+        
+        closeBreathModal.addEventListener('click', () => {
+            breathModal.classList.remove('active');
+            stopBreathing();
+        });
+
+        const sleep = ms => new Promise(r => { breathTimeout = setTimeout(r, ms); });
+
+        async function startBreathingCycle() {
+            if (isBreathing) return stopBreathing();
+            isBreathing = true;
+            startBreathBtn.textContent = 'Pause';
+
+            if (isSoundOn && !audioCtx) initAudio();
+            if (isSoundOn && audioCtx) {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                masterGain.gain.setTargetAtTime(0.15, audioCtx.currentTime, 1);
+            }
+
+            try {
+                while (isBreathing) {
+                    // 1. INHALE (4s)
+                    spiritState = 'inhale';
+                    targetFaceOffset = -8;
+                    breathText.style.opacity = '0';
+                    await sleep(300);
+                    if (!isBreathing) break;
+                    breathText.textContent = 'Inhale...';
+                    breathText.style.opacity = '1';
+
+                    breathCircle.style.transition = 'transform 4s cubic-bezier(0.4, 0, 0.2, 1)';
+                    breathGlow.style.transition = 'transform 4s cubic-bezier(0.4, 0, 0.2, 1), opacity 4s ease';
+                    breathCircle.style.transform = 'scale(2.2)';
+                    breathGlow.style.transform = 'scale(2.6)';
+                    breathGlow.style.opacity = '0.8';
+
+                    if (isSoundOn && synthFilter) synthFilter.frequency.setTargetAtTime(800, audioCtx.currentTime, 2);
+
+                    await sleep(4000);
+                    if (!isBreathing) break;
+
+                    // 2. HOLD (4s)
+                    spiritState = 'hold';
+                    targetFaceOffset = -4;
+                    breathText.style.opacity = '0';
+                    await sleep(300);
+                    if (!isBreathing) break;
+                    breathText.textContent = 'Hold...';
+                    breathText.style.opacity = '1';
+
+                    breathCircle.style.transition = 'transform 4s linear';
+                    breathCircle.style.transform = 'scale(2.25)';
+
+                    await sleep(4000);
+                    if (!isBreathing) break;
+
+                    // 3. EXHALE (6s)
+                    spiritState = 'exhale';
+                    targetFaceOffset = 8;
+                    breathText.style.opacity = '0';
+                    await sleep(300);
+                    if (!isBreathing) break;
+                    breathText.textContent = 'Exhale...';
+                    breathText.style.opacity = '1';
+
+                    breathCircle.style.transition = 'transform 6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    breathGlow.style.transition = 'transform 6s cubic-bezier(0.4, 0, 0.2, 1), opacity 6s ease';
+                    breathCircle.style.transform = 'scale(1)';
+                    breathGlow.style.transform = 'scale(1)';
+                    breathGlow.style.opacity = '0.3';
+
+                    if (isSoundOn && synthFilter) synthFilter.frequency.setTargetAtTime(300, audioCtx.currentTime, 3);
+
+                    await sleep(6000);
+                }
+            } catch (e) {}
+        }
+
+        function stopBreathing() {
+            isBreathing = false;
+            clearTimeout(breathTimeout);
+            spiritState = 'default';
+            targetFaceOffset = 0;
+            startBreathBtn.textContent = 'Start 4-4-6 Breath';
+            breathText.style.opacity = '0';
+            
+            setTimeout(() => {
+                breathText.textContent = 'Ready when you are';
+                breathText.style.opacity = '1';
+            }, 300);
+
+            breathCircle.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)';
+            breathGlow.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease';
+            breathCircle.style.transform = 'scale(1)';
+            breathGlow.style.transform = 'scale(1)';
+            breathGlow.style.opacity = '0.3';
+
+            if (masterGain) masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1);
+        }
+
+        startBreathBtn.addEventListener('click', startBreathingCycle);
+        patternBtn.addEventListener('click', () => {
+            const patterns = ['4-7-8 Breath', 'Box Breathing', 'Coherence Breath'];
+            const random = patterns[Math.floor(Math.random() * patterns.length)];
+            startBreathBtn.textContent = `Start ${random}`;
+        });
+    
+    // Global delegation
+    window.openBreathingModal = function() {
+        // Because of dynamically inserted HTML, re-detect if needed or it's already bound from the logic above
+        if (typeof breathModal !== 'undefined' && breathModal) {
+             breathModal.classList.add('active');
+        } else {
+             const m = document.getElementById('breathModal');
+             if(m) m.classList.add('active');
+        }
+    };
+    
+    // Intercept clicks on links going to spirit-breathing-tool.html OR .spirit-container
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[href]');
+        if (link && link.getAttribute('href') && link.getAttribute('href').includes('spirit-breathing-tool.html')) {
+            e.preventDefault();
+            window.openBreathingModal();
+            return;
+        }
+        
+        // hero spirit container
+        if (e.target.closest('#spiritContainer') || e.target.closest('.open-breath-modal')) {
+            e.preventDefault();
+            window.openBreathingModal();
+        }
+    });
+
+  }
+
   function init() {
+    initGlobalBreathingModal();
     initScrollShadow();
     initActiveLinks();
     initEscapeHandler();
@@ -306,6 +651,16 @@
       initStreakPill();    // second pass for pages that init YM after DOMContentLoaded
       initWellnessBadge();
     }, 500);
+
+    // ── BFCache Fix ──────────────────────────────────────────
+    // Handle back button navigation (restoring from cache)
+    window.addEventListener('pageshow', function (event) {
+      if (event.persisted) {
+        document.body.style.opacity = '1';
+        // Re-trigger AOS if present
+        if (window.AOS) window.AOS.refresh();
+      }
+    });
   }
 
   if (document.readyState === 'loading') {

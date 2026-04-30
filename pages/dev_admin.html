@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>YodhaMind — Developer Dashboard</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/shared/nav.css">
+  <style>
+    /* ── Reset & Variables ── */
+    :root {
+      --bg-dark: #0a0b10;
+      --bg-panel: #151722;
+      --bg-panel-hover: #1e2130;
+      --border-color: rgba(255,255,255,0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --accent-primary: #56CFB2;
+      --accent-purple: #7C5CBF;
+      --accent-warning: #f59e0b;
+      --accent-danger: #ef4444;
+      
+      --font-main: 'Outfit', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Auth Overlay ── */
+    #authOverlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-dark);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #authOverlay.hidden { display: none; }
+    .loader {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(86, 207, 178, 0.2);
+      border-top-color: var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* ── Topbar ── */
+    .admin-header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--text-main);
+    }
+    .admin-brand span {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .admin-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: rgba(255,255,255,0.1); }
+    .btn-primary { background: var(--accent-primary); color: #000; border: none; }
+    .btn-primary:hover { background: #45b39a; }
+
+    /* ── Navigation Tabs ── */
+    .admin-nav {
+      display: flex;
+      padding: 0 2rem;
+      gap: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-dark);
+      overflow-x: auto;
+    }
+    .nav-tab {
+      padding: 1rem 0;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { color: var(--text-main); }
+    .nav-tab.active {
+      color: var(--accent-primary);
+      border-bottom-color: var(--accent-primary);
+    }
+
+    /* ── Main Content ── */
+    .admin-main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── KPI Cards ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .kpi-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .kpi-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .kpi-trend {
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .trend-up { color: var(--accent-primary); }
+    .trend-down { color: var(--accent-danger); }
+
+    /* ── Charts Grid ── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .chart-title { font-weight: 600; }
+    .chart-body { flex: 1; position: relative; }
+
+    /* ── Tables ── */
+    .table-container {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); }
+    th { color: var(--text-muted); font-weight: 500; font-size: 0.9rem; position: sticky; top: 0; background: var(--bg-panel); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .tag {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      background: rgba(255,255,255,0.1);
+    }
+
+    @media (max-width: 768px) {
+      .admin-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading / Auth Overlay -->
+  <div id="authOverlay">
+    <div class="loader"></div>
+    <p>Verifying developer access...</p>
+  </div>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-brand">
+      🧠 <span>YodhaMind DevDash</span>
+    </div>
+    <div class="admin-actions">
+      <select id="dateRange" class="btn">
+        <option value="7">Last 7 Days</option>
+        <option value="30" selected>Last 30 Days</option>
+        <option value="90">Last 90 Days</option>
+      </select>
+      <button class="btn" id="refreshViewsBtn">Refresh Views</button>
+      <button class="btn" id="logoutBtn">Exit</button>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="admin-nav">
+    <div class="nav-tab active" data-target="tab-overview">Overview</div>
+    <div class="nav-tab" data-target="tab-users">Users & Retention</div>
+    <div class="nav-tab" data-target="tab-games">Game Analytics</div>
+    <div class="nav-tab" data-target="tab-funnels">Funnels & CTAs</div>
+    <div class="nav-tab" data-target="tab-health">Health Signals</div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+
+    <!-- 1. OVERVIEW TAB -->
+    <div id="tab-overview" class="tab-pane active">
+      <div class="kpi-grid" id="overviewKpis">
+        <!-- Populated via JS -->
+      </div>
+      
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Daily Active Users & Sessions</div></div>
+          <div class="chart-body"><canvas id="dauChart"></canvas></div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Feature Engagement Breakdown</div></div>
+          <div class="chart-body"><canvas id="featureChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">
+          Live Event Feed
+        </div>
+        <table id="liveEventTable">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Event</th>
+              <th>Session ID</th>
+              <th>Page</th>
+              <th>Properties</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2. USERS & RETENTION TAB -->
+    <div id="tab-users" class="tab-pane">
+      <div class="kpi-grid" id="usersKpis"></div>
+      
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Streak Distribution</div></div>
+          <div class="chart-body"><canvas id="streakChart"></canvas></div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Active Users (WAU vs MAU)</div></div>
+          <div class="chart-body">
+            <div style="display:flex; flex-direction:column; justify-content:center; height:100%; text-align:center; gap:2rem;">
+               <div>
+                 <div style="color:var(--text-muted); margin-bottom:8px;">Weekly Active Users (WAU)</div>
+                 <div style="font-size:3rem; font-weight:700;" id="wauMetric">-</div>
+               </div>
+               <div>
+                 <div style="color:var(--text-muted); margin-bottom:8px;">Monthly Active Users (MAU)</div>
+                 <div style="font-size:3rem; font-weight:700;" id="mauMetric">-</div>
+               </div>
+               <div>
+                 <div style="color:var(--text-muted); margin-bottom:8px;">DAU/WAU Stickiness Ratio</div>
+                 <div style="font-size:2rem; font-weight:700; color:var(--accent-primary);" id="stickinessMetric">-%</div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. GAMES TAB -->
+    <div id="tab-games" class="tab-pane">
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Game Sessions (Last 30 Days)</div></div>
+          <div class="chart-body"><canvas id="gamePopChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="gamesTable">
+          <thead>
+            <tr>
+              <th>Game ID</th>
+              <th>Starts</th>
+              <th>Completions</th>
+              <th>Completion Rate</th>
+              <th>Avg Score</th>
+              <th>Avg Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 4. FUNNELS & CONVERSIONS TAB -->
+    <div id="tab-funnels" class="tab-pane">
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Authentication Funnel</div></div>
+          <div class="chart-body"><canvas id="authFunnelChart"></canvas></div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Assessment Funnel</div></div>
+          <div class="chart-body"><canvas id="assessmentFunnelChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. HEALTH SIGNALS TAB -->
+    <div id="tab-health" class="tab-pane">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Crisis Link Clicks</div>
+          <div class="kpi-value" id="crisisClicksVal">-</div>
+          <div class="kpi-trend" style="color:var(--text-muted)">This period</div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Average Mood Trend</div></div>
+          <div class="chart-body"><canvas id="moodTrendChart"></canvas></div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Assessment Risk Distribution</div></div>
+          <div class="chart-body"><canvas id="riskDistChart"></canvas></div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header"><div class="chart-title">Calming Tools Usage</div></div>
+          <div class="chart-body"><canvas id="calmingTrendChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Configuration
+    const CHART_COLORS = {
+      primary: '#56CFB2',
+      purple: '#7C5CBF',
+      blue: '#3b82f6',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      grid: 'rgba(255,255,255,0.05)',
+      text: '#94a3b8'
+    };
+
+    Chart.defaults.color = CHART_COLORS.text;
+    Chart.defaults.borderColor = CHART_COLORS.grid;
+    Chart.defaults.font.family = "'Outfit', sans-serif";
+
+    // State
+    let token = localStorage.getItem('ym_access_token');
+    let currentDays = 30;
+    let charts = {}; // Store chart instances for destroying
+
+    // --- Auth Check ---
+    async function checkAuth() {
+      if (!token) return logout();
+      try {
+        const res = await fetch('/api/admin/overview?days=1', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.status === 401 || res.status === 403) return logout();
+        document.getElementById('authOverlay').classList.add('hidden');
+        loadAllData();
+      } catch (err) {
+        logout();
+      }
+    }
+
+    function logout() {
+      window.location.href = '/login';
+    }
+
+    // --- API Helper ---
+    async function fetchAdmin(endpoint) {
+      try {
+        const res = await fetch(`/api/admin/${endpoint}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error(res.statusText);
+        const json = await res.json();
+        return json.data;
+      } catch (err) {
+        console.error('API Error:', endpoint, err);
+        return null;
+      }
+    }
+
+    // --- Loaders ---
+    async function loadAllData() {
+      loadOverview();
+      loadDailyMetrics();
+      loadGames();
+      loadUsers();
+      loadHealthSignals();
+      loadFunnels();
+      loadRealtime();
+    }
+
+    async function loadOverview() {
+      const data = await fetchAdmin(`overview?days=${currentDays}`);
+      if (!data) return;
+
+      const c = data.current;
+      const p = data.previous;
+      
+      const calcTrend = (cur, prev) => {
+        cur = Number(cur) || 0; prev = Number(prev) || 0;
+        if (prev === 0) return cur > 0 ? { val: '+100%', cls: 'trend-up', icon: '▲' } : { val: '0%', cls: '', icon: '-' };
+        const pct = Math.round(((cur - prev) / prev) * 100);
+        return {
+          val: `${pct > 0 ? '+' : ''}${pct}%`,
+          cls: pct >= 0 ? 'trend-up' : 'trend-down',
+          icon: pct >= 0 ? '▲' : '▼'
+        };
+      };
+
+      const sTrend = calcTrend(c.sessions, p.sessions);
+      const gTrend = calcTrend(c.games_completed, p.games_completed);
+      const signTrend = calcTrend(c.signups, p.signups);
+
+      const html = `
+        <div class="kpi-card">
+          <div class="kpi-label">Daily Active Users (Today)</div>
+          <div class="kpi-value">${data.dau}</div>
+          <div class="kpi-trend" style="color:var(--text-muted)">Active today</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Total Sessions</div>
+          <div class="kpi-value">${c.sessions}</div>
+          <div class="kpi-trend ${sTrend.cls}">${sTrend.icon} ${sTrend.val} vs previous</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Games Completed</div>
+          <div class="kpi-value">${c.games_completed}</div>
+          <div class="kpi-trend ${gTrend.cls}">${gTrend.icon} ${gTrend.val} vs previous</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">New Signups</div>
+          <div class="kpi-value">${c.signups}</div>
+          <div class="kpi-trend ${signTrend.cls}">${signTrend.icon} ${signTrend.val} vs previous</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Avg Wellness Score</div>
+          <div class="kpi-value">${data.avg_wellness}</div>
+          <div class="kpi-trend" style="color:var(--text-muted)">Overall platform health</div>
+        </div>
+      `;
+      document.getElementById('overviewKpis').innerHTML = html;
+    }
+
+    async function loadDailyMetrics() {
+      const data = await fetchAdmin(`metrics/daily?days=${currentDays}`);
+      if (!data || !data.length) return;
+
+      const labels = data.map(d => d.day.split('T')[0]);
+      
+      // DAU Chart
+      renderChart('dauChart', 'line', {
+        labels,
+        datasets: [
+          { label: 'Sessions', data: data.map(d => d.total_sessions), borderColor: CHART_COLORS.purple, backgroundColor: CHART_COLORS.purple, tension: 0.3 },
+          { label: 'Unique Visitors', data: data.map(d => d.unique_visitors), borderColor: CHART_COLORS.primary, backgroundColor: CHART_COLORS.primary, tension: 0.3 }
+        ]
+      });
+
+      // Features Chart
+      renderChart('featureChart', 'bar', {
+        labels,
+        datasets: [
+          { label: 'Games', data: data.map(d => d.games_completed), backgroundColor: CHART_COLORS.primary },
+          { label: 'Assessments', data: data.map(d => d.assessments_completed), backgroundColor: CHART_COLORS.purple },
+          { label: 'Journals', data: data.map(d => d.journals_created), backgroundColor: CHART_COLORS.warning },
+          { label: 'Breathing', data: data.map(d => d.breathing_sessions), backgroundColor: CHART_COLORS.blue }
+        ]
+      }, { scales: { x: { stacked: true }, y: { stacked: true } } });
+    }
+
+    async function loadGames() {
+      const data = await fetchAdmin(`games?days=${currentDays}`);
+      if (!data) return;
+
+      const evs = data.event_metrics;
+      
+      // Chart
+      renderChart('gamePopChart', 'bar', {
+        labels: evs.map(e => e.game_id),
+        datasets: [{
+          label: 'Game Starts',
+          data: evs.map(e => e.starts),
+          backgroundColor: CHART_COLORS.primary
+        }]
+      });
+
+      // Table
+      const tbody = document.querySelector('#gamesTable tbody');
+      tbody.innerHTML = '';
+      
+      evs.forEach(e => {
+        const dbGame = data.db_metrics.find(db => db.game_id === e.game_id) || {};
+        const compRate = e.starts > 0 ? Math.round((e.completions / e.starts) * 100) : 0;
+        const avgScore = dbGame.avg_score || '-';
+        const avgDur = dbGame.avg_duration_ms ? Math.round(dbGame.avg_duration_ms / 1000) + 's' : '-';
+        
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${e.game_id}</strong></td>
+            <td>${e.starts}</td>
+            <td>${e.completions}</td>
+            <td>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span>${compRate}%</span>
+                <div style="flex:1; height:4px; background:var(--bg-dark); border-radius:2px;">
+                  <div style="width:${compRate}%; height:100%; background:var(--accent-primary); border-radius:2px;"></div>
+                </div>
+              </div>
+            </td>
+            <td>${avgScore}</td>
+            <td>${avgDur}</td>
+          </tr>
+        `;
+      });
+    }
+
+    async function loadUsers() {
+      const data = await fetchAdmin(`users/active?days=${currentDays}`);
+      if (!data) return;
+
+      document.getElementById('wauMetric').textContent = data.wau;
+      document.getElementById('mauMetric').textContent = data.mau;
+      document.getElementById('stickinessMetric').textContent = data.stickiness + '%';
+
+      // Streak chart
+      renderChart('streakChart', 'bar', {
+        labels: data.streak_distribution.map(d => d.bucket + ' days'),
+        datasets: [{
+          label: 'Users',
+          data: data.streak_distribution.map(d => d.user_count),
+          backgroundColor: CHART_COLORS.purple
+        }]
+      });
+    }
+
+    async function loadHealthSignals() {
+      const data = await fetchAdmin(`health-signals?days=${currentDays}`);
+      if (!data) return;
+
+      document.getElementById('crisisClicksVal').textContent = data.crisis_clicks;
+
+      // Mood Trend
+      renderChart('moodTrendChart', 'line', {
+        labels: data.mood_trend.map(d => d.day.split('T')[0]),
+        datasets: [{
+          label: 'Avg Mood (1-5)',
+          data: data.mood_trend.map(d => d.avg_mood),
+          borderColor: CHART_COLORS.warning,
+          backgroundColor: CHART_COLORS.warning,
+          tension: 0.3
+        }]
+      }, { scales: { y: { min: 1, max: 5 } } });
+
+      // Risk Dist
+      const riskTypes = [...new Set(data.risk_distribution.map(r => r.type))];
+      renderChart('riskDistChart', 'bar', {
+        labels: riskTypes,
+        datasets: [
+          { label: 'Low', data: riskTypes.map(t => { const r = data.risk_distribution.find(d=>d.type===t); return r ? r.low_risk : 0; }), backgroundColor: CHART_COLORS.primary },
+          { label: 'Moderate', data: riskTypes.map(t => { const r = data.risk_distribution.find(d=>d.type===t); return r ? r.moderate_risk : 0; }), backgroundColor: CHART_COLORS.warning },
+          { label: 'High', data: riskTypes.map(t => { const r = data.risk_distribution.find(d=>d.type===t); return r ? r.high_risk : 0; }), backgroundColor: CHART_COLORS.danger }
+        ]
+      }, { scales: { x: { stacked: true }, y: { stacked: true } }, indexAxis: 'y' });
+
+      // Calming Trend
+      renderChart('calmingTrendChart', 'line', {
+        labels: data.calming_trend.map(d => d.day.split('T')[0]),
+        datasets: [
+          { label: 'Breathing', data: data.calming_trend.map(d => d.breathing), borderColor: CHART_COLORS.blue, tension: 0.3 },
+          { label: 'Calming Games', data: data.calming_trend.map(d => d.calming_games), borderColor: CHART_COLORS.purple, tension: 0.3 }
+        ]
+      });
+    }
+
+    async function loadFunnels() {
+      const auth = await fetchAdmin(`funnel?type=auth&days=${currentDays}`);
+      if (auth) {
+        renderChart('authFunnelChart', 'bar', {
+          labels: auth.map(a => a.step.replace('AUTH_', '')),
+          datasets: [{ label: 'Sessions', data: auth.map(a => a.sessions), backgroundColor: CHART_COLORS.primary }]
+        }, { indexAxis: 'y' });
+      }
+
+      const assess = await fetchAdmin(`funnel?type=assessment&days=${currentDays}`);
+      if (assess) {
+        renderChart('assessmentFunnelChart', 'bar', {
+          labels: assess.map(a => a.step.replace('ASSESSMENT_', '')),
+          datasets: [{ label: 'Sessions', data: assess.map(a => a.sessions), backgroundColor: CHART_COLORS.purple }]
+        }, { indexAxis: 'y' });
+      }
+    }
+
+    async function loadRealtime() {
+      const data = await fetchAdmin('realtime');
+      if (!data) return;
+
+      const tbody = document.querySelector('#liveEventTable tbody');
+      tbody.innerHTML = '';
+
+      data.forEach(e => {
+        const time = new Date(e.created_at).toLocaleTimeString();
+        let color = 'var(--text-muted)';
+        if (e.event_name.includes('COMPLETED')) color = 'var(--accent-primary)';
+        if (e.event_name.includes('ABANDONED')) color = 'var(--accent-danger)';
+        if (e.event_name.includes('CLICKED')) color = 'var(--accent-warning)';
+        
+        const props = Object.keys(e.properties || {}).map(k => `<span class="tag">${k}: ${e.properties[k]}</span>`).join(' ');
+
+        tbody.innerHTML += `
+          <tr>
+            <td style="color:var(--text-muted); white-space:nowrap;">${time}</td>
+            <td style="color:${color}; font-weight:500;">${e.event_name}</td>
+            <td style="font-family:monospace; font-size:0.85rem; color:var(--text-muted);">${e.session_id.slice(-8)}</td>
+            <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${e.page}">${e.page}</td>
+            <td>${props}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // --- Chart Helper ---
+    function renderChart(id, type, data, options = {}) {
+      if (charts[id]) charts[id].destroy();
+      const ctx = document.getElementById(id).getContext('2d');
+      charts[id] = new Chart(ctx, {
+        type,
+        data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } },
+          ...options
+        }
+      });
+    }
+
+    // --- Events ---
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('ym_access_token');
+      logout();
+    });
+
+    document.getElementById('refreshViewsBtn').addEventListener('click', async (e) => {
+      const btn = e.target;
+      btn.textContent = 'Refreshing...';
+      try {
+        await fetch('/api/admin/refresh-views', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
+        await loadAllData();
+      } finally {
+        btn.textContent = 'Refresh Views';
+      }
+    });
+
+    document.getElementById('dateRange').addEventListener('change', (e) => {
+      currentDays = parseInt(e.target.value, 10);
+      loadAllData();
+    });
+
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.target).classList.add('active');
+      });
+    });
+
+    // --- Init ---
+    checkAuth();
+    setInterval(loadRealtime, 15000); // Live feed updates every 15s
+
+  </script>
+</body>
+</html>

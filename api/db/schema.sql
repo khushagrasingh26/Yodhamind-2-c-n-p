@@ -338,6 +338,8 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
   id          UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id     UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   token_hash  VARCHAR(128) NOT NULL UNIQUE,   -- SHA-256 of the raw token
+  device_info VARCHAR(500),                    -- User-Agent string
+  ip_address  VARCHAR(45),                     -- IPv4 or IPv6
   expires_at  TIMESTAMPTZ  NOT NULL,
   revoked     BOOLEAN      NOT NULL DEFAULT FALSE,
   created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
@@ -345,6 +347,26 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
 
 CREATE INDEX IF NOT EXISTS idx_refresh_token_hash ON refresh_tokens (token_hash);
 CREATE INDEX IF NOT EXISTS idx_refresh_user       ON refresh_tokens (user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_ip         ON refresh_tokens (ip_address);
+
+
+-- ════════════════════════════════════════════════════════════════
+--  LOGIN ATTEMPTS  (brute-force protection)
+-- ════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS login_attempts (
+  id            UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email         VARCHAR(255) NOT NULL,
+  ip_address    VARCHAR(45)  NOT NULL,
+  success       BOOLEAN      NOT NULL DEFAULT FALSE,
+  attempted_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_login_attempts_email
+  ON login_attempts (email, attempted_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_login_attempts_ip
+  ON login_attempts (ip_address, attempted_at DESC);
 
 
 -- ════════════════════════════════════════════════════════════════

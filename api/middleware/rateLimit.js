@@ -92,6 +92,35 @@ const authLimiter = rateLimit({
 });
 
 /* ════════════════════════════════════════════════
+   authBruteforceLimiter
+   Extra-strict limiter specifically for /login.
+   3 requests per 5 minutes, keyed on email + IP.
+   Prevents credential stuffing across distributed IPs.
+════════════════════════════════════════════════ */
+const authBruteforceLimiter = rateLimit({
+  windowMs:        5 * 60 * 1000,   // 5 minutes
+  max:             3,
+  standardHeaders: true,
+  legacyHeaders:   false,
+  skip:            skipInTest,
+  handler(req, res) {
+    res.status(429).json({
+      ok:    false,
+      error: {
+        code:       'BRUTE_FORCE_LIMITED',
+        message:    'Too many login attempts for this account. Please wait 5 minutes.',
+        retryAfter: 300
+      }
+    });
+  },
+  // Key on email + IP to prevent per-account brute force
+  keyGenerator: (req) => {
+    const email = (req.body && req.body.email) ? req.body.email.toLowerCase().trim() : 'unknown';
+    return `brute:${email}:${req.ip}`;
+  }
+});
+
+/* ════════════════════════════════════════════════
    aiLimiter
    For the /api/advisor/chat proxy route.
    Each Anthropic API call costs tokens — this
@@ -175,6 +204,7 @@ const moodLimiter = rateLimit({
 module.exports = {
   defaultLimiter,
   authLimiter,
+  authBruteforceLimiter,
   aiLimiter,
   assessmentLimiter,
   communityLimiter,

@@ -100,13 +100,18 @@
     '@media (max-width: 640px) {',
     '  .ym-crisis-bar {',
     '    font-size: 13px;',
-    '    padding: 10px 12px;',
+    '    padding: 12px 14px 14px;',
+    '    min-height: 50px;',
+    '    display: flex;',
+    '    align-items: center;',
+    '    justify-content: center;',
     '  }',
     '  .ym-crisis-help-btn {',
-    '    right: 10px;',
-    '    bottom: 60px;',
-    '    padding: 11px 13px;',
+    '    right: 12px;',
+    '    bottom: 75px;',
+    '    padding: 10px 14px;',
     '    font-size: 13px;',
+    '    transform: scale(0.95);',
     '  }',
     '}',
   ].join('\n');
@@ -173,7 +178,23 @@
     }
   });
 
-  var barHeight = bar.getBoundingClientRect().height;
-  var currentPadding = parseInt(window.getComputedStyle(document.body).paddingBottom, 10) || 0;
-  document.body.style.paddingBottom = (currentPadding + barHeight + 8) + 'px';
+  // Ensure page content clears the fixed footer elements
+  function adjustBodyPadding() {
+    var barHeight = bar.getBoundingClientRect().height || 40;
+    var isMobile = window.innerWidth < 640;
+    // On mobile, we need to clear both the bar (~50px) and the floating SOS button (~50px)
+    var requiredPadding = isMobile ? 130 : (barHeight + 12);
+    
+    // Set a data attribute to prevent multiple increments if script re-runs
+    if (!document.body.dataset.ymCrisisPadding) {
+      var currentPadding = parseInt(window.getComputedStyle(document.body).paddingBottom, 10) || 0;
+      document.body.style.paddingBottom = (currentPadding + requiredPadding) + 'px';
+      document.body.dataset.ymCrisisPadding = requiredPadding;
+    }
+  }
+
+  // Run on load and window resize
+  window.addEventListener('load', adjustBodyPadding);
+  window.addEventListener('resize', adjustBodyPadding);
+  adjustBodyPadding();
 })();

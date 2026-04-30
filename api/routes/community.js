@@ -127,6 +127,15 @@ router.get(
         ? 'p.relates_count DESC, p.posted_at DESC'
         : 'p.posted_at DESC';
 
+      // Build is_mine expression safely using parameterised query
+      let isMineExpr;
+      if (sessionHash) {
+        isMineExpr = `(p.session_hash = $${p++})`;
+        params.push(sessionHash);
+      } else {
+        isMineExpr = 'FALSE';
+      }
+
       params.push(limit, offset);
 
       const result = await db.query(
@@ -140,7 +149,7 @@ router.get(
            p.is_flagged,
            (SELECT COUNT(*) FROM community_comments c
             WHERE c.post_id = p.id AND c.is_removed = FALSE)::int AS comment_count,
-           ${sessionHash ? `(p.session_hash = '${sessionHash}')` : 'FALSE'} AS is_mine
+           ${isMineExpr} AS is_mine
          FROM community_posts p
          ${where}
          ORDER BY ${orderBy}

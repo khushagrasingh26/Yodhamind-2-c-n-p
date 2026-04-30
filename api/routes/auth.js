@@ -8,6 +8,7 @@
  * PUT    /api/auth/me          Update current user profile
  * POST   /api/auth/refresh     Rotate access token using refresh token
  * POST   /api/auth/logout      Revoke refresh token
+ * POST   /api/auth/logout-all  Revoke ALL refresh tokens for user
  * POST   /api/auth/forgot      Request password reset email
  * POST   /api/auth/reset       Set new password with reset token
  */
@@ -26,11 +27,46 @@ const { authLimiter }             = require('../middleware/rateLimit');
 
 const router = express.Router();
 
+/* ── Security constants ────────────────────── */
+const MAX_LOGIN_ATTEMPTS  = 5;      // failures before lockout
+const LOCKOUT_WINDOW_MIN  = 15;     // minutes to look back
+const BCRYPT_ROUNDS       = 12;
+
+/* ── Password complexity regex ─────────────── */
+const PASSWORD_RULES = {
+  minLength:  10,
+  uppercase:  /[A-Z]/,
+  lowercase:  /[a-z]/,
+  digit:      /[0-9]/,
+  special:    /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/
+};
+
 /* ── Shared validation helpers ──────────────── */
 const emailRule    = body('email').isEmail().normalizeEmail().withMessage('Valid email required');
 const passwordRule = body('password')
-  .isLength({ min: 8 })
-  .withMessage('Password must be at least 8 characters');
+  .isLength({ min: PASSWORD_RULES.minLength })
+  .withMessage(`Password must be at least ${PASSWORD_RULES.minLength} characters`)
+  .custom((value) => {
+    if (!PASSWORD_RULES.uppercase.test(value)) {
+      throw new Error('Password must contain at least one uppercase letter');
+    }
+    if (!PASSWORD_RULES.lowercase.test(value)) {
+      throw new Error('Password must contain at least one lowercase letter');
+    }
+    if (!PASSWORD_RULES.digit.test(value)) {
+      throw new Error('Password must contain at least one number');
+    }
+    if (!PASSWORD_RULES.special.test(value)) {
+      throw new Error('Password must contain at least one special character (!@#$%^&* etc.)');
+    }
+    return true;
+  });
+
+// Login password rule — only checks presence, not complexity
+// (we don't want to reveal password policy to attackers)
+const loginPasswordRule = body('password')
+  .notEmpty()
+  .withMessage('Password is required');
 
 function validationGuard(req, res, next) {
   const errors = validationResult(req);
@@ -41,6 +77,68 @@ function validationGuard(req, res, next) {
     });
   }
   next();
+}
+
+/* ── Helper: extract device info ───────────── */
+function getDeviceInfo(req) {
+  return {
+    ip:        req.ip || req.connection?.remoteAddress || 'unknown',
+    userAgent: (req.headers['user-agent'] || 'unknown').slice(0, 500)
+  };
+}
+
+/* ── Helper: check login lockout ───────────── */
+async function isAccountLocked(email) {
+  try {
+    const result = await db.query(
+      `SELECT COUNT(*) AS failures
+       FROM login_attempts
+       WHERE email = $1
+         AND success = FALSE
+         AND attempted_at >= NOW() - ($2 || ' minutes')::INTERVAL`,
+      [email, LOCKOUT_WINDOW_MIN]
+    );
+    return parseInt(result.rows[0].failures, 10) >= MAX_LOGIN_ATTEMPTS;
+  } catch {
+    // Table might not exist yet — don't block login
+    return false;
+  }
+}
+
+/* ── Helper: record login attempt ──────────── */
+async function recordLoginAttempt(email, ip, success) {
+  try {
+    await db.query(
+      `INSERT INTO login_attempts (email, ip_address, success)
+       VALUES ($1, $2, $3)`,
+      [email, ip, success]
+    );
+  } catch {
+    // Non-fatal — don't block auth flow if tracking fails
+  }
+}
+
+/* ── Helper: clear failed attempts on success ── */
+async function clearFailedAttempts(email) {
+  try {
+    await db.query(
+      `DELETE FROM login_attempts
+       WHERE email = $1 AND success = FALSE`,
+      [email]
+    );
+  } catch {
+    // Non-fatal
+  }
+}
+
+/* ── Helper: store refresh token with device info ── */
+async function storeRefreshToken(userId, refreshToken, deviceInfo) {
+  const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
+  await db.query(
+    `INSERT INTO refresh_tokens (user_id, token_hash, device_info, ip_address, expires_at)
+     VALUES ($1, $2, $3, $4, NOW() + INTERVAL '30 days')`,
+    [userId, tokenHash, deviceInfo.userAgent, deviceInfo.ip]
+  );
 }
 
 /* ════════════════════════════════════════════════
@@ -75,7 +173,7 @@ router.post(
       }
 
       // Hash password
-      const password_hash = await bcrypt.hash(password, 12);
+      const password_hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
       // Insert user
       const result = await db.query(
@@ -96,14 +194,12 @@ router.post(
 
       // Generate tokens
       const tokens = generateTokens(user);
+      const deviceInfo = getDeviceInfo(req);
 
-      // Store refresh token hash
-      const tokenHash = crypto.createHash('sha256').update(tokens.refreshToken).digest('hex');
-      await db.query(
-        `INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
-         VALUES ($1, $2, NOW() + INTERVAL '30 days')`,
-        [user.id, tokenHash]
-      );
+      // Store refresh token with device info
+      await storeRefreshToken(user.id, tokens.refreshToken, deviceInfo);
+
+      console.log(`[auth/register] New user registered: ${email} from IP ${deviceInfo.ip}`);
 
       return res.status(201).json({
         ok:   true,
@@ -133,12 +229,27 @@ router.post(
 router.post(
   '/login',
   authLimiter,
-  [emailRule, passwordRule],
+  [emailRule, loginPasswordRule],
   validationGuard,
   async (req, res) => {
     const { email, password } = req.body;
+    const deviceInfo = getDeviceInfo(req);
 
     try {
+      // Check account lockout
+      const locked = await isAccountLocked(email);
+      if (locked) {
+        console.warn(`[auth/login] Account locked: ${email} from IP ${deviceInfo.ip}`);
+        return res.status(429).json({
+          ok:    false,
+          error: {
+            code:    'ACCOUNT_LOCKED',
+            message: `Too many failed login attempts. Please wait ${LOCKOUT_WINDOW_MIN} minutes before trying again.`,
+            retryAfter: LOCKOUT_WINDOW_MIN * 60
+          }
+        });
+      }
+
       const result = await db.query(
         `SELECT id, email, password_hash, name, college, stream,
                 year_of_study, role, is_verified, avatar_url
@@ -156,11 +267,20 @@ router.post(
         : await bcrypt.compare(password, dummyHash).then(() => false);
 
       if (!user || !passwordOk) {
+        // Record failed attempt
+        await recordLoginAttempt(email, deviceInfo.ip, false);
+
+        console.warn(`[auth/login] Failed login for ${email} from IP ${deviceInfo.ip}`);
+
         return res.status(401).json({
           ok:    false,
           error: { code: 'INVALID_CREDENTIALS', message: 'Email or password is incorrect.' }
         });
       }
+
+      // Successful login — clear failed attempts
+      await recordLoginAttempt(email, deviceInfo.ip, true);
+      await clearFailedAttempts(email);
 
       // Update last_login_at
       await db.query(
@@ -170,13 +290,10 @@ router.post(
 
       const tokens = generateTokens(user);
 
-      // Store refresh token hash
-      const tokenHash = crypto.createHash('sha256').update(tokens.refreshToken).digest('hex');
-      await db.query(
-        `INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
-         VALUES ($1, $2, NOW() + INTERVAL '30 days')`,
-        [user.id, tokenHash]
-      );
+      // Store refresh token with device info
+      await storeRefreshToken(user.id, tokens.refreshToken, deviceInfo);
+
+      console.log(`[auth/login] Successful login: ${email} from IP ${deviceInfo.ip}`);
 
       return res.status(200).json({
         ok:   true,
@@ -301,6 +418,7 @@ router.post(
   validationGuard,
   async (req, res) => {
     const { refreshToken } = req.body;
+    const deviceInfo = getDeviceInfo(req);
 
     try {
       const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
@@ -308,6 +426,7 @@ router.post(
       // Look up token in DB
       const tokenResult = await db.query(
         `SELECT rt.id, rt.user_id, rt.expires_at, rt.revoked,
+                rt.ip_address AS original_ip,
                 u.email, u.role
          FROM refresh_tokens rt
          JOIN users u ON u.id = rt.user_id
@@ -329,6 +448,7 @@ router.post(
           'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1',
           [stored.user_id]
         );
+        console.warn(`[auth/refresh] TOKEN REUSE DETECTED for user ${stored.email} — all tokens revoked`);
         return res.status(401).json({
           ok: false, error: { code: 'TOKEN_REUSED', message: 'Security alert: please log in again.' }
         });
@@ -338,6 +458,11 @@ router.post(
         return res.status(401).json({
           ok: false, error: { code: 'TOKEN_EXPIRED', message: 'Session expired. Please log in again.' }
         });
+      }
+
+      // Log IP change on refresh (potential suspicious activity)
+      if (stored.original_ip && stored.original_ip !== deviceInfo.ip) {
+        console.warn(`[auth/refresh] IP changed for user ${stored.email}: ${stored.original_ip} → ${deviceInfo.ip}`);
       }
 
       // Revoke old refresh token (rotation)
@@ -350,12 +475,8 @@ router.post(
       const user   = { id: stored.user_id, email: stored.email, role: stored.role };
       const tokens = generateTokens(user);
 
-      const newHash = crypto.createHash('sha256').update(tokens.refreshToken).digest('hex');
-      await db.query(
-        `INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
-         VALUES ($1, $2, NOW() + INTERVAL '30 days')`,
-        [stored.user_id, newHash]
-      );
+      // Store new refresh token with device info
+      await storeRefreshToken(stored.user_id, tokens.refreshToken, deviceInfo);
 
       return res.json({
         ok:   true,
@@ -399,6 +520,40 @@ router.post(
       console.error('[auth/logout]', err.message);
       // Return success anyway — client should clear tokens regardless
       return res.json({ ok: true, message: 'Logged out.' });
+    }
+  }
+);
+
+/* ════════════════════════════════════════════════
+   POST /api/auth/logout-all
+   Revokes ALL refresh tokens for the current user.
+   Use when: password change, suspicious activity,
+   or user wants to log out from all devices.
+════════════════════════════════════════════════ */
+router.post(
+  '/logout-all',
+  authenticate,
+  async (req, res) => {
+    try {
+      const result = await db.query(
+        'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
+        [req.user.id]
+      );
+
+      const revokedCount = result.rowCount || 0;
+
+      console.log(`[auth/logout-all] User ${req.user.email} revoked ${revokedCount} token(s)`);
+
+      return res.json({
+        ok:      true,
+        message: `Logged out from all devices. ${revokedCount} session(s) revoked.`
+      });
+
+    } catch (err) {
+      console.error('[auth/logout-all]', err.message);
+      return res.status(500).json({
+        ok: false, error: { code: 'SERVER_ERROR', message: 'Failed to logout from all devices.' }
+      });
     }
   }
 );

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -272,17 +272,56 @@
         .btn-danger:hover { background: #c53030; }
 
     </style>
+    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
 <body>
 
-  <nav>
-    <div class="logo">🧠 YodhaMind — Focus Realm</div>
-    <div class="nav-controls" style="display:flex; gap:10px;">
-        <button class="nav-btn-styled" onclick="toggleTheme()" title="Theme">🌗</button>
-        <button class="nav-btn-styled" onclick="toggleZen()" title="Zen">👁️</button>
-        <button class="nav-btn-styled exit-active" onclick="window.location.href='../pages/games.html'" title="Exit">✕</button>
-    </div>
-</nav>
+    <!-- ═══════════ YM SIDEBAR ═══════════ -->
+    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
+    <aside class="ym-sidebar" id="ymSidebar">
+      <div class="ym-sidebar__header">
+        <span style="font-size:1.4rem;">🧠</span>
+        <span class="ym-sidebar__logo">YodhaMind</span>
+      </div>
+      <nav class="ym-sidebar__nav">
+        <div class="ym-sidebar__section-label">Navigate</div>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Wellness</div>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+<div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Support</div>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+      </nav>
+      <div class="ym-sidebar__footer">
+        © 2026 YodhaMind<br>
+        Made with 💛 for Indian students<br>
+        <a href="/pages/privacy.html">Privacy Policy</a>
+      </div>
+    </aside>
+
+    <!-- ═══════════ YM TOPBAR ═══════════ -->
+    <header class="ym-topbar" id="ymTopbar">
+      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="ym-topbar__logo">
+        <span class="ym-topbar__logo-icon">🧠</span>
+        YodhaMind
+      </a>
+      <div class="ym-topbar__right">
+        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
+        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
+        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
+      </div>
+    </header>
 
 <!-- Floating Zen Exit Button (For Manual Mode) -->
 <button class="nav-btn-styled" id="floatingZenBtn" onclick="toggleZen()" title="Exit Zen" style="display: none; position: fixed; top: 15px; right: 20px; z-index: 2000; color: var(--primary); border: 1px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">👁️</button>
@@ -361,9 +400,9 @@
             <div id="breakTimerDisplay" style="font-size: 2.5rem; font-weight: 700; color: var(--primary); margin: 15px 0;">05:00</div>
             <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 15px;">Relax or play a quick game:</p>
             <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 20px;">
-                <button class="btn-modal btn-cancel" onclick="window.location.href='Yodhaflow.html'">Yodha Flow</button>
-                <button class="btn-modal btn-cancel" onclick="window.location.href='cosmic_shredder_game.html'">Cosmic Shredder</button>
-                <button class="btn-modal btn-cancel" onclick="window.location.href='yodha_mandala.html'">Yodha Mandala</button>
+                <button class="btn-modal btn-cancel" onclick="window.location.href='/tools/spirit-breathing-tool.html'">Spirit Breathing Tool</button>
+                <button class="btn-modal btn-cancel" disabled title="Coming Soon" style="opacity: 0.5; cursor: not-allowed;">Cosmic Shredder</button>
+                <button class="btn-modal btn-cancel" onclick="window.location.href='/games/yodha_mandala.html'">Yodha Mandala</button>
             </div>
             <button class="btn-main" style="width:100%; padding: 10px;" id="nextSessionBtn" onclick="closeBreakModal()">Skip Break</button>
         </div>
@@ -732,6 +771,44 @@
     </script>
     <script src="../shared/game-sound-toggle.js"></script>
     <script src="../shared/crisis-support.js"></script>
+
+    <script src="../shared/supabase-auth.js"></script>
+    <script>
+      /* ── Sidebar toggle ── */
+      (function() {
+        var hamburger = document.getElementById('ymHamburger');
+        var sidebar = document.getElementById('ymSidebar');
+        var backdrop = document.getElementById('ymSidebarBackdrop');
+        var topbar = document.getElementById('ymTopbar');
+
+        function toggleSidebar() {
+          var isOpen = sidebar.classList.contains('open');
+          sidebar.classList.toggle('open');
+          backdrop.classList.toggle('open');
+          hamburger.classList.toggle('open');
+          document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+
+        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+
+        /* ── Scroll shadow ── */
+        if (topbar) {
+          window.addEventListener('scroll', function() {
+            topbar.classList.toggle('scrolled', window.scrollY > 10);
+          }, { passive: true });
+        }
+
+        /* ── Highlight active sidebar link ── */
+        var currentPath = window.location.pathname;
+        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
 </body>
 </html>
 

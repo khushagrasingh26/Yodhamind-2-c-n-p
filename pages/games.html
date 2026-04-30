@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -67,6 +67,7 @@
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
             display: flex;
@@ -301,7 +302,7 @@
         .play-btn {
             margin-top: auto;
             align-self: flex-start;
-            padding: 10px 20px;
+            padding: 14px 20px;
             border-radius: 12px;
             background: var(--warm);
             color: var(--primary);
@@ -309,15 +310,24 @@
             font-size: 0.9rem;
             transition: all 0.2s;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex; align-items: center; justify-content: center;
             border: 1px solid rgba(124, 92, 191, 0.2);
             width: 100%;
             text-align: center;
+            min-height: 48px;
+            -webkit-tap-highlight-color: transparent;
         }
         .game-card:hover .play-btn {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+        }
+        .game-card:active {
+            transform: scale(0.98);
+        }
+        .game-card:active .play-btn {
+            background: var(--primary);
+            color: white;
         }
 
         /* Coming Soon Placeholder */
@@ -378,33 +388,77 @@
             display: none; position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
             border-top: 1px solid rgba(0,0,0,0.05);
-            justify-content: space-around; padding: 12px; z-index: 1000;
+            justify-content: space-around; padding: 12px; z-index: 1200;
         }
-        .mobile-nav a { text-decoration: none; color: var(--text-light); display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; font-weight: 600;}
+        .mobile-nav a {
+            text-decoration: none; color: var(--text-light);
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
+            font-size: 0.68rem; font-weight: 600;
+            min-height: 48px; min-width: 50px; justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-nav a span { font-size: 1.4rem; line-height: 1; }
         @media (max-width: 768px) {
-            .nav-controls .btn-home { display: none; } /* Hide desktop home btn on mobile */
+            .nav-controls .btn-home { display: none; }
             .mobile-nav { display: flex; }
+            .games-grid { grid-template-columns: 1fr !important; gap: 16px; }
+            .mood-mirror { padding: 16px; }
+            .mood-btn { padding: 10px 16px; min-height: 44px; font-size: 0.9rem; }
         }
     </style>
+    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
 
 <body>
 
-    <nav>
-        <div class="nav-container">
-            <a href="../pages/index.html" class="logo">✨ YodhaMind</a>
-            <div class="nav-controls">
-                <a href="../pages/dashboard.html" class="btn-home" style="border-color: var(--primary); color: var(--primary) !important;">
-                    📊 Dashboard
-                </a>
-                <a href="../pages/index.html" class="btn-home">
-                    Exit Gym ✕
-                </a>
-            </div>
-        </div>
-    </nav>
+    <!-- ═══════════ YM SIDEBAR ═══════════ -->
+    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
+    <aside class="ym-sidebar" id="ymSidebar">
+      <div class="ym-sidebar__header">
+        <span style="font-size:1.4rem;">🧠</span>
+        <span class="ym-sidebar__logo">YodhaMind</span>
+      </div>
+      <nav class="ym-sidebar__nav">
+        <div class="ym-sidebar__section-label">Navigate</div>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Wellness</div>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+<div class="ym-sidebar__divider"></div>
+        <div class="ym-sidebar__section-label">Support</div>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+      </nav>
+      <div class="ym-sidebar__footer">
+        © 2026 YodhaMind<br>
+        Made with 💛 for Indian students<br>
+        <a href="/pages/privacy.html">Privacy Policy</a>
+      </div>
+    </aside>
 
-    <section id="mind-gym">
+    <!-- ═══════════ YM TOPBAR ═══════════ -->
+    <header class="ym-topbar" id="ymTopbar">
+      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="ym-topbar__logo">
+        <span class="ym-topbar__logo-icon">🧠</span>
+        YodhaMind
+      </a>
+      <div class="ym-topbar__right">
+        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
+        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
+        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
+      </div>
+    </header>
+
+<section id="mind-gym">
         <div class="section-header">
             <div id="engagement-tracker" class="engagement-badge" style="display: none;">
                 You've trained your mind <span id="game-count" style="margin: 0 4px;">0</span> times this week 🔥
@@ -428,7 +482,7 @@
         <div class="games-grid" id="gamesGrid">
             
             <!-- Game 11 (Moved to First) -->
-            <a href="../games/yodha.html" class="game-card" data-mood="okay tired" onclick="trackGameClick()">
+            <a href="/games/yodha.html" class="game-card" data-mood="okay tired" onclick="trackGameClick()">
                 <div class="card-visual visual-cards"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -442,7 +496,7 @@
             </a>
 
             <!-- Game 1 -->
-            <a href="../games/yodha_aura.html" class="game-card" data-mood="anxiety stress" onclick="trackGameClick()">
+            <a href="/games/yodha_aura.html" class="game-card" data-mood="anxiety stress" onclick="trackGameClick()">
                 <div class="card-visual visual-aura"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -456,21 +510,21 @@
             </a>
 
             <!-- Game 2 -->
-            <a href="../tools/Yodhaflow.html" class="game-card" data-mood="anxiety numb okay" onclick="trackGameClick()">
+            <a href="/tools/spirit-breathing-tool.html" class="game-card" data-mood="anxiety numb okay" onclick="trackGameClick()">
                 <div class="card-visual visual-flow"></div>
                 <div class="card-content">
                     <div class="card-meta">
                         <span class="mood-tag">🌊 For Flow</span>
                         <span class="time-badge">⏱ 2 min</span>
                     </div>
-                    <h3>💧 Yodha Flow</h3>
+                    <h3>💧 Spirit Breathing Tool</h3>
                     <p>Unblock mental pathways and find your rhythm before a study session.</p>
                     <span class="play-btn">Begin Session</span>
                 </div>
             </a>
 
             <!-- Game 3 -->
-            <a href="../games/yodha_break.html" class="game-card" data-mood="stress anger" onclick="trackGameClick()">
+            <a href="/games/yodha_break.html" class="game-card" data-mood="stress anger" onclick="trackGameClick()">
                 <div class="card-visual visual-break"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -484,7 +538,7 @@
             </a>
 
             <!-- Game 4 -->
-            <a href="../tools/Focusrealm.html" class="game-card" data-mood="okay numb" onclick="trackGameClick()">
+            <a href="/tools/Focusrealm.html" class="game-card" data-mood="okay numb" onclick="trackGameClick()">
                 <div class="card-visual visual-focus"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -498,7 +552,7 @@
             </a>
 
             <!-- Game 7 -->
-            <a href="../games/yodha_mandala.html" class="game-card" data-mood="anxiety numb" onclick="trackGameClick()">
+            <a href="/games/yodha_mandala.html" class="game-card" data-mood="anxiety numb" onclick="trackGameClick()">
                 <div class="card-visual visual-mandala"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -512,7 +566,7 @@
             </a>
 
             <!-- Game 8 -->
-            <a href="../games/yodhamatch.html" class="game-card" data-mood="tired okay" onclick="trackGameClick()">
+            <a href="/games/yodhamatch.html" class="game-card" data-mood="tired okay" onclick="trackGameClick()">
                 <div class="card-visual visual-match"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -526,7 +580,7 @@
             </a>
 
             <!-- Game 10 -->
-            <a href="../games/untangle.html" class="game-card" data-mood="anxiety numb" onclick="trackGameClick()">
+            <a href="/games/untangle.html" class="game-card" data-mood="anxiety numb" onclick="trackGameClick()">
                 <div class="card-visual visual-untangle"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -539,7 +593,7 @@
                 </div>
             </a>
 
-            <a href="../games/memory_matrix.html" class="game-card" data-mood="tired okay anxiety" onclick="trackGameClick()">
+            <a href="/games/memory_matrix.html" class="game-card" data-mood="tired okay anxiety" onclick="trackGameClick()">
                 <div class="card-visual visual-memory"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -553,7 +607,7 @@
             </a>
 
              <!-- Game 12 -->
-             <a href="../games/yodha_enchaeos.html" class="game-card" data-mood="tired anxiety" onclick="trackGameClick()">
+             <a href="/games/yodha_enchaeos.html" class="game-card" data-mood="tired anxiety" onclick="trackGameClick()">
                 <div class="card-visual visual-echoes"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -597,9 +651,9 @@
     </footer>
 
     <div class="mobile-nav">
-        <a href="../pages/index.html"><span>🏠</span>Home</a>
-        <a href="#" style="color:var(--primary)"><span>🎮</span>Mind Gym</a>
-        <a href="dashboard.html"><span>📊</span>Dashboard</a>
+        <a href="/"><span>🏠</span>Home</a>
+        <a href="/games" style="color:var(--primary)"><span>🎮</span>Mind Gym</a>
+        <a href="/dashboard"><span>📊</span>Dashboard</a>
     </div>
 
     <script>
@@ -718,6 +772,46 @@
     </script>
 <script src="../shared/nav-component.js"></script>
     <script src="../shared/crisis-support.js"></script>
+
+    <script src="../shared/supabase-auth.js"></script>
+    <script>
+      /* ── Sidebar toggle ── */
+      (function() {
+        var hamburger = document.getElementById('ymHamburger');
+        var sidebar = document.getElementById('ymSidebar');
+        var backdrop = document.getElementById('ymSidebarBackdrop');
+        var topbar = document.getElementById('ymTopbar');
+
+        function toggleSidebar() {
+          var isOpen = sidebar.classList.contains('open');
+          sidebar.classList.toggle('open');
+          backdrop.classList.toggle('open');
+          hamburger.classList.toggle('open');
+          document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+
+        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+
+        /* ── Scroll shadow ── */
+        if (topbar) {
+          window.addEventListener('scroll', function() {
+            topbar.classList.toggle('scrolled', window.scrollY > 10);
+          }, { passive: true });
+        }
+
+        /* ── Highlight active sidebar link ── */
+        var currentPath = window.location.pathname;
+        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+    <!-- Analytics Tracking -->
+    <script src="/shared/ym-track.js"></script>
 </body>
 </html>
 

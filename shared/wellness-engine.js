@@ -397,13 +397,13 @@ const WE = (function () {
         { text: 'Challenge yourself with Enchaeos to build mental resilience.',  link: '/games/yodha_enchaeos.html' }
       ],
       moderate: [
-        { text: 'Do 5 minutes of 4-7-8 breathing right now — it directly lowers cortisol.', link: '/tools/Yodhaflow.html' },
+        { text: 'Do 5 minutes of 4-7-8 breathing right now — it directly lowers cortisol.', link: '/tools/spirit-breathing-tool.html' },
         { text: 'Use the Pomodoro timer to break study into manageable 25-min chunks.',       link: '/tools/Focusrealm.html' },
         { text: 'Journal your stress triggers — writing reduces their psychological power.',   link: '/journal' }
       ],
       high: [
         { text: 'We strongly recommend booking a session with a counselor today.',  link: '/connect'  },
-        { text: 'Open Yodha Flow right now — do one full breathing round (3 min).', link: '/tools/Yodhaflow.html' },
+        { text: 'Open Spirit Breathing Tool right now — do one full breathing round (3 min).', link: '/tools/spirit-breathing-tool.html' },
         { text: 'Mandala drawing is clinically proven to reduce acute stress.',     link: '/games/yodha_mandala.html' }
       ]
     },
@@ -414,18 +414,18 @@ const WE = (function () {
         { text: 'Write a gratitude entry in your journal.',                         link: '/journal'   }
       ],
       mild: [
-        { text: 'Try box breathing (4-4-4-4) when anxious thoughts arrive.',        link: '/tools/Yodhaflow.html' },
+        { text: 'Try box breathing (4-4-4-4) when anxious thoughts arrive.',        link: '/tools/spirit-breathing-tool.html' },
         { text: 'Journal what is worrying you — externalising thoughts reduces anxiety.', link: '/journal' },
         { text: 'Yodha Match memory game helps redirect anxious mental energy.',    link: '/games/yodhamatch.html' }
       ],
       moderate: [
         { text: 'Consider booking a counseling session — moderate anxiety responds very well to CBT.', link: '/connect' },
-        { text: 'Daily breathing practice significantly reduces GAD symptoms over 2 weeks.',           link: '/tools/Yodhaflow.html' },
+        { text: 'Daily breathing practice significantly reduces GAD symptoms over 2 weeks.',           link: '/tools/spirit-breathing-tool.html' },
         { text: 'Use the Focus Realm timer to create structured, less overwhelming study blocks.',      link: '/tools/Focusrealm.html' }
       ],
       severe: [
         { text: 'Please speak to a counselor — severe anxiety is very treatable with professional help.', link: '/connect' },
-        { text: 'Right now: open Yodha Flow and complete two full breathing cycles.',                      link: '/tools/Yodhaflow.html' },
+        { text: 'Right now: open Spirit Breathing Tool and complete two full breathing cycles.',                      link: '/tools/spirit-breathing-tool.html' },
         { text: 'Connect with the anonymous community — you are not alone in this.',                       link: '/community' }
       ]
     },
@@ -436,13 +436,13 @@ const WE = (function () {
         { text: 'Log a journal reflection on what\'s keeping you energised.',         link: '/journal'     }
       ],
       early: [
-        { text: 'Take intentional breaks — even 15-minute walks reset the nervous system.',  link: '/tools/Yodhaflow.html' },
+        { text: 'Take intentional breaks — even 15-minute walks reset the nervous system.',  link: '/tools/spirit-breathing-tool.html' },
         { text: 'Reduce your daily task list to 3 most important things.',                   link: '/journal'    },
         { text: 'Mandala drawing is a proven active recovery tool for early burnout.',       link: '/games/yodha_mandala.html' }
       ],
       detected: [
         { text: 'Burnout needs rest first — speak to a counselor about a structured recovery plan.', link: '/connect' },
-        { text: 'Do nothing demanding today. Use Yodha Flow for a calming breathing session.',       link: '/tools/Yodhaflow.html' },
+        { text: 'Do nothing demanding today. Use Spirit Breathing Tool for a calming breathing session.',       link: '/tools/spirit-breathing-tool.html' },
         { text: 'Write freely in your journal without any agenda — just unload.',                    link: '/journal'  }
       ]
     },
@@ -453,7 +453,7 @@ const WE = (function () {
         { text: 'Track your best focus times in your journal to build a schedule.',   link: '/journal' }
       ],
       moderate: [
-        { text: 'Start sessions with 5 min of breathing to prime your focus state.',  link: '/tools/Yodhaflow.html'  },
+        { text: 'Start sessions with 5 min of breathing to prime your focus state.',  link: '/tools/spirit-breathing-tool.html'  },
         { text: 'Use 25-minute Pomodoro blocks — short targets are easier to start.',  link: '/tools/Focusrealm.html' },
         { text: 'Lumina pattern game trains the same visual attention used for reading.', link: '/games/yodha_lumina.html' }
       ],
