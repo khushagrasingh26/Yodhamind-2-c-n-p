@@ -94,6 +94,7 @@
     { "src": "^/login$",             "dest": "/pages/student_auth.html" },
     { "src": "^/signup$",            "dest": "/pages/student_auth.html" },
     { "src": "^/student-dashboard$", "dest": "/pages/student_dashboard.html" },
+    { "src": "^/psychologist$",      "dest": "/pages/psychologist.html" },
     { "src": "^/chat$",              "dest": "/pages/chat.html" },
     { "src": "^/dev-admin$",         "dest": "/pages/dev_admin.html" },
     {

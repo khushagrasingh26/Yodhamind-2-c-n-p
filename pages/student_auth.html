@@ -431,12 +431,12 @@ document.addEventListener('DOMContentLoaded', () => {
           display_name: displayName
         }, { onConflict: 'user_id' });
         
-        window.top.location.href = 'student_dashboard.html';
+        window.top.location.href = '/student-dashboard';
         return;
       }
       
-      if (data?.role === 'student') window.top.location.href = 'student_dashboard.html';
-      else if (data?.role === 'psychologist') window.top.location.href = 'psychologist.html';
+      if (data?.role === 'student') window.top.location.href = '/student-dashboard';
+      else if (data?.role === 'psychologist') window.top.location.href = '/psychologist';
       else if (data?.role === 'admin') window.top.location.href = '/dev-admin';
     }
   } catch(err) {
@@ -493,7 +493,7 @@ async function doLogin() {
     return;
   }
   
-  window.top.location.href = 'student_dashboard.html';
+  window.top.location.href = '/student-dashboard';
 }
 
 async function doSignup() {
@@ -512,7 +512,7 @@ async function doSignup() {
     email, password: pass,
     options: {
       data: { name: fname + ' ' + lname, role: 'student' },
-      emailRedirectTo: window.location.origin + '/student_auth.html'
+      emailRedirectTo: window.location.origin + '/student-auth'
     }
   });
 
