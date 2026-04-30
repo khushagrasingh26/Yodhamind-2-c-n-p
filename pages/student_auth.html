@@ -404,6 +404,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Helper: detect if we are inside an iframe (the auth modal)
+const isInsideIframe = window.self !== window.top;
+
 // Auto-redirect if already logged in and initialize user if needed
 (async () => {
   try {
@@ -430,14 +433,17 @@ document.addEventListener('DOMContentLoaded', () => {
           user_id: session.user.id,
           display_name: displayName
         }, { onConflict: 'user_id' });
-        
-        window.top.location.href = '/student-dashboard';
+      }
+      
+      // If inside the modal iframe, tell parent page auth is done
+      if (isInsideIframe) {
+        window.top.postMessage({ type: 'YM_AUTH_COMPLETE' }, '*');
         return;
       }
       
-      if (data?.role === 'student') window.top.location.href = '/student-dashboard';
-      else if (data?.role === 'psychologist') window.top.location.href = '/psychologist';
-      else if (data?.role === 'admin') window.top.location.href = '/dev-admin';
+      // If loaded as a full page (e.g. after Google OAuth redirect),
+      // go back to home — supabase-auth.js on index will show avatar
+      window.location.href = '/';
     }
   } catch(err) {
     console.error("Auth session check failed:", err.message);
@@ -488,12 +494,16 @@ async function doLogin() {
     await sb.auth.signOut();
     setLoading('login', false);
     return showAlert('err', 'This portal is for students. Psychologists please use the practitioner login.');
-  } else if (uRow.role === 'admin') {
-    window.top.location.href = '/dev-admin';
+  }
+  
+  // If inside the modal iframe, tell parent auth is done
+  if (isInsideIframe) {
+    window.top.postMessage({ type: 'YM_AUTH_COMPLETE' }, '*');
     return;
   }
   
-  window.top.location.href = '/student-dashboard';
+  // Full page — go home
+  window.location.href = '/';
 }
 
 async function doSignup() {
@@ -548,6 +558,8 @@ async function doGoogle() {
   btnText.innerHTML = '<div class="spin"></div>';
   
   try {
+    // After Google OAuth, user returns to /student-auth as a full page.
+    // The auto-redirect IIFE above will detect the session and send them to /.
     const redirectUrl = new URL('/student-auth', window.location.origin).href;
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',

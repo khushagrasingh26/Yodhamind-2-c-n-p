@@ -56,6 +56,7 @@
   function injectAuthModal() {
     if ($('.ym-auth-modal-backdrop')) return; // already injected
 
+    var html = [
       '<div class="ym-auth-modal-backdrop" id="ymAuthBackdrop">',
       '  <div class="ym-auth-modal" style="padding:0; overflow:hidden; max-width:420px; background:transparent; box-shadow:none; border:none; position:relative;">',
       '    <button class="ym-auth-modal__close" id="ymAuthClose" aria-label="Close" style="position:absolute; right:15px; top:15px; color:#fff; z-index:100; font-size:1.5rem; background:none; border:none; cursor:pointer; text-shadow:0 0 10px rgba(0,0,0,0.5);">✕</button>',
@@ -387,12 +388,29 @@
   }
 
   /* ══════════════════════════════════════════════
+     LISTEN FOR AUTH MESSAGES FROM IFRAME
+     When student_auth.html completes login inside
+     the iframe, it posts a message instead of
+     redirecting the whole page.
+  ══════════════════════════════════════════════ */
+  function listenForAuthMessages() {
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'YM_AUTH_COMPLETE') {
+        // Auth succeeded inside the iframe — refresh session on this page
+        closeAuthModal();
+        checkSession();
+      }
+    });
+  }
+
+  /* ══════════════════════════════════════════════
      INIT
   ══════════════════════════════════════════════ */
   function init() {
     quickRenderFromCache();
     bindAuthButton();
     checkSession();
+    listenForAuthMessages();
   }
 
   if (document.readyState === 'loading') {
