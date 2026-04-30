@@ -71,193 +71,9 @@
     }
     .header p { color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; }
 
-    .tabs {
-      display: flex;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 99px;
-      padding: 4px;
-      margin-bottom: 24px;
-    }
-    .tab {
-      flex: 1;
-      padding: 11px;
-      border-radius: 99px;
-      border: 1px solid transparent;
-      background: transparent;
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.4);
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .tab:hover {
-      color: rgba(255, 255, 255, 0.7);
-    }
-    .tab.active {
-      background: #1a1a1a;
-      border-color: rgba(255, 255, 255, 0.08);
-      color: #fff;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Forms */
-    .fg { margin-bottom: 16px; text-align: left; }
-    .fg label { display: block; font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.7); margin-bottom: 6px; }
-    .inp-wrap { position: relative; }
-    .inp-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1rem; color: rgba(255,255,255,0.4); pointer-events: none; }
-    .inp {
-      width: 100%;
-      padding: 12px 14px 12px 42px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      color: #fff;
-      outline: none;
-      transition: all 0.2s;
-    }
-    .inp:focus {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: rgba(255, 255, 255, 0.05);
-    }
-    select.inp { padding-left: 42px; appearance: none; color: rgba(255,255,255,0.7); }
-    select.inp option { background: #1a1a1a; color: #fff; }
-
-    .pwd-tog {
-      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer;
-      font-size: 0.9rem; transition: color 0.2s;
-    }
-    .pwd-tog:hover { color: #fff; }
-
-    .btn-main {
-      width: 100%;
-      padding: 14px;
-      background: #fff;
-      color: #050505;
-      border: none;
-      border-radius: 12px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 10px;
-      display: flex; justify-content: center; align-items: center; gap: 8px;
-    }
-    .btn-main:hover:not(:disabled) { background: #e5e5e5; transform: translateY(-1px); }
-    .btn-main:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    .divider {
-      text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem;
-      margin: 24px 0; position: relative;
-    }
-    .divider::before, .divider::after {
-      content: ''; position: absolute; top: 50%; width: 35%; height: 1px; background: rgba(255,255,255,0.08);
-    }
-    .divider::before { left: 0; } .divider::after { right: 0; }
-
-    .btn-google {
-      width: 100%;
-      padding: 14px;
-      background: #141414;
-      color: rgba(255,255,255,0.9);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .btn-google::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.05), transparent);
-      opacity: 0; transition: opacity 0.4s;
-    }
-
-    .btn-google:hover {
-      border-color: rgba(16, 185, 129, 0.4);
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
-      color: #fff; transform: translateY(-1px);
-    }
-    .btn-google:hover::before { opacity: 1; }
-    .btn-google.loading { pointer-events: none; opacity: 0.7; transform: none; }
-    .btn-google svg { transition: transform 0.3s; }
-    .btn-google:hover svg { transform: scale(1.1); }
-
-    .alert {
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      background: rgba(239, 68, 68, 0.05);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      color: rgba(239, 68, 68, 0.9);
-    }
-    .alert.ok {
-      background: rgba(16, 185, 129, 0.05);
-      border: 1px solid rgba(16, 185, 129, 0.2);
-      color: rgba(16, 185, 129, 0.9);
-    }
-    .alert.hidden { display: none; }
-
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.3);
-      line-height: 1.7;
-    }
-    .footer a {
-      color: rgba(255, 255, 255, 0.4);
-      text-decoration: underline;
-      text-decoration-color: rgba(255, 255, 255, 0.1);
-      transition: all 0.2s;
-    }
-    .footer a:hover { 
-      color: rgba(255, 255, 255, 0.8); 
-      text-decoration-color: rgba(255, 255, 255, 0.4); 
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-top: 16px;
-      color: rgba(255, 255, 255, 0.4);
-      text-decoration: none;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-    .back-link:hover { color: #fff; }
-    
-    .spin {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-top-color: currentColor;
-      border-radius: 50%;
-      animation: rp 0.8s linear infinite;
-    }
     .btn-main .spin { border-color: rgba(0,0,0,0.2); border-top-color: #000; }
     @keyframes rp { to { transform: rotate(360deg); } }
-
-    /* Success Pane */
-    .success-state { text-align: center; padding: 20px 0; }
-    .success-icon { font-size: 3.5rem; margin-bottom: 16px; display: block; }
-    .success-state h3 { font-family: 'Fraunces', serif; font-size: 1.6rem; color: #fff; margin-bottom: 8px; }
-    .success-state p { color: rgba(255,255,255,0.6); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px; }
+  </style>
   </style>
 </head>
 <body>
@@ -271,105 +87,10 @@
       <p id="headerSub">Access your account to continue</p>
     </div>
 
-    <div class="tabs">
-      <button class="tab active" id="tabLogin" onclick="switchTab('login')">Log In</button>
-      <button class="tab" id="tabSignup" onclick="switchTab('signup')">Sign Up</button>
-    </div>
-
     <div class="alert hidden" id="alert"><span id="alertIcon">⚠️</span><span id="alertMsg"></span></div>
-
-    <!-- LOGIN FORM -->
-    <div id="loginPane">
-      <div class="fg">
-        <label>Email Address</label>
-        <div class="inp-wrap">
-          <span class="inp-icon">✉️</span>
-          <input type="email" class="inp" id="li-email" placeholder="your@email.com" autocomplete="email"/>
-        </div>
-      </div>
-      <div class="fg">
-        <label>Password</label>
-        <div class="inp-wrap">
-          <span class="inp-icon">🔑</span>
-          <input type="password" class="inp" id="li-pass" placeholder="Enter password" autocomplete="current-password"/>
-          <button class="pwd-tog" type="button" onclick="togglePwd('li-pass',this)">👁️</button>
-        </div>
-      </div>
-      <button class="btn-main" id="loginBtn" onclick="doLogin()">
-        <span id="loginLabel">Sign In</span>
-      </button>
-    </div>
-
-    <!-- SIGNUP FORM -->
-    <div id="signupPane" style="display:none;">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-        <div class="fg">
-          <label>First Name</label>
-          <div class="inp-wrap">
-            <span class="inp-icon">👤</span>
-            <input type="text" class="inp" id="su-fname" placeholder="Rahul"/>
-          </div>
-        </div>
-        <div class="fg">
-          <label>Last Name</label>
-          <div class="inp-wrap">
-            <span class="inp-icon">👤</span>
-            <input type="text" class="inp" id="su-lname" placeholder="Sharma"/>
-          </div>
-        </div>
-      </div>
-      <div class="fg">
-        <label>Email Address</label>
-        <div class="inp-wrap">
-          <span class="inp-icon">✉️</span>
-          <input type="email" class="inp" id="su-email" placeholder="rahul@college.edu" autocomplete="email"/>
-        </div>
-      </div>
-      <div class="fg">
-        <label>College / Institute</label>
-        <div class="inp-wrap">
-          <span class="inp-icon">🏛️</span>
-          <input type="text" class="inp" id="su-college" placeholder="IIT Delhi"/>
-        </div>
-      </div>
-      <div class="fg">
-        <label>Stream</label>
-        <div class="inp-wrap">
-          <span class="inp-icon">📚</span>
-          <select class="inp" id="su-stream">
-            <option value="">Select…</option>
-            <option>JEE Aspirant</option><option>NEET Aspirant</option>
-            <option>B.Tech / B.E.</option><option>BCA / MCA</option>
-            <option>MBA / BBA</option><option>Medical (MBBS)</option>
-            <option>Arts / Humanities</option><option>Commerce</option>
-            <option>Science (BSc)</option><option>Other</option>
-          </select>
-        </div>
-      </div>
-      <div class="fg">
-        <label>Password</label>
-        <div class="inp-wrap">
-          <span class="inp-icon">🔑</span>
-          <input type="password" class="inp" id="su-pass" placeholder="Min 8 characters" autocomplete="new-password"/>
-          <button class="pwd-tog" type="button" onclick="togglePwd('su-pass',this)">👁️</button>
-        </div>
-      </div>
-      <button class="btn-main" id="signupBtn" onclick="doSignup()">
-        <span id="signupLabel">Create Free Account</span>
-      </button>
-    </div>
-
-    <!-- SUCCESS state after signup -->
-    <div id="successPane" style="display:none" class="success-state">
-      <span class="success-icon">🎉</span>
-      <h3>Account Created!</h3>
-      <p>Check your email for a confirmation link, then come back to sign in and start your wellness journey.</p>
-      <button class="btn-main" onclick="switchTab('login')">Back to Sign In</button>
-    </div>
 
     <!-- SHARED FOOTER (Google & Links) -->
     <div id="authFooter">
-      <div class="divider">OR</div>
 
       <button class="btn-google" id="googleBtn" onclick="doGoogle()">
         <svg id="googleIcon" width="20" height="20" viewBox="0 0 24 24" style="position:relative; z-index:2;">
@@ -392,17 +113,10 @@
 </div>
 
 <script>
-// Supabase initialization with the keys previously present in this file
+// Supabase initialization
 const SB_URL = 'https://qbrdfnhksqoaagstvdzk.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFicmRmbmhrc3FvYWFnc3R2ZHprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODc5NDcsImV4cCI6MjA4ODM2Mzk0N30.GHhXkO63AMUrRSUHW9GtjD27AjBDZ1PIsfeBWRgNqgQ';
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
-
-// Auto-switch tab based on URL
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.location.hash === '#signup' || window.location.search.includes('signup')) {
-    switchTab('signup');
-  }
-});
 
 // Helper: detect if we are inside an iframe (the auth modal)
 const isInsideIframe = window.self !== window.top;
@@ -450,104 +164,6 @@ const isInsideIframe = window.self !== window.top;
   }
 })();
 
-function switchTab(tab) {
-  const isLogin = tab === 'login';
-  
-  // Update Tab States
-  document.getElementById('tabLogin').className  = 'tab ' + (isLogin ? 'active' : '');
-  document.getElementById('tabSignup').className = 'tab ' + (!isLogin ? 'active' : '');
-  
-  // Update Headers
-  document.getElementById('headerTitle').textContent = isLogin ? 'Welcome' : 'Join YodhaMind';
-  document.getElementById('headerSub').textContent = isLogin ? 'Access your account to continue' : 'Create your free student account';
-  
-  document.getElementById('loginPane').style.display  = isLogin ? 'block' : 'none';
-  document.getElementById('signupPane').style.display = !isLogin ? 'block' : 'none';
-  document.getElementById('successPane').style.display = 'none';
-  document.getElementById('authFooter').style.display = 'block';
-
-  hideAlert();
-}
-
-async function doLogin() {
-  const email = document.getElementById('li-email').value.trim();
-  const pass  = document.getElementById('li-pass').value;
-  if (!email || !pass) return showAlert('err', 'Please enter your email and password.');
-  
-  setLoading('login', true);
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-  
-  if (error) { 
-    setLoading('login', false); 
-    return showAlert('err', error.message); 
-  }
-  
-  // Role check
-  const { data: uRow } = await sb.from('users').select('role').eq('id', data.user.id).single();
-  // If no user row exists, create as student
-  if (!uRow) {
-    await sb.from('users').upsert({
-      id: data.user.id, email, name: email.split('@')[0],
-      role: 'student', is_verified: false
-    }, { onConflict: 'id' });
-  } else if (uRow.role === 'psychologist') {
-    await sb.auth.signOut();
-    setLoading('login', false);
-    return showAlert('err', 'This portal is for students. Psychologists please use the practitioner login.');
-  }
-  
-  // If inside the modal iframe, tell parent auth is done
-  if (isInsideIframe) {
-    window.top.postMessage({ type: 'YM_AUTH_COMPLETE' }, '*');
-    return;
-  }
-  
-  // Full page — go home
-  window.location.href = '/';
-}
-
-async function doSignup() {
-  const fname   = document.getElementById('su-fname').value.trim();
-  const lname   = document.getElementById('su-lname').value.trim();
-  const email   = document.getElementById('su-email').value.trim().toLowerCase();
-  const college = document.getElementById('su-college').value.trim();
-  const stream  = document.getElementById('su-stream').value;
-  const pass    = document.getElementById('su-pass').value;
-
-  if (!fname || !email || !pass) return showAlert('err', 'Name, email, and password are required.');
-  if (pass.length < 8)           return showAlert('err', 'Password must be at least 8 characters.');
-
-  setLoading('signup', true);
-  const { data, error } = await sb.auth.signUp({
-    email, password: pass,
-    options: {
-      data: { name: fname + ' ' + lname, role: 'student' },
-      emailRedirectTo: window.location.origin + '/student-auth'
-    }
-  });
-
-  if (error) { setLoading('signup', false); return showAlert('err', error.message); }
-
-  // Upsert extra profile fields
-  if (data.user) {
-    await sb.from('users').upsert({
-      id: data.user.id, email, name: fname + ' ' + lname,
-      role: 'student', college, stream, is_verified: false
-    }, { onConflict: 'id' });
-    
-    await sb.from('student_profiles').upsert({
-      user_id: data.user.id,
-      display_name: fname + ' ' + lname,
-      college, stream
-    }, { onConflict: 'user_id' });
-  }
-
-  setLoading('signup', false);
-  document.getElementById('signupPane').style.display  = 'none';
-  document.getElementById('authFooter').style.display = 'none';
-  document.getElementById('successPane').style.display = 'block';
-}
-
 async function doGoogle() {
   const btnText = document.getElementById('btnText');
   const googleIcon = document.getElementById('googleIcon');
@@ -584,21 +200,6 @@ function showAlert(type, msg) {
 function hideAlert() { 
   document.getElementById('alert').className = 'alert hidden'; 
 }
-
-function setLoading(form, on) {
-  const btn   = document.getElementById(form + 'Btn');
-  const label = document.getElementById(form + 'Label');
-  btn.disabled = on;
-  label.innerHTML = on ? '<div class="spin"></div>' : (form === 'login' ? 'Sign In' : 'Create Free Account');
-}
-
-function togglePwd(id, btn) {
-  const el = document.getElementById(id);
-  if (el.type === 'password') { el.type = 'text'; btn.textContent = '🙈'; }
-  else { el.type = 'password'; btn.textContent = '👁️'; }
-}
-
-['li-pass','li-email'].forEach(id => document.getElementById(id)?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); }));
 </script>
 <script src="../shared/crisis-support.js"></script>
     <!-- Analytics Tracking -->
