@@ -431,13 +431,13 @@ document.addEventListener('DOMContentLoaded', () => {
           display_name: displayName
         }, { onConflict: 'user_id' });
         
-        window.location.href = 'student_dashboard.html';
+        window.top.location.href = 'student_dashboard.html';
         return;
       }
       
-      if (data?.role === 'student') window.location.href = 'student_dashboard.html';
-      else if (data?.role === 'psychologist') window.location.href = 'psychologist.html';
-      else if (data?.role === 'admin') window.location.href = 'dev_admin.html';
+      if (data?.role === 'student') window.top.location.href = 'student_dashboard.html';
+      else if (data?.role === 'psychologist') window.top.location.href = 'psychologist.html';
+      else if (data?.role === 'admin') window.top.location.href = 'dev_admin.html';
     }
   } catch(err) {
     console.error("Auth session check failed:", err.message);
@@ -489,11 +489,11 @@ async function doLogin() {
     setLoading('login', false);
     return showAlert('err', 'This portal is for students. Psychologists please use the practitioner login.');
   } else if (uRow.role === 'admin') {
-    window.location.href = '/dev-admin';
+    window.top.location.href = '/dev_admin.html';
     return;
   }
   
-  window.location.href = 'student_dashboard.html';
+  window.top.location.href = 'student_dashboard.html';
 }
 
 async function doSignup() {

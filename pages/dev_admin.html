@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="/shared/nav.css">
   <style>
     /* ── Reset & Variables ── */
@@ -419,14 +420,22 @@
     Chart.defaults.borderColor = CHART_COLORS.grid;
     Chart.defaults.font.family = "'Outfit', sans-serif";
 
-    // State
-    let token = localStorage.getItem('ym_access_token');
+    // Supabase config
+    const SB_URL = 'https://qbrdfnhksqoaagstvdzk.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFicmRmbmhrc3FvYWFnc3R2ZHprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODc5NDcsImV4cCI6MjA4ODM2Mzk0N30.GHhXkO63AMUrRSUHW9GtjD27AjBDZ1PIsfeBWRgNqgQ';
+    const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+
+    let token = null;
     let currentDays = 30;
     let charts = {}; // Store chart instances for destroying
 
     // --- Auth Check ---
     async function checkAuth() {
-      if (!token) return logout();
+      if (!sb) return logout();
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) return logout();
+      token = session.access_token;
+      
       try {
         const res = await fetch('/api/admin/overview?days=1', {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -440,7 +449,7 @@
     }
 
     function logout() {
-      window.location.href = '/login';
+      window.location.href = '/';
     }
 
     // --- API Helper ---
@@ -715,8 +724,8 @@
     }
 
     // --- Events ---
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('ym_access_token');
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      if (sb) await sb.auth.signOut();
       logout();
     });
 
