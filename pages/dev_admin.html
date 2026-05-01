@@ -607,9 +607,9 @@
       const data = await fetchAdmin(`users/active?days=${currentDays}`);
       if (!data) return;
 
-      document.getElementById('wauMetric').textContent = data.wau;
-      document.getElementById('mauMetric').textContent = data.mau;
-      document.getElementById('stickinessMetric').textContent = data.stickiness + '%';
+      document.getElementById('wauVal').textContent = data.wau ?? '-';
+      document.getElementById('mauVal').textContent = data.mau ?? '-';
+      document.getElementById('stickinessVal').textContent = data.stickiness !== undefined && data.stickiness !== null ? `${data.stickiness}%` : '-%';
 
       // Streak chart
       renderChart('streakChart', 'bar', {
@@ -626,7 +626,7 @@
       const data = await fetchAdmin(`health-signals?days=${currentDays}`);
       if (!data) return;
 
-      document.getElementById('crisisClicksVal').textContent = data.crisis_clicks;
+      document.getElementById('crisisClicksVal').textContent = data.crisis_clicks ?? '-';
 
       // Mood Trend
       renderChart('moodTrendChart', 'line', {

@@ -89,9 +89,9 @@ router.post('/', async (req, res) => {
     const sessionIds   = validEvents.map(e => e.session_id);
     const anonymousIds = validEvents.map(e => e.fingerprint_id);
     const payload      = validEvents.map(e => JSON.stringify(e.payload));
-    const pages        = validEvents.map(e => e.context.page_url || null);
-    const referrers    = validEvents.map(e => e.context.referrer || null);
-    const deviceTypes  = validEvents.map(e => e.context.device_type || null);
+    const pages        = validEvents.map(e => e.context.page_url || '');
+    const referrers    = validEvents.map(e => e.context.referrer || '');
+    const deviceTypes  = validEvents.map(e => e.context.device_type || 'unknown');
 
     await db.query(
       `INSERT INTO tracking_events (event_name, session_id, fingerprint_id, payload, page, referrer, device_type)
