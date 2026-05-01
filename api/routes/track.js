@@ -5,7 +5,7 @@
  * POST /api/track    Batch event ingestion (public, rate-limited)
  *
  * Accepts up to 50 events per request from the ym-track.js client.
- * Events are validated and inserted into the analytics_events table.
+ * Events are validated and inserted into the tracking_events table.
  * No authentication required (supports anonymous tracking).
  */
 
@@ -44,7 +44,7 @@ router.use(trackLimiter);
 
 /* ════════════════════════════════════════════════
    POST /api/track
-   Body: { events: [{ event_name, session_id, anonymous_id, user_id?, properties?, context? }] }
+   Body: { events: [{ event_name, session_id, fingerprint_id, user_id?, payload?, context? }] }
 ════════════════════════════════════════════════ */
 router.post('/', async (req, res) => {
   const { events } = req.body;
@@ -73,8 +73,8 @@ router.post('/', async (req, res) => {
       event_name:   evt.event_name,
       session_id:   evt.session_id.slice(0, 40),
       user_id:      null,  // We don't resolve user_id from email client-side for privacy
-      anonymous_id: (evt.anonymous_id || '').slice(0, 64) || null,
-      properties:   evt.properties && typeof evt.properties === 'object' ? evt.properties : {},
+      fingerprint_id: (evt.fingerprint_id || '').slice(0, 64) || null,
+      payload:   evt.payload && typeof evt.payload === 'object' ? evt.payload : {},
       context:      evt.context && typeof evt.context === 'object' ? evt.context : {}
     });
   }
@@ -87,20 +87,24 @@ router.post('/', async (req, res) => {
     // Batch insert using unnest for performance
     const eventNames   = validEvents.map(e => e.event_name);
     const sessionIds   = validEvents.map(e => e.session_id);
-    const anonymousIds = validEvents.map(e => e.anonymous_id);
-    const properties   = validEvents.map(e => JSON.stringify(e.properties));
-    const contexts     = validEvents.map(e => JSON.stringify(e.context));
+    const anonymousIds = validEvents.map(e => e.fingerprint_id);
+    const payload      = validEvents.map(e => JSON.stringify(e.payload));
+    const pages        = validEvents.map(e => e.context.page_url || null);
+    const referrers    = validEvents.map(e => e.context.referrer || null);
+    const deviceTypes  = validEvents.map(e => e.context.device_type || null);
 
     await db.query(
-      `INSERT INTO analytics_events (event_name, session_id, anonymous_id, properties, context)
+      `INSERT INTO tracking_events (event_name, session_id, fingerprint_id, payload, page, referrer, device_type)
        SELECT * FROM UNNEST(
-         $1::varchar[],
-         $2::varchar[],
-         $3::varchar[],
+         $1::text[],
+         $2::text[],
+         $3::text[],
          $4::jsonb[],
-         $5::jsonb[]
+         $5::text[],
+         $6::text[],
+         $7::text[]
        )`,
-      [eventNames, sessionIds, anonymousIds, properties, contexts]
+      [eventNames, sessionIds, anonymousIds, payload, pages, referrers, deviceTypes]
     );
 
     return res.json({ ok: true, data: { inserted: validEvents.length } });

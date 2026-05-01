@@ -39,7 +39,7 @@ router.get('/overview', async (req, res) => {
     const current = await db.query(`
       SELECT
         COUNT(DISTINCT session_id)                                          AS sessions,
-        COUNT(DISTINCT anonymous_id)                                        AS unique_visitors,
+        COUNT(DISTINCT fingerprint_id)                                        AS unique_visitors,
         COUNT(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL)          AS auth_users,
         COUNT(*) FILTER (WHERE event_name = 'GAME_COMPLETED')               AS games_completed,
         COUNT(*) FILTER (WHERE event_name = 'ASSESSMENT_COMPLETED')         AS assessments_completed,
@@ -49,7 +49,7 @@ router.get('/overview', async (req, res) => {
         COUNT(*) FILTER (WHERE event_name = 'AUTH_COMPLETED')               AS signups,
         COUNT(*) FILTER (WHERE event_name = 'CTA_CLICKED')                  AS cta_clicks,
         COUNT(*) FILTER (WHERE event_name = 'CRISIS_LINK_CLICKED')          AS crisis_clicks
-      FROM analytics_events
+      FROM tracking_events
       WHERE created_at >= NOW() - ($1 || ' days')::INTERVAL
     `, [days]);
 
@@ -59,7 +59,7 @@ router.get('/overview', async (req, res) => {
         COUNT(DISTINCT session_id)                                          AS sessions,
         COUNT(*) FILTER (WHERE event_name = 'GAME_COMPLETED')               AS games_completed,
         COUNT(*) FILTER (WHERE event_name = 'AUTH_COMPLETED')               AS signups
-      FROM analytics_events
+      FROM tracking_events
       WHERE created_at >= NOW() - ($1 || ' days')::INTERVAL
         AND created_at <  NOW() - ($2 || ' days')::INTERVAL
     `, [days * 2, days]);
@@ -73,8 +73,8 @@ router.get('/overview', async (req, res) => {
 
     // DAU (today)
     const dau = await db.query(`
-      SELECT COUNT(DISTINCT COALESCE(user_id::text, anonymous_id)) AS dau
-      FROM analytics_events
+      SELECT COUNT(DISTINCT COALESCE(user_id::text, fingerprint_id)) AS dau
+      FROM tracking_events
       WHERE created_at >= CURRENT_DATE
     `);
 
@@ -119,7 +119,7 @@ router.get('/metrics/daily', async (req, res) => {
           DATE(created_at AT TIME ZONE 'Asia/Kolkata') AS day,
           COUNT(DISTINCT session_id)                    AS total_sessions,
           COUNT(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL) AS auth_users,
-          COUNT(DISTINCT COALESCE(anonymous_id, session_id)) AS unique_visitors,
+          COUNT(DISTINCT COALESCE(fingerprint_id, session_id)) AS unique_visitors,
           COUNT(*) FILTER (WHERE event_name = 'PAGE_VIEWED')     AS page_views,
           COUNT(*) FILTER (WHERE event_name = 'GAME_STARTED')    AS games_started,
           COUNT(*) FILTER (WHERE event_name = 'GAME_COMPLETED')  AS games_completed,
@@ -130,7 +130,7 @@ router.get('/metrics/daily', async (req, res) => {
           COUNT(*) FILTER (WHERE event_name = 'AUTH_COMPLETED')  AS signups,
           COUNT(*) FILTER (WHERE event_name = 'CTA_CLICKED')    AS cta_clicks,
           COUNT(*) FILTER (WHERE event_name = 'CRISIS_LINK_CLICKED') AS crisis_clicks
-        FROM analytics_events
+        FROM tracking_events
         WHERE created_at >= CURRENT_DATE - $1
         GROUP BY day
         ORDER BY day ASC
@@ -153,18 +153,18 @@ router.get('/games', async (req, res) => {
   const days = Math.min(parseInt(req.query.days, 10) || 30, 365);
 
   try {
-    // Game comparison data from analytics_events
+    // Game comparison data from tracking_events
     const eventData = await db.query(`
       SELECT
-        properties->>'game_id' AS game_id,
+        payload->>'game_id' AS game_id,
         COUNT(*) FILTER (WHERE event_name = 'GAME_STARTED')   AS starts,
         COUNT(*) FILTER (WHERE event_name = 'GAME_COMPLETED') AS completions,
         COUNT(*) FILTER (WHERE event_name = 'GAME_ABANDONED') AS abandonments,
         COUNT(*) FILTER (WHERE event_name = 'GAME_CLICKED')   AS clicks
-      FROM analytics_events
+      FROM tracking_events
       WHERE event_name IN ('GAME_STARTED', 'GAME_COMPLETED', 'GAME_ABANDONED', 'GAME_CLICKED')
         AND created_at >= NOW() - ($1 || ' days')::INTERVAL
-        AND properties->>'game_id' IS NOT NULL
+        AND payload->>'game_id' IS NOT NULL
       GROUP BY game_id
       ORDER BY starts DESC
     `, [days]);
@@ -210,8 +210,8 @@ router.get('/users/active', async (req, res) => {
     const dau = await db.query(`
       SELECT
         DATE(created_at AT TIME ZONE 'Asia/Kolkata') AS day,
-        COUNT(DISTINCT COALESCE(user_id::text, anonymous_id)) AS active_users
-      FROM analytics_events
+        COUNT(DISTINCT COALESCE(user_id::text, fingerprint_id)) AS active_users
+      FROM tracking_events
       WHERE created_at >= CURRENT_DATE - $1
       GROUP BY day
       ORDER BY day ASC
@@ -219,13 +219,13 @@ router.get('/users/active', async (req, res) => {
 
     // Current WAU and MAU
     const wau = await db.query(`
-      SELECT COUNT(DISTINCT COALESCE(user_id::text, anonymous_id)) AS wau
-      FROM analytics_events WHERE created_at >= NOW() - INTERVAL '7 days'
+      SELECT COUNT(DISTINCT COALESCE(user_id::text, fingerprint_id)) AS wau
+      FROM tracking_events WHERE created_at >= NOW() - INTERVAL '7 days'
     `);
 
     const mau = await db.query(`
-      SELECT COUNT(DISTINCT COALESCE(user_id::text, anonymous_id)) AS mau
-      FROM analytics_events WHERE created_at >= NOW() - INTERVAL '30 days'
+      SELECT COUNT(DISTINCT COALESCE(user_id::text, fingerprint_id)) AS mau
+      FROM tracking_events WHERE created_at >= NOW() - INTERVAL '30 days'
     `);
 
     // Streak distribution from existing streaks table
@@ -325,7 +325,7 @@ router.get('/health-signals', async (req, res) => {
     // Crisis signals
     const crisisCount = await db.query(`
       SELECT COUNT(*) AS total
-      FROM analytics_events
+      FROM tracking_events
       WHERE event_name = 'CRISIS_LINK_CLICKED'
         AND created_at >= NOW() - ($1 || ' days')::INTERVAL
     `, [days]);
@@ -335,8 +335,8 @@ router.get('/health-signals', async (req, res) => {
       SELECT
         DATE(created_at AT TIME ZONE 'Asia/Kolkata') AS day,
         COUNT(*) FILTER (WHERE event_name = 'BREATHING_COMPLETED') AS breathing,
-        COUNT(*) FILTER (WHERE properties->>'game_id' IN ('mandala', 'aura'))  AS calming_games
-      FROM analytics_events
+        COUNT(*) FILTER (WHERE payload->>'game_id' IN ('mandala', 'aura'))  AS calming_games
+      FROM tracking_events
       WHERE event_name IN ('BREATHING_COMPLETED', 'GAME_COMPLETED')
         AND created_at >= NOW() - ($1 || ' days')::INTERVAL
       GROUP BY day
@@ -370,12 +370,12 @@ router.get('/realtime', async (req, res) => {
       SELECT
         event_name,
         session_id,
-        anonymous_id,
-        properties,
+        fingerprint_id,
+        payload,
         context->>'page_url'     AS page,
         context->>'device_type'  AS device,
         created_at
-      FROM analytics_events
+      FROM tracking_events
       ORDER BY created_at DESC
       LIMIT 50
     `);
@@ -416,7 +416,7 @@ router.get('/funnel', async (req, res) => {
       SELECT
         event_name,
         COUNT(DISTINCT session_id) AS unique_sessions
-      FROM analytics_events
+      FROM tracking_events
       WHERE event_name = ANY($1)
         AND created_at >= NOW() - ($2 || ' days')::INTERVAL
       GROUP BY event_name

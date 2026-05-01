@@ -693,7 +693,7 @@
         if (e.event_name.includes('ABANDONED')) color = 'var(--accent-danger)';
         if (e.event_name.includes('CLICKED')) color = 'var(--accent-warning)';
         
-        const props = Object.keys(e.properties || {}).map(k => `<span class="tag">${k}: ${e.properties[k]}</span>`).join(' ');
+        const props = Object.keys(e.payload || {}).map(k => `<span class="tag">${k}: ${e.payload[k]}</span>`).join(' ');
 
         tbody.innerHTML += `
           <tr>
