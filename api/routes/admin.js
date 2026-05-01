@@ -67,8 +67,8 @@ router.get('/overview', async (req, res) => {
     // Existing DB metrics
     const users = await db.query(`SELECT COUNT(*) AS total FROM users WHERE deleted_at IS NULL`);
     const wellnessAvg = await db.query(`
-      SELECT ROUND(AVG(score)) AS avg_score FROM wellness_scores
-      WHERE computed_at >= NOW() - ($1 || ' days')::INTERVAL
+      SELECT ROUND(AVG((raw_score::float / NULLIF(max_score, 0)) * 100)) AS avg_score FROM assessments
+      WHERE taken_at >= NOW() - ($1 || ' days')::INTERVAL
     `, [days]);
 
     // DAU (today)
@@ -109,7 +109,7 @@ router.get('/metrics/daily', async (req, res) => {
     try {
       result = await db.query(`
         SELECT * FROM mv_daily_metrics
-        WHERE day >= CURRENT_DATE - $1
+        WHERE day >= CURRENT_DATE - ($1 || ' days')::INTERVAL
         ORDER BY day ASC
       `, [days]);
     } catch {
@@ -131,7 +131,7 @@ router.get('/metrics/daily', async (req, res) => {
           COUNT(*) FILTER (WHERE event_name = 'CTA_CLICKED')    AS cta_clicks,
           COUNT(*) FILTER (WHERE event_name = 'CRISIS_LINK_CLICKED') AS crisis_clicks
         FROM tracking_events
-        WHERE created_at >= CURRENT_DATE - $1
+        WHERE created_at >= CURRENT_DATE - ($1 || ' days')::INTERVAL
         GROUP BY day
         ORDER BY day ASC
       `, [days]);
@@ -212,7 +212,7 @@ router.get('/users/active', async (req, res) => {
         DATE(created_at AT TIME ZONE 'Asia/Kolkata') AS day,
         COUNT(DISTINCT COALESCE(user_id::text, fingerprint_id)) AS active_users
       FROM tracking_events
-      WHERE created_at >= CURRENT_DATE - $1
+      WHERE created_at >= CURRENT_DATE - ($1 || ' days')::INTERVAL
       GROUP BY day
       ORDER BY day ASC
     `, [days]);
@@ -309,17 +309,17 @@ router.get('/health-signals', async (req, res) => {
     const wellnessDist = await db.query(`
       SELECT
         CASE
-          WHEN score < 20 THEN '0-19'
-          WHEN score < 40 THEN '20-39'
-          WHEN score < 60 THEN '40-59'
-          WHEN score < 80 THEN '60-79'
+          WHEN (raw_score::float / NULLIF(max_score, 0)) * 100 < 20 THEN '0-19'
+          WHEN (raw_score::float / NULLIF(max_score, 0)) * 100 < 40 THEN '20-39'
+          WHEN (raw_score::float / NULLIF(max_score, 0)) * 100 < 60 THEN '40-59'
+          WHEN (raw_score::float / NULLIF(max_score, 0)) * 100 < 80 THEN '60-79'
           ELSE '80-100'
         END AS bucket,
         COUNT(*) AS count
-      FROM wellness_scores
-      WHERE computed_at >= NOW() - ($1 || ' days')::INTERVAL
+      FROM assessments
+      WHERE taken_at >= NOW() - ($1 || ' days')::INTERVAL
       GROUP BY bucket
-      ORDER BY MIN(score)
+      ORDER BY MIN((raw_score::float / NULLIF(max_score, 0)) * 100)
     `, [days]);
 
     // Crisis signals
