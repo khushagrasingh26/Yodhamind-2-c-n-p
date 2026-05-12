@@ -1,0 +1,20 @@
+{
+  "name": "YodhaMind",
+  "short_name": "YodhaMind",
+  "description": "Mental wellness for Indian college students",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e0b14",
+  "theme_color": "#7C5CBF",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Check In", "url": "/assessment", "description": "Start a mental health check-in" },
+    { "name": "Journal", "url": "/journal", "description": "Open your private journal" },
+    { "name": "Mind Gym", "url": "/games", "description": "Play a cognitive game" }
+  ]
+}

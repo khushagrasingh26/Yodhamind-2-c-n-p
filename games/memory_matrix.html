@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="../shared/theme.js"></script>
+    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Memory Matrix</title>
+    <title>Memory Matrix - YodhaMind</title>
     <style>
+        @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
         :root {
-            --bg: #0b1020;
-            --panel: rgba(15, 23, 42, 0.85);
-            --panel-border: rgba(148, 163, 184, 0.22);
-            --text: #e2e8f0;
-            --muted: #94a3b8;
-            --accent: #6366f1;
-            --accent-soft: rgba(99, 102, 241, 0.18);
-            --ok: #22c55e;
-            --warn: #fbbf24;
-            --tile: #1e293b;
-            --tile-hover: #334155;
+            --bg: var(--color-bg, #fdfcfc);
+            --panel: rgba(255, 255, 255, 0.85);
+            --panel-border: rgba(0, 0, 0, 0.08);
+            --text: var(--color-text-primary, #0a0514);
+            --muted: var(--color-text-secondary, #6b5f80);
+            --accent: var(--ym-purple-600, #6236ff);
+            --accent-2: #f97316;
+            --accent-soft: rgba(98, 54, 255, 0.1);
+            --ok: #10b981;
+            --warn: #f59e0b;
+            --tile: #eee8f8;
+            --tile-hover: #ddd1f2;
+            --glow: rgba(98, 54, 255, 0.25);
         }
 
         * { box-sizing: border-box; }
@@ -24,12 +30,10 @@
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-body, "Space Grotesk"), "Segoe UI", sans-serif;
             color: var(--text);
-            background:
-                radial-gradient(60rem 35rem at -10% -20%, #1e1b4b 0%, transparent 55%),
-                radial-gradient(50rem 30rem at 120% 110%, #0f766e 0%, transparent 50%),
-                var(--bg);
+            background: var(--bg);
+            padding-top: 60px;
         }
 
         .page {
@@ -40,16 +44,16 @@
 
         .topbar {
             position: sticky;
-            top: 0;
+            top: 60px;
             z-index: 10;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
             padding: 14px 18px;
-            background: rgba(2, 6, 23, 0.72);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            border-bottom: 1px solid var(--panel-border);
         }
 
         .topbar h2 {
@@ -57,25 +61,27 @@
             font-size: 1.1rem;
             letter-spacing: 0.3px;
             font-weight: 700;
+            font-family: "Fraunces", "Space Grotesk", serif;
         }
 
         .btn {
             border: 1px solid var(--panel-border);
-            background: rgba(30, 41, 59, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             color: var(--text);
-            padding: 9px 14px;
-            border-radius: 10px;
+            padding: 9px 16px;
+            border-radius: 999px;
             cursor: pointer;
             font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: transform 0.15s ease, background-color 0.2s ease;
+            transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
         }
 
-        .btn:hover { background: rgba(51, 65, 85, 0.9); transform: translateY(-1px); }
+        .btn:hover { background: rgba(238, 232, 248, 0.95); border-color: rgba(98, 54, 255, 0.3); transform: translateY(-1px); }
         .btn:active { transform: translateY(0); }
+        .btn:focus-visible { outline: 2px solid rgba(98, 54, 255, 0.5); outline-offset: 2px; }
 
         .stage {
             flex: 1;
@@ -83,6 +89,7 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
+            animation: fadeIn 0.6s ease;
         }
 
         .shell {
@@ -91,38 +98,103 @@
             border: 1px solid var(--panel-border);
             border-radius: 22px;
             padding: 22px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            max-height: calc(100vh - 96px);
+            box-shadow: 0 16px 48px rgba(98, 54, 255, 0.08), 0 8px 16px rgba(0,0,0,0.04);
+            max-height: calc(100vh - 160px);
             overflow: auto;
+            position: relative;
         }
 
         .headline {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
+            gap: 16px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
+        }
+
+        .headline-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .eyebrow {
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2.2px;
+            font-size: 0.66rem;
+            color: rgba(226, 232, 240, 0.7);
         }
 
         .headline h1 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 2.1rem;
             letter-spacing: 0.2px;
+            font-family: "Fraunces", "Space Grotesk", serif;
+        }
+
+        .hint {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .status-pill[data-state="watch"] {
+            background: rgba(98, 54, 255, 0.08);
+            border-color: rgba(98, 54, 255, 0.3);
+            color: var(--accent);
+        }
+
+        .status-pill[data-state="play"] {
+            background: rgba(249, 115, 22, 0.1);
+            border-color: rgba(249, 115, 22, 0.4);
+            color: #c2410c;
+        }
+
+        .status-pill[data-state="ok"] {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #059669;
+        }
+
+        .status-pill[data-state="fail"] {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 12px currentColor;
         }
 
         .meta {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
             margin-bottom: 18px;
         }
 
         .meta-card {
-            background: rgba(15, 23, 42, 0.66);
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            border-radius: 12px;
-            padding: 10px 12px;
+            background: var(--accent-soft);
+            border: 1px solid var(--panel-border);
+            border-radius: 14px;
+            padding: 12px 14px;
             color: var(--muted);
             font-weight: 600;
         }
@@ -130,43 +202,52 @@
         .meta-card span {
             display: block;
             color: var(--text);
-            font-size: 1.2rem;
-            margin-top: 2px;
+            font-size: 1.35rem;
+            margin-top: 4px;
             font-weight: 700;
         }
 
         #grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            width: min(100%, calc(100vh - 330px));
+            gap: 12px;
+            width: min(100%, 420px);
             aspect-ratio: 1 / 1;
-            background: rgba(2, 6, 23, 0.5);
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            padding: 10px;
-            border-radius: 14px;
+            background: rgba(248, 246, 252, 0.6);
+            border: 1px solid var(--panel-border);
+            padding: 12px;
+            border-radius: 18px;
             margin: 0 auto;
         }
 
         .tile {
-            border: 0;
-            border-radius: 10px;
-            transition: all 0.18s ease;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 14px;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
             cursor: pointer;
+            background: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .tile-idle {
-            background-color: var(--tile);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 8px 14px rgba(0, 0, 0, 0.22);
+            background: linear-gradient(160deg, #eee8f8, #ddd1f2);
+            box-shadow: 0 4px 12px rgba(98, 54, 255, 0.08);
         }
 
-        .tile-idle:hover:not(:disabled) { background-color: var(--tile-hover); }
+        .tile-idle:hover:not(:disabled) { background: linear-gradient(160deg, #ddd1f2, #c4b5fd); }
         .tile-idle:active:not(:disabled) { transform: scale(0.98); }
 
         .tile-active {
-            background-color: var(--warn);
-            box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.45), 0 0 24px rgba(251, 191, 36, 0.5);
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            box-shadow: 0 0 0 2px rgba(98, 54, 255, 0.4), 0 0 20px rgba(98, 54, 255, 0.25);
             transform: scale(0.98);
+            animation: tilePulse 0.5s ease;
+        }
+
+        .tile:focus-visible {
+            outline: 2px solid rgba(98, 54, 255, 0.5);
+            outline-offset: 2px;
         }
 
         .result {
@@ -179,11 +260,12 @@
 
         .result h3 {
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.7rem;
+            font-family: "Fraunces", "Space Grotesk", serif;
         }
 
         .result #final-level {
-            font-size: 2.6rem;
+            font-size: 2.8rem;
             margin: 8px 0 0;
             font-weight: 800;
         }
@@ -197,101 +279,126 @@
             border: 0;
             width: 100%;
             padding: 13px 14px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 700;
             cursor: pointer;
             color: white;
-            background: linear-gradient(135deg, var(--accent), #4f46e5);
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            box-shadow: 0 8px 24px rgba(98, 54, 255, 0.25);
         }
+
+        .btn-primary:focus-visible { outline: 2px solid rgba(98, 54, 255, 0.5); outline-offset: 2px; }
 
         .hidden { display: none !important; }
 
         @media (max-width: 520px) {
-            .headline h1 { font-size: 1.45rem; }
+            .headline h1 { font-size: 1.6rem; }
             .shell { padding: 16px; border-radius: 16px; }
-            .meta-card span { font-size: 1.05rem; }
-            #grid { width: min(100%, calc(100vh - 300px)); }
+            .meta-card span { font-size: 1.1rem; }
+            #grid { width: min(100%, 340px); }
+            .status-pill { width: 100%; justify-content: center; }
         }
 
         @media (max-height: 760px) {
             .topbar { padding: 10px 12px; }
             .stage { padding: 10px; }
             .shell { padding: 14px; border-radius: 14px; max-height: calc(100vh - 74px); }
-            .headline h1 { font-size: 1.3rem; }
+            .headline h1 { font-size: 1.4rem; }
             .meta { margin-bottom: 10px; }
             .meta-card { padding: 8px 10px; }
             .meta-card span { font-size: 1rem; }
-            #grid { gap: 8px; padding: 8px; width: min(100%, calc(100vh - 250px)); }
+            #grid { gap: 8px; padding: 8px; width: min(100%, 320px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes tilePulse {
+            0% { transform: scale(0.96); }
+            60% { transform: scale(1.02); }
+            100% { transform: scale(0.98); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
         }
 
         /* --- Floating Sound Button Positioning & Style --- */
-[id*="sound"], 
-[class*="sound"] {
-    position: fixed !important;
-    bottom: 25px !important;
-    right: 25px !important;
-    top: auto !important;
-    left: auto !important;
-    z-index: 9999 !important;
-    
-    /* Styling to match the Memory Matrix dark theme */
-    background: rgba(30, 41, 59, 0.85) !important;
-    border: 1px solid rgba(148, 163, 184, 0.3) !important;
-    color: #e2e8f0 !important;
-    padding: 12px !important;
-    border-radius: 50px !important; /* Makes it pill-shaped/circular */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
-    backdrop-filter: blur(8px) !important;
-    transition: transform 0.2s ease, background 0.2s ease !important;
-    cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
+        .ym-sound-container {
+            position: fixed !important;
+            bottom: 25px !important;
+            right: 25px !important;
+            top: auto !important;
+            left: auto !important;
+            z-index: 9999 !important;
 
-[id*="sound"]:hover, 
-[class*="sound"]:hover {
-    background: rgba(51, 65, 85, 0.95) !important;
-    transform: scale(1.05) !important;
-}
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            color: var(--text) !important;
+            padding: 12px !important;
+            border-radius: 50px !important;
+            box-shadow: 0 8px 24px rgba(98, 54, 255, 0.08) !important;
+            backdrop-filter: blur(8px) !important;
+            transition: transform 0.2s ease, background 0.2s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
 
-/* On very small screens, tuck it slightly tighter into the corner */
-@media (max-width: 520px) {
-    [id*="sound"], [class*="sound"] {
-        bottom: 15px !important;
-        right: 15px !important;
-    }
-}
+        .ym-sound-container:hover {
+            background: rgba(238, 232, 248, 0.95) !important;
+            transform: scale(1.05) !important;
+        }
+
+        .ym-sound-container .ym-sound-toggle {
+            background: transparent !important;
+            border: none !important;
+            color: inherit !important;
+            padding: 0 !important;
+            cursor: pointer !important;
+        }
+
+        .ym-sound-container .ym-sound-slider {
+            position: static !important;
+            top: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            left: auto !important;
+        }
+
+        /* On very small screens, tuck it slightly tighter into the corner */
+        @media (max-width: 520px) {
+            .ym-sound-container {
+                bottom: 15px !important;
+                right: 15px !important;
+            }
+        }
 
         
     </style>
     <link rel="stylesheet" href="../shared/nav.css" />
 </head>
 <body>
-
-    <!-- ═══════════ YM SIDEBAR ═══════════ -->
+    <!-- YM SIDEBAR -->
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
       <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
+        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
         <span class="ym-sidebar__logo">YodhaMind</span>
       </div>
       <nav class="ym-sidebar__nav">
         <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
         <div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
-<div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
       </nav>
       <div class="ym-sidebar__footer">
         © 2026 YodhaMind<br>
@@ -300,7 +407,7 @@
       </div>
     </aside>
 
-    <!-- ═══════════ YM TOPBAR ═══════════ -->
+    <!-- YM TOPBAR -->
     <header class="ym-topbar" id="ymTopbar">
       <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
         <span></span><span></span><span></span>
@@ -327,12 +434,20 @@
             <section class="shell">
                 <div id="game-ui">
                     <div class="headline">
-                        <h1>Memory Matrix</h1>
+                        <div class="headline-copy">
+                            <p class="eyebrow">Focus. Recall. Repeat.</p>
+                            <h1>Memory Matrix</h1>
+                            <p class="hint">Tap the tiles in the exact order.</p>
+                        </div>
+                        <div class="status-pill" id="status-pill" data-state="watch">
+                            <span class="status-dot"></span>
+                            <span id="status-display">Watch...</span>
+                        </div>
                     </div>
 
                     <div class="meta">
                         <div class="meta-card">Level<span id="level-display">1</span></div>
-                        <div class="meta-card">Status<span id="status-display">Watch...</span></div>
+                        <div class="meta-card">Best<span id="best-display">1</span></div>
                     </div>
 
                     <div id="grid"></div>
@@ -359,11 +474,28 @@
         const gridEl = document.getElementById('grid');
         const levelDisplay = document.getElementById('level-display');
         const statusDisplay = document.getElementById('status-display');
+        const statusPill = document.getElementById('status-pill');
+        const bestDisplay = document.getElementById('best-display');
         const gameUI = document.getElementById('game-ui');
         const resultScreen = document.getElementById('result-screen');
         const finalLevelDisplay = document.getElementById('final-level');
         const resetBtn = document.getElementById('resetBtn');
         const tryAgainBtn = document.getElementById('tryAgainBtn');
+        const bestKey = 'memoryMatrixBest';
+        let bestLevel = Number(window.localStorage.getItem(bestKey)) || 1;
+        function setStatus(label, state) {
+            statusDisplay.innerText = label;
+            statusPill.dataset.state = state;
+        }
+
+        function syncBest(levelValue) {
+            if (levelValue > bestLevel) {
+                bestLevel = levelValue;
+                window.localStorage.setItem(bestKey, String(bestLevel));
+            }
+            bestDisplay.innerText = bestLevel;
+        }
+
 
         function queueTimeout(callback, delay) {
             const id = window.setTimeout(() => {
@@ -419,7 +551,8 @@
             resetTileVisuals();
 
             levelDisplay.innerText = currentLevel;
-            statusDisplay.innerText = 'Watch...';
+            setStatus('Watch...', 'watch');
+            syncBest(currentLevel);
 
             const newSeqLength = currentLevel + 2;
             sequence = Array.from({ length: newSeqLength }, () => Math.floor(Math.random() * 9));
@@ -429,7 +562,7 @@
                 if (i >= sequence.length) {
                     isShowing = false;
                     setTilesDisabled(false);
-                    statusDisplay.innerText = 'Repeat!';
+                    setStatus('Repeat!', 'play');
                     return;
                 }
 
@@ -456,7 +589,7 @@
             if (index === sequence[playerStep]) {
                 if (playerStep + 1 === sequence.length) {
                     setTilesDisabled(true);
-                    statusDisplay.innerText = 'Correct!';
+                    setStatus('Correct!', 'ok');
                     queueTimeout(() => {
                         level++;
                         startLevel(level);
@@ -478,6 +611,8 @@
             gameUI.classList.add('hidden');
             resultScreen.classList.add('show');
             finalLevelDisplay.innerText = `Level ${level}`;
+            setStatus('Pattern broken', 'fail');
+            syncBest(level);
         }
 
         function resetGame() {
@@ -490,6 +625,7 @@
             resetTileVisuals();
             gameUI.classList.remove('hidden');
             resultScreen.classList.remove('show');
+            syncBest(level);
             startLevel(level);
         }
 
@@ -502,16 +638,13 @@
     </script>
     <script src="../shared/game-sound-toggle.js"></script>
     <script src="../shared/crisis-support.js"></script>
-
     <script src="../shared/supabase-auth.js"></script>
     <script>
-      /* ── Sidebar toggle ── */
       (function() {
         var hamburger = document.getElementById('ymHamburger');
         var sidebar = document.getElementById('ymSidebar');
         var backdrop = document.getElementById('ymSidebarBackdrop');
         var topbar = document.getElementById('ymTopbar');
-
         function toggleSidebar() {
           var isOpen = sidebar.classList.contains('open');
           sidebar.classList.toggle('open');
@@ -519,18 +652,13 @@
           hamburger.classList.toggle('open');
           document.body.style.overflow = isOpen ? '' : 'hidden';
         }
-
         if (hamburger) hamburger.addEventListener('click', toggleSidebar);
         if (backdrop) backdrop.addEventListener('click', toggleSidebar);
-
-        /* ── Scroll shadow ── */
         if (topbar) {
           window.addEventListener('scroll', function() {
             topbar.classList.toggle('scrolled', window.scrollY > 10);
           }, { passive: true });
         }
-
-        /* ── Highlight active sidebar link ── */
         var currentPath = window.location.pathname;
         document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
           var href = link.getAttribute('href');

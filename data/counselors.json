@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "name": "Dr. Priya Sharma",
+    "credentials": "M.Phil Clinical Psychology · RCI Registered",
+    "specializations": ["Exam stress", "Anxiety", "Depression"],
+    "languages": ["English", "Hindi"],
+    "fee": "₹500/session",
+    "available": ["Chat", "Video"],
+    "initials": "PS",
+    "color": "#7C5CBF"
+  },
+  {
+    "id": 2,
+    "name": "Rahul Verma",
+    "credentials": "MA Counseling Psychology",
+    "specializations": ["Burnout", "Career Anxiety", "Relationships"],
+    "languages": ["English", "Marathi"],
+    "fee": "₹400/session",
+    "available": ["Video", "Call"],
+    "initials": "RV",
+    "color": "#56CFB2"
+  },
+  {
+    "id": 3,
+    "name": "Dr. Ananya Iyer",
+    "credentials": "Ph.D Clinical Psychology · RCI Registered",
+    "specializations": ["ADHD Support", "Academic Pressure", "Identity"],
+    "languages": ["English", "Tamil", "Hindi"],
+    "fee": "₹600/session",
+    "available": ["Video"],
+    "initials": "AI",
+    "color": "#9B7FD4"
+  },
+  {
+    "id": 4,
+    "name": "Vikram Singh",
+    "credentials": "MSc Clinical Psychology",
+    "specializations": ["Social Anxiety", "Self-esteem", "Family conflict"],
+    "languages": ["English", "Hindi", "Punjabi"],
+    "fee": "₹450/session",
+    "available": ["Chat", "Call"],
+    "initials": "VS",
+    "color": "#e07a00"
+  },
+  {
+    "id": 5,
+    "name": "Neha Patel",
+    "credentials": "MA Applied Psychology",
+    "specializations": ["Procrastination", "Perfectionism", "Stress"],
+    "languages": ["English", "Gujarati"],
+    "fee": "₹400/session",
+    "available": ["Chat", "Video"],
+    "initials": "NP",
+    "color": "#3498db"
+  },
+  {
+    "id": 6,
+    "name": "Dr. Amit Deshmukh",
+    "credentials": "M.Phil Clinical Psychology · RCI Registered",
+    "specializations": ["Depression", "Grief", "Trauma"],
+    "languages": ["English", "Marathi", "Hindi"],
+    "fee": "₹550/session",
+    "available": ["Video", "Call"],
+    "initials": "AD",
+    "color": "#e74c3c"
+  },
+  {
+    "id": 7,
+    "name": "Sarah Thomas",
+    "credentials": "MSc Counseling Psychology",
+    "specializations": ["Peer pressure", "Body image", "Anxiety"],
+    "languages": ["English", "Malayalam"],
+    "fee": "₹450/session",
+    "available": ["Chat", "Call", "Video"],
+    "initials": "ST",
+    "color": "#f0a500"
+  }
+]

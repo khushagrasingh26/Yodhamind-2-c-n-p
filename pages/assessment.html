@@ -1,12 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="../css/tokens.css">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W7RQTL2ND7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W7RQTL2ND7');
+</script>
+<script>
+function trackEvent(action) {
+  if (typeof gtag === 'function') {
+    gtag('event', action, {
+      event_category: 'engagement',
+      event_label: action
+    });
+  }
+}
+</script>
+
+
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>YodhaMind — Self-Assessment</title>
     <meta name="description" content="Science-backed 2-minute mental health checkups. Stress, anxiety, burnout and focus tests for college students.">
 
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
 
@@ -468,6 +491,11 @@
 
     </style>
     <link rel="stylesheet" href="../shared/nav.css" />
+    <!-- Vercel Analytics -->
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -475,25 +503,25 @@
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
       <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
+        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
         <span class="ym-sidebar__logo">YodhaMind</span>
       </div>
       <nav class="ym-sidebar__nav">
         <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
         <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◎</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
 <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
       </nav>
       <div class="ym-sidebar__footer">
         © 2026 YodhaMind<br>
@@ -508,7 +536,7 @@
         <span></span><span></span><span></span>
       </button>
       <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
+        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
         YodhaMind
       </a>
       <div class="ym-topbar__right">
@@ -529,7 +557,7 @@
         <div id="screenHub" class="screen active">
 
             <div class="hub-header">
-                <h1>Self-Assessment<br>Tests 📋</h1>
+                <h1>Self-Assessment<br>Tests <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></h1>
                 <p>
                     Science-backed. Takes under 2 minutes.
                     Your answers feed directly into your wellness score.
@@ -624,6 +652,7 @@
             <!-- Action buttons -->
             <div class="result-actions">
                 <a href="/dashboard" class="btn-primary">← Back to Dashboard</a>
+                <button class="btn-secondary" onclick="shareResult()">Share my result</button>
                 <button class="btn-secondary" onclick="retakeTest()">Retake this test</button>
                 <button class="btn-secondary" onclick="goToHub()">Try a different test</button>
             </div>
@@ -650,11 +679,11 @@
 
     <!-- MOBILE NAV -->
     <nav class="mobile-nav">
-        <a href="/dashboard"><span>🏠</span>Home</a>
-        <a href="/games"><span>🎮</span>Games</a>
-        <a href="/assessment" class="active"><span>📋</span>Assess</a>
-        <a href="/connect"><span>💬</span>Support</a>
-        <a href="/dashboard" onclick="/* journal */"><span>📝</span>Journal</a>
+        <a href="/dashboard"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</a>
+        <a href="/games"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span>Games</a>
+        <a href="/assessment" class="active"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Assess</a>
+        <a href="/connect"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Support</a>
+        <a href="/dashboard" onclick="/* journal */"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>Journal</a>
     </nav>
 
     <!-- TOAST -->
@@ -709,7 +738,7 @@
                     crisis:   false,
                     suggestions: [
                         { icon: '🪷', text: 'Keep up your great habits! Try Mandala to maintain your calm.', link: 'yodha_mandala.html', linkText: 'Play Mandala →' },
-                        { icon: '📝', text: 'Log your mood daily to track positive trends over time.', link: 'dashboard.html', linkText: 'Go to Dashboard →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>', text: 'Log your mood daily to track positive trends over time.', link: 'dashboard.html', linkText: 'Go to Dashboard →' },
                         { icon: '🎯', text: 'Challenge yourself with Enchaeos to build mental resilience.', link: 'yodha_enchaeos.html', linkText: 'Play Enchaeos →' }
                     ]
                 };
@@ -720,8 +749,8 @@
                     desc:     'You\'re experiencing noticeable stress. A few targeted tools can help significantly.',
                     crisis:   false,
                     suggestions: [
-                        { icon: '🌬️', text: 'Try 5 minutes of guided breathing daily. It directly lowers cortisol.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' },
-                        { icon: '⏱️', text: 'Use the Pomodoro timer to break study into manageable chunks.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>', text: 'Try 5 minutes of guided breathing daily. It directly lowers cortisol.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>', text: 'Use the Pomodoro timer to break study into manageable chunks.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
                         { icon: '📖', text: 'Journal your stress triggers — writing them down reduces their power.', link: 'dashboard.html', linkText: 'Write in Journal →' }
                     ]
                 };
@@ -731,8 +760,8 @@
                     bgColor:  'rgba(220,38,38,0.1)',
                     desc:     'Your stress levels are high. We strongly recommend talking to a counselor.',
                     suggestions: [
-                        { icon: '💬', text: 'Counselor network starting soon. This will be your most important step.', link: '#', linkText: 'Coming Soon' },
-                        { icon: '🌬️', text: 'Start right now — Open Spirit Breathing Tool and do one breathing round.', link: 'spirit-breathing-tool.html', linkText: 'Breathe Now →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', text: 'Counselor network starting soon. This will be your most important step.', link: '#', linkText: 'Coming Soon' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>', text: 'Start right now — Open Spirit Breathing Tool and do one breathing round.', link: 'spirit-breathing-tool.html', linkText: 'Breathe Now →' },
                         { icon: '🪷', text: 'Mandala drawing is proven to reduce acute stress. Try 5 minutes.', link: 'yodha_mandala.html', linkText: 'Open Mandala →' }
                     ]
                 };
@@ -771,7 +800,7 @@
                     suggestions: [
                         { icon: '🌀', text: 'Aura helps maintain a calm, focused mind. Play it daily.', link: 'yodha_aura.html', linkText: 'Play Aura →' },
                         { icon: '💡', text: 'Lumina sharpens your pattern recognition — great for keeping anxiety low.', link: 'yodha_lumina.html', linkText: 'Play Lumina →' },
-                        { icon: '📋', text: 'Reassess monthly to track your mental wellbeing over time.', link: 'assessment.html', linkText: 'Schedule reminder →' }
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>', text: 'Reassess monthly to track your mental wellbeing over time.', link: 'assessment.html', linkText: 'Schedule reminder →' }
                     ]
                 };
                 if (raw <= 9) return {
@@ -781,7 +810,7 @@
                     desc:     'Mild anxiety is common. Targeted daily habits can reduce it significantly.',
                     crisis:   false,
                     suggestions: [
-                        { icon: '🌬️', text: 'Practice 4-7-8 breathing daily. It activates the parasympathetic system.', link: 'spirit-breathing-tool.html', linkText: 'Try Spirit Breathing Tool →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>', text: 'Practice 4-7-8 breathing daily. It activates the parasympathetic system.', link: 'spirit-breathing-tool.html', linkText: 'Try Spirit Breathing Tool →' },
                         { icon: '📱', text: 'Reduce social media browsing — limit to 20 minutes per day.', link: null, linkText: null },
                         { icon: '🃏', text: 'Yodha Match gently redirects racing thoughts through focused memory work.', link: 'yodhamatch.html', linkText: 'Play Yodha Match →' }
                     ]
@@ -792,8 +821,8 @@
                     bgColor:  'rgba(234,88,12,0.1)',
                     desc:     'Moderate anxiety needs active attention. Please consider speaking with a professional.',
                     suggestions: [
-                        { icon: '💬', text: 'Our counselor network is coming soon to help you develop strategies.', link: '#', linkText: 'Coming Soon' },
-                        { icon: '🌬️', text: 'Use Spirit Breathing Tool morning and night — consistency is key at this level.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', text: 'Our counselor network is coming soon to help you develop strategies.', link: '#', linkText: 'Coming Soon' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>', text: 'Use Spirit Breathing Tool morning and night — consistency is key at this level.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' },
                         { icon: '📖', text: 'Journal your anxiety triggers. Naming them reduces their emotional charge.', link: 'dashboard.html', linkText: 'Open Journal →' }
                     ]
                 };
@@ -803,8 +832,8 @@
                     bgColor:  'rgba(220,38,38,0.1)',
                     desc:     'Your anxiety score is high. Please reach out for support — you don\'t have to manage this alone.',
                     suggestions: [
-                        { icon: '💬', text: 'Our counselor network is coming soon. Please use a helpline today.', link: '#', linkText: 'Coming Soon' },
-                        { icon: '🌬️', text: 'Open Spirit Breathing Tool right now and complete one full breathing session.', link: 'spirit-breathing-tool.html', linkText: 'Breathe Now →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', text: 'Our counselor network is coming soon. Please use a helpline today.', link: '#', linkText: 'Coming Soon' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>', text: 'Open Spirit Breathing Tool right now and complete one full breathing session.', link: 'spirit-breathing-tool.html', linkText: 'Breathe Now →' },
                         { icon: '🪷', text: 'Mandala drawing has been shown to reduce acute anxiety within minutes.', link: 'yodha_mandala.html', linkText: 'Open Mandala →' }
                     ]
                 };
@@ -842,8 +871,8 @@
                     desc:     'You\'re energised and engaged with your studies. Keep this up!',
                     crisis:   false,
                     suggestions: [
-                        { icon: '🎮', text: 'Keep using Mind Gym games to maintain your mental sharpness.', link: 'games.html', linkText: 'Open Mind Gym →' },
-                        { icon: '⏱️', text: 'Pomodoro sessions will help you sustain this energy long-term.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>', text: 'Keep using Mind Gym games to maintain your mental sharpness.', link: 'games.html', linkText: 'Open Mind Gym →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>', text: 'Pomodoro sessions will help you sustain this energy long-term.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
                         { icon: '📖', text: 'Reflect weekly in your journal to stay aware of energy shifts.', link: 'dashboard.html', linkText: 'Open Journal →' }
                     ]
                 };
@@ -855,8 +884,8 @@
                     crisis:   false,
                     suggestions: [
                         { icon: '⏸️', text: 'Schedule a mandatory non-study hour each day. Rest is productive.', link: null, linkText: null },
-                        { icon: '⏱️', text: 'Strict Pomodoro sessions prevent overwork — use 25/5 splits.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
-                        { icon: '💬', text: 'Talk to someone — a counselor or trusted friend — about your workload.', link: '#', linkText: 'Coming Soon' }
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>', text: 'Strict Pomodoro sessions prevent overwork — use 25/5 splits.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', text: 'Talk to someone — a counselor or trusted friend — about your workload.', link: '#', linkText: 'Coming Soon' }
                     ]
                 };
                 return {
@@ -866,9 +895,9 @@
                     desc:     'You are experiencing significant burnout. This needs urgent attention.',
                     crisis:   true,
                     suggestions: [
-                        { icon: '💬', text: 'Please speak to a counselor urgently. Burnout worsens without intervention.', link: '#', linkText: 'Coming Soon' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', text: 'Please speak to a counselor urgently. Burnout worsens without intervention.', link: '#', linkText: 'Coming Soon' },
                         { icon: '📅', text: 'Take a mandatory rest day this week. Block it in your calendar now.', link: null, linkText: null },
-                        { icon: '🌬️', text: 'Start each morning with one Spirit Breathing Tool breathing session.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' }
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>', text: 'Start each morning with one Spirit Breathing Tool breathing session.', link: 'spirit-breathing-tool.html', linkText: 'Open Spirit Breathing Tool →' }
                     ]
                 };
             }
@@ -906,7 +935,7 @@
                     suggestions: [
                         { icon: '⚡', text: 'Enchaeos can push your reaction speed even further.', link: 'yodha_enchaeos.html', linkText: 'Play Enchaeos →' },
                         { icon: '💡', text: 'Lumina challenges your pattern recognition at harder levels.', link: 'yodha_lumina.html', linkText: 'Play Lumina →' },
-                        { icon: '⏱️', text: 'Use Focus Realm to document your peak study hours.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' }
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>', text: 'Use Focus Realm to document your peak study hours.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' }
                     ]
                 };
                 if (raw <= 16) return {
@@ -916,7 +945,7 @@
                     desc:     'Your focus is functional but improvable. Small habits make a big difference.',
                     crisis:   false,
                     suggestions: [
-                        { icon: '⏱️', text: 'Use strict Pomodoro — 25 min focus, 5 min break. No exceptions.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>', text: 'Use strict Pomodoro — 25 min focus, 5 min break. No exceptions.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
                         { icon: '📵', text: 'Put your phone in another room during study sessions.', link: null, linkText: null },
                         { icon: '🌀', text: 'Aura builds sustained attention — play it before studying.', link: 'yodha_aura.html', linkText: 'Play Aura →' }
                     ]
@@ -928,9 +957,9 @@
                     desc:     'Your focus is significantly impacted. Let\'s work on this together.',
                     crisis:   false,
                     suggestions: [
-                        { icon: '⏱️', text: 'Start with 5-minute study sprints only. Build up gradually.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>', text: 'Start with 5-minute study sprints only. Build up gradually.', link: 'Focusrealm.html', linkText: 'Open Focus Realm →' },
                         { icon: '🪷', text: 'Mandala drawing improves sustained attention through meditative practice.', link: 'yodha_mandala.html', linkText: 'Open Mandala →' },
-                        { icon: '💬', text: 'Chronic focus issues may signal anxiety or burnout — consider talking to a counselor.', link: 'psychologist.html', linkText: 'Book Session →' }
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', text: 'Chronic focus issues may signal anxiety or burnout — consider talking to a counselor.', link: 'psychologist.html', linkText: 'Book Session →' }
                     ]
                 };
             }
@@ -969,7 +998,7 @@
                     desc:     'Your mood seems stable and healthy right now.',
                     crisis:   false,
                     suggestions: [
-                        { icon: '📝', text: 'Keep using your journal to maintain self-awareness.', link: 'dashboard.html', linkText: 'Open Journal →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>', text: 'Keep using your journal to maintain self-awareness.', link: 'dashboard.html', linkText: 'Open Journal →' },
                         { icon: '🌀', text: 'Play Aura occasionally to keep your mind centered.', link: 'yodha_aura.html', linkText: 'Play Aura →' }
                     ]
                 };
@@ -981,8 +1010,8 @@
                     crisis:   false,
                     suggestions: [
                         { icon: '🚶‍♀️', text: 'Try to get 15 minutes of sunlight and gentle movement today.', link: null, linkText: null },
-                        { icon: '💬', text: 'Reach out to the anonymous community — you are not alone in feeling this way.', link: 'community.html', linkText: 'Open Community →' },
-                        { icon: '🧘', text: 'Use Spirit Breathing Tool for basic emotional grounding.', link: '../tools/spirit-breathing-tool.html', linkText: 'Try Breathing →' }
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', text: 'Reach out to the anonymous community — you are not alone in feeling this way.', link: 'community.html', linkText: 'Open Community →' },
+                        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M12 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 20h4l1.5 -3"/><path d="M18 20h-4l-1.4 -3.3"/><path d="M15 15l2 2.5"/><path d="M10 15l-2.5 2.5"/><path d="M12 17v-4"/><path d="M12 13l2.5 -3.5"/><path d="M12 13l-2.5 -3.5"/></svg>', text: 'Use Spirit Breathing Tool for basic emotional grounding.', link: '../tools/spirit-breathing-tool.html', linkText: 'Try Breathing →' }
                     ]
                 };
                 if (raw <= 14) return {
@@ -992,7 +1021,7 @@
                     desc:     'Moderate depressive symptoms detected. It is highly recommended to talk to a professional.',
                     crisis:   false,
                     suggestions: [
-                        { icon: '🏥', text: 'Please book a session with one of our verified counselors.', link: '#', linkText: 'Coming Soon' },
+                        { icon: '🏥', text: 'Please book a session with a counselor from our upcoming network.', link: '#', linkText: 'Coming Soon' },
                         { icon: '📓', text: 'Write down one small, achievable goal per day in your journal.', link: 'dashboard.html', linkText: 'Open Journal →' },
                         { icon: '🫂', text: 'Tell one trusted friend or family member how you have been feeling.', link: null, linkText: null }
                     ]
@@ -1333,6 +1362,69 @@
         t.classList.add('show');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    /* ─────────────────────────────────────────────
+       SHARE RESULT
+    ───────────────────────────────────────────── */
+    function shareResult() {
+        if (!lastResult || !activeTest) return;
+        const testName = activeTest.name;
+        const score = lastResult.raw;
+        const interpretation = lastResult.result.severity;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 1080;
+        canvas.height = 1080;
+        const ctx = canvas.getContext('2d');
+
+        // Background gradient
+        const grad = ctx.createLinearGradient(0, 0, 1080, 1080);
+        grad.addColorStop(0, '#1a0a2e');
+        grad.addColorStop(1, '#3d1a6e');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 1080, 1080);
+
+        // Logo text
+        ctx.fillStyle = '#b08ff0';
+        ctx.font = 'bold 36px sans-serif';
+        ctx.fillText('<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg> YodhaMind', 80, 100);
+
+        // Score circle
+        ctx.beginPath();
+        ctx.arc(540, 420, 180, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(124, 92, 191, 0.3)';
+        ctx.fill();
+        ctx.strokeStyle = '#7C5CBF';
+        ctx.lineWidth = 6;
+        ctx.stroke();
+
+        // Score number
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 120px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(score, 540, 460);
+
+        // Test name
+        ctx.font = '44px sans-serif';
+        ctx.fillStyle = '#b08ff0';
+        ctx.fillText(testName, 540, 530);
+
+        // Interpretation
+        ctx.font = '36px sans-serif';
+        ctx.fillStyle = '#e0d0ff';
+        ctx.fillText(interpretation, 540, 640);
+
+        // CTA
+        ctx.font = 'bold 28px sans-serif';
+        ctx.fillStyle = '#9b7de0';
+        ctx.fillText('yodhamind.me — Free for college students', 540, 980);
+
+        // Download
+        const link = document.createElement('a');
+        link.download = `yodhamind-${testName.toLowerCase().replace(/\s+/g,'-')}-result.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
     }
 
     /* ─────────────────────────────────────────────

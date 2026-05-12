@@ -44,6 +44,7 @@ const appointmentsRoute  = require('./routes/appointments');
 const communityRoute     = require('./routes/community');
 const trackRoute         = require('./routes/track');
 const adminRoute         = require('./routes/admin');
+const feedbackRoute      = require('./routes/feedback');
 
 const app  = express();
 const PORT = 3001; // Hardcoded for verification
@@ -155,6 +156,7 @@ app.use('/api/appointments',  appointmentsRoute);
 app.use('/api/community',     communityRoute);
 app.use('/api/track',         trackRoute);
 app.use('/api/admin',         adminRoute);
+app.use('/api/feedback',      feedbackRoute);
 
 /* ══════════════════════════════════════════════
    AI ADVISOR PROXY

@@ -457,3 +457,19 @@ SELECT
   a.updated_at
 FROM appointments a
 JOIN psychologist_profiles pp ON pp.id = a.psychologist_id;
+
+-- ════════════════════════════════════════════════════════════════
+--  PLATFORM FEEDBACK
+-- ════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS platform_feedback (
+  id          UUID          PRIMARY KEY DEFAULT uuid_generate_v4(),
+  rating      SMALLINT      CHECK (rating BETWEEN 1 AND 5),
+  message     TEXT,
+  page        VARCHAR(255),
+  user_agent  TEXT,
+  created_at  TIMESTAMPTZ   NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_platform_feedback_date
+  ON platform_feedback (created_at DESC);

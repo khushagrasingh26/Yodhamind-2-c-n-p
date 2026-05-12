@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="../shared/theme.js"></script>
+    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Untangle - YodhaMind</title>
     
     <!-- Fonts & Icons -->
@@ -12,8 +14,8 @@
     <style>
         :root {
             /* Dark Theme for this specific game (Relaxation/Space) */
-            --bg-start: #0f172a;
-            --bg-end: #1e1b4b;
+            --bg-start: var(--color-surface);
+            --bg-end: var(--color-bg);
             --primary: #6366f1;
             --secondary: #a855f7;
             --accent: #22d3ee;
@@ -59,7 +61,10 @@
             height: 100%;
             cursor: grab;
             outline: none;
+            will-change: transform;
         }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         canvas:active {
             cursor: grabbing;
@@ -367,25 +372,25 @@
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
       <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
+        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
         <span class="ym-sidebar__logo">YodhaMind</span>
       </div>
       <nav class="ym-sidebar__nav">
         <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
         <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◎</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
 <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
       </nav>
       <div class="ym-sidebar__footer">
         © 2026 YodhaMind<br>
@@ -400,10 +405,11 @@
         <span></span><span></span><span></span>
       </button>
       <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
+        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
         YodhaMind
       </a>
       <div class="ym-topbar__right">
+        <button class="ym-theme-toggle" onclick="window.ymToggleTheme()" id="ymThemeToggleBtn" aria-label="Toggle dark mode">🌙</button>
         <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
         <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
         <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
@@ -412,6 +418,10 @@
 
 
 <div id="game-container">
+    <div id="loading-screen" class="overlay active" style="z-index: 50; background: var(--bg-start);">
+        <div class="loader" style="width: 40px; height: 40px; border: 4px solid var(--glass-border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 20px;">Loading Game Engine...</p>
+    </div>
     <canvas id="canvas"></canvas>
 
     <!-- HUD -->
@@ -433,6 +443,9 @@
                 <button class="btn-top" id="btn-exit" aria-label="Exit Game">
                     <i class="fas fa-sign-out-alt"></i> <span class="btn-text">Exit</span>
                 </button>
+                <button class="btn-icon" id="btn-reset" aria-label="Reset All Progress" title="Reset to Level 1">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -450,7 +463,11 @@
         <h2>Harmony Restored</h2>
         <p id="affirmation-text" style="font-style: italic; color: var(--accent);">The energy flows freely again.</p>
         
-        <div class="stats-container">
+        <div id="stats-toggle-container" style="text-align: center; margin-bottom: 20px;">
+            <button class="btn-secondary" id="btn-toggle-stats" style="margin: 0 auto; padding: 8px 16px; font-size: 0.9rem;" onclick="document.getElementById('stats-container').style.display = 'flex'; this.style.display = 'none';">Show Performance Stats</button>
+        </div>
+        
+        <div class="stats-container" id="stats-container" style="display: none;">
             <div class="stat-box">
                 <span>Time</span>
                 <strong id="stat-time">0:00</strong>
@@ -666,7 +683,7 @@ class Game {
         this.setupEvents();
         this.initStartScreen();
         
-        requestAnimationFrame((t) => this.loop(t));
+        this.animationId = requestAnimationFrame((t) => this.loop(t));
     }
 
     /**
@@ -772,7 +789,7 @@ class Game {
 
         this.width = window.innerWidth;
         this.height = window.innerHeight;
-        const dpr = window.devicePixelRatio || 1;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
         
         this.canvas.width = this.width * dpr;
         this.canvas.height = this.height * dpr;
@@ -857,6 +874,14 @@ class Game {
         this.canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, {passive: false});
         window.addEventListener('touchend', handleEnd);
 
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cancelAnimationFrame(this.animationId);
+            } else {
+                this.animationId = requestAnimationFrame((t) => this.loop(t));
+            }
+        });
+
         // Core UI Flow Controls
         document.getElementById('btn-next').addEventListener('click', () => {
             document.getElementById('complete-screen').classList.remove('active');
@@ -897,6 +922,15 @@ class Game {
             }
         });
 
+        // Reset All Progress
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            if (confirm('Reset all progress back to Level 1? This cannot be undone.')) {
+                localStorage.removeItem('untangle_level');
+                localStorage.removeItem('untangle_save');
+                this.loadLevel(1);
+            }
+        });
+
         document.getElementById('btn-share').addEventListener('click', (e) => {
             const shareText = `I just untangled Level ${this.level} on YodhaMind in ${this.formattedTime} with ${this.moves} moves 🧠⚔️ — can you beat it?`;
             const btn = e.currentTarget;
@@ -916,6 +950,12 @@ class Game {
         this.level = n;
         localStorage.setItem('untangle_level', n); 
         
+        // Reset toggle UI
+        const statsContainer = document.getElementById('stats-container');
+        const toggleBtn = document.getElementById('btn-toggle-stats');
+        if(statsContainer) statsContainer.style.display = 'none';
+        if(toggleBtn) toggleBtn.style.display = 'block';
+
         this.isLevelComplete = false;
         this.draggingNode = null;
         this.nodes = [];
@@ -1214,12 +1254,16 @@ class Game {
         });
         this.ctx.globalAlpha = 1;
 
-        requestAnimationFrame((t) => this.loop(t));
+        this.animationId = requestAnimationFrame((t) => this.loop(t));
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const game = new Game();
+    setTimeout(() => {
+        const game = new Game();
+        const loader = document.getElementById('loading-screen');
+        if (loader) loader.classList.remove('active');
+    }, 0);
 });
 
 </script>

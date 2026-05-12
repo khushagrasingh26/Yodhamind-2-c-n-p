@@ -16,20 +16,33 @@
 /* ══════════════════════════════════════════════
    DESIGN TOKENS  (shared across all pages)
 ══════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
-  --ym-primary:      #7C5CBF;
-  --ym-accent:       #56CFB2;
-  --ym-text:         #2D2D2D;
-  --ym-text-light:   #64748b;
-  --ym-soft:         #F0EBF8;
-  --ym-warm:         #FFF8F0;
-  --ym-glass:        rgba(255, 255, 255, 0.92);
-  --ym-glass-border: rgba(255, 255, 255, 0.5);
+  --ym-primary:      #6236ff;
+  --ym-accent:       #3b82f6;
+  --ym-text:         #0a0514;
+  --ym-text-light:   #6b5f80;
+  --ym-soft:         #f8f6fc;
+  --ym-warm:         #ffffff;
+  --ym-glass:        rgba(255, 255, 255, 0.7);
+  --ym-glass-border: rgba(255, 255, 255, 0.4);
+  --ym-bg:           #fdfcfc;
+  --ym-surface:      #ffffff;
+  --ym-border:       #eae4f2;
   --ym-topbar-height: 60px;
   --ym-radius-btn:   50px;
   --ym-radius-card:  24px;
-  --ym-shadow-soft:  0 20px 40px rgba(0, 0, 0, 0.05);
+  --ym-shadow-soft:  0 8px 24px rgba(98, 54, 255, 0.06);
 }
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+/* ── Dark Mode removed — light only ── */
+
+
 
 /* ══════════════════════════════════════════════
    1. TOP NAVBAR
@@ -39,18 +52,19 @@
   top: 0; left: 0; width: 100%;
   height: 60px;
   background: var(--ym-glass);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-bottom: 1px solid var(--ym-glass-border);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  transition: box-shadow 0.3s, height 0.3s;
+  transition: box-shadow 0.3s, height 0.3s, background 0.3s;
 }
 .ym-topbar.scrolled {
-  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 8px 32px rgba(98, 54, 255, 0.08);
+  background: rgba(255, 255, 255, 0.85);
   height: 54px;
 }
 
@@ -135,11 +149,11 @@
   padding: 8px 20px;
   border-radius: var(--ym-radius-btn);
   font-family: inherit;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(124, 92, 191, 0.25);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(124, 92, 191, 0.3);
+  transition: all 0.25s ease;
   white-space: nowrap;
   min-height: 40px;
   display: inline-flex;
@@ -147,11 +161,31 @@
   gap: 6px;
 }
 .ym-auth-btn:hover {
+  background: var(--ym-purple-800, #4a2d8a);
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(124, 92, 191, 0.35);
+  box-shadow: 0 6px 20px rgba(124, 92, 191, 0.4);
 }
 .ym-auth-btn:active {
   transform: scale(0.97);
+}
+
+.ym-theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--color-text-primary, #0f172a);
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+  margin-right: 8px;
+}
+.ym-theme-toggle:hover {
+  background: var(--color-border, #e2e8f0);
+  transform: scale(1.1);
 }
 
 /* ══════════════════════════════════════════════
@@ -194,7 +228,7 @@
   position: absolute;
   top: 56px;
   right: 12px;
-  background: white;
+  background: var(--ym-surface, white);
   border-radius: 16px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
   padding: 8px 0;
@@ -280,7 +314,8 @@
   max-width: 85vw;
   height: 100vh;
   height: 100dvh;
-  background: white;
+  background: var(--ym-surface, white);
+  color: var(--ym-text);
   z-index: 1050;
   transform: translateX(-100%);
   transition: transform 0.35s cubic-bezier(0.32, 1.2, 0.64, 1);
@@ -332,10 +367,21 @@
   color: var(--ym-primary);
 }
 .ym-sidebar__link-icon {
-  font-size: 1.2rem;
   width: 24px;
   text-align: center;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ym-nav-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ym-sidebar__link:hover .ym-nav-icon,
+.ym-sidebar__link.active .ym-nav-icon {
+  transform: scale(1.15) rotate(2deg);
 }
 .ym-sidebar__section-label {
   padding: 16px 24px 8px;
@@ -503,6 +549,69 @@
 .ym-google-btn.loading {
   pointer-events: none;
   opacity: 0.7;
+}
+
+/* Email Auth */
+.ym-auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
+}
+.ym-auth-divider::before,
+.ym-auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.ym-auth-divider:not(:empty)::before { margin-right: 10px; }
+.ym-auth-divider:not(:empty)::after { margin-left: 10px; }
+
+.ym-auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: white;
+  font-family: inherit;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.ym-auth-input:focus {
+  outline: none;
+  border-color: rgba(86, 207, 178, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ym-email-btn {
+  width: 100%;
+  padding: 12px;
+  background: rgba(86, 207, 178, 0.1);
+  color: #56cfb2;
+  border: 1px solid rgba(86, 207, 178, 0.3);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 8px;
+}
+.ym-email-btn:hover {
+  background: rgba(86, 207, 178, 0.2);
+}
+.ym-email-btn.secondary {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border-color: transparent;
+}
+.ym-email-btn.secondary:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .ym-google-btn svg,
@@ -798,3 +907,134 @@
             .breath-controls { gap: 8px; }
             .breath-controls .btn-cta { min-height: 44px; padding: 10px 20px; }
         }
+
+/* ══════════════════════════════════════════════
+   SKIP-TO-CONTENT LINK
+══════════════════════════════════════════════ */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  background: var(--ym-primary, #7C5CBF);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 0 0 8px 8px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  z-index: 9999;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE BOTTOM TAB BAR
+══════════════════════════════════════════════ */
+.ym-bottom-tab-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .ym-bottom-tab-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    z-index: 1000;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -8px 32px rgba(98, 54, 255, 0.08);
+  }
+
+  .ym-tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    color: var(--ym-text-light);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-width: 48px;
+    min-height: 48px;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ym-tab-item.active,
+  .ym-tab-item:hover,
+  .ym-tab-item:focus {
+    color: var(--ym-primary);
+    background: var(--ym-soft);
+    transform: translateY(-2px);
+  }
+
+  .ym-tab-item svg {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    transition: transform 0.3s;
+  }
+
+  .ym-tab-item:hover svg,
+  .ym-tab-item.active svg {
+    transform: scale(1.1);
+  }
+
+  /* Push page content above the tab bar */
+  body {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Crisis bar removed — support info is in sidebar */
+.ym-crisis-bar { display: none !important; }
+
+/* ══════════════════════════════════════════════
+   FOCUS VISIBLE (global)
+══════════════════════════════════════════════ */
+*:focus-visible {
+  outline: 3px solid var(--ym-primary, #7C5CBF);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ══════════════════════════════════════════════
+   REDUCED MOTION (global)
+══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   LEGACY ELEMENT OVERRIDES
+   Hide old mobile-nav and crisis-strip since
+   they are replaced by ym-bottom-tab-bar and
+   ym-crisis-bar (dynamically injected)
+══════════════════════════════════════════════ */
+.mobile-nav {
+  display: none !important;
+}
+
+.crisis-strip {
+  display: none !important;
+}

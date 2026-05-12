@@ -32,7 +32,10 @@
   /* ── Ensure Supabase JS is loaded ──────────── */
   function ensureSupabase(callback) {
     if (window.supabase && window.supabase.createClient) {
-      if (!sb) sb = window.supabase.createClient(SB_URL, SB_KEY);
+      if (!sb) {
+        sb = window.supabase.createClient(SB_URL, SB_KEY);
+        window._supabase = sb;
+      }
       callback();
       return;
     }
@@ -42,6 +45,7 @@
     script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
     script.onload = function () {
       sb = window.supabase.createClient(SB_URL, SB_KEY);
+      window._supabase = sb;
       callback();
     };
     script.onerror = function () {
@@ -62,7 +66,7 @@
       '  <div class="ym-auth-modal">',
       '    <button class="ym-auth-modal__close" id="ymAuthClose" aria-label="Close">✕</button>',
       '    <div class="ym-auth-modal__content">',
-      '      <div class="ym-auth-modal__logo">🧠</div>',
+      '      <div class="ym-auth-modal__logo"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></div>',
       '      <div class="ym-auth-modal__title">Welcome to YodhaMind</div>',
       '      <div class="ym-auth-modal__subtitle">Sign in to access your wellness journey</div>',
       '      <div class="ym-auth-modal__error" id="ymAuthError"></div>',
@@ -75,6 +79,11 @@
       '        </svg>',
       '        <span id="ymGoogleBtnText">Continue with Google</span>',
       '      </button>',
+      '      <div class="ym-auth-divider">or</div>',
+      '      <input type="email" id="ymAuthEmail" class="ym-auth-input" placeholder="Email address">',
+      '      <input type="password" id="ymAuthPassword" class="ym-auth-input" placeholder="Password">',
+      '      <button class="ym-email-btn" id="ymEmailSignInBtn">Sign In with Email</button>',
+      '      <button class="ym-email-btn secondary" id="ymEmailSignUpBtn">Sign Up</button>',
       '      <div class="ym-auth-modal__footer">',
       '        By continuing, you agree to our<br>',
       '        <a href="#">Terms of Service</a> · <a href="#">Privacy Policy</a>',
@@ -96,6 +105,10 @@
 
     // Bind Google sign-in
     $('#ymGoogleBtn').addEventListener('click', doGoogleSignIn);
+
+    // Bind Email sign-in and sign-up
+    $('#ymEmailSignInBtn').addEventListener('click', doEmailSignIn);
+    $('#ymEmailSignUpBtn').addEventListener('click', doEmailSignUp);
   }
 
   /* ══════════════════════════════════════════════
@@ -116,10 +129,10 @@
       '    <div class="ym-avatar-dropdown__name" id="ymDropdownName">User</div>',
       '    <div class="ym-avatar-dropdown__email" id="ymDropdownEmail">user@email.com</div>',
       '  </div>',
-      '  <a href="/student-dashboard" class="ym-avatar-dropdown__item">📊 My Dashboard</a>',
-      isAdmin ? '  <a href="/dev-admin" class="ym-avatar-dropdown__item" id="ymAdminDropdownLink">⚙️ Developer Dashboard</a>' : '',
-      '  <a href="/dashboard" class="ym-avatar-dropdown__item">🏠 Wellness Hub</a>',
-      '  <a href="/journal" class="ym-avatar-dropdown__item">📝 Journal</a>',
+      '  <a href="/student-dashboard" class="ym-avatar-dropdown__item"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> My Dashboard</a>',
+      isAdmin ? '  <a href="/dev-admin" class="ym-avatar-dropdown__item" id="ymAdminDropdownLink"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Developer Dashboard</a>' : '',
+      '  <a href="/dashboard" class="ym-avatar-dropdown__item"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Wellness Hub</a>',
+      '  <a href="/journal" class="ym-avatar-dropdown__item"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Journal</a>',
       '  <div class="ym-avatar-dropdown__divider"></div>',
       '  <button class="ym-avatar-dropdown__item ym-avatar-dropdown__item--danger" id="ymSignOutBtn">🚪 Sign Out</button>',
       '</div>'
@@ -204,6 +217,95 @@
         errEl.classList.add('show');
       }
       console.error('[YM Auth] Google sign-in error:', err);
+    });
+  }
+
+  /* ══════════════════════════════════════════════
+     EMAIL SIGN-IN / SIGN-UP
+  ══════════════════════════════════════════════ */
+  function doEmailSignIn() {
+    if (!sb) return;
+
+    var email = $('#ymAuthEmail').value.trim();
+    var password = $('#ymAuthPassword').value;
+    var btn = $('#ymEmailSignInBtn');
+    var errEl = $('#ymAuthError');
+
+    if (!email || !password) {
+      if (errEl) {
+        errEl.textContent = 'Please enter both email and password.';
+        errEl.classList.add('show');
+      }
+      return;
+    }
+
+    if (errEl) errEl.classList.remove('show');
+    btn.textContent = 'Signing in...';
+    btn.disabled = true;
+
+    sb.auth.signInWithPassword({
+      email: email,
+      password: password
+    }).then(function (result) {
+      btn.textContent = 'Sign In with Email';
+      btn.disabled = false;
+      if (result.error) throw result.error;
+      // Success is handled by onAuthStateChange in checkSession
+    }).catch(function (err) {
+      btn.textContent = 'Sign In with Email';
+      btn.disabled = false;
+      if (errEl) {
+        errEl.textContent = err.message || 'Invalid email or password.';
+        errEl.classList.add('show');
+      }
+    });
+  }
+
+  function doEmailSignUp() {
+    if (!sb) return;
+
+    var email = $('#ymAuthEmail').value.trim();
+    var password = $('#ymAuthPassword').value;
+    var btn = $('#ymEmailSignUpBtn');
+    var errEl = $('#ymAuthError');
+
+    if (!email || !password) {
+      if (errEl) {
+        errEl.textContent = 'Please enter both email and password.';
+        errEl.classList.add('show');
+      }
+      return;
+    }
+
+    if (errEl) errEl.classList.remove('show');
+    btn.textContent = 'Signing up...';
+    btn.disabled = true;
+
+    sb.auth.signUp({
+      email: email,
+      password: password
+    }).then(function (result) {
+      btn.textContent = 'Sign Up';
+      btn.disabled = false;
+      if (result.error) throw result.error;
+      if (errEl) {
+        // Many times Supabase requires email confirmation
+        errEl.style.backgroundColor = 'rgba(34, 197, 94, 0.1)';
+        errEl.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+        errEl.style.color = '#4ade80';
+        errEl.textContent = 'Success! You can now sign in (or check your email for confirmation).';
+        errEl.classList.add('show');
+      }
+    }).catch(function (err) {
+      btn.textContent = 'Sign Up';
+      btn.disabled = false;
+      if (errEl) {
+        errEl.style.backgroundColor = '';
+        errEl.style.borderColor = '';
+        errEl.style.color = '';
+        errEl.textContent = err.message || 'Sign-up failed.';
+        errEl.classList.add('show');
+      }
     });
   }
 
@@ -293,7 +395,7 @@
                 adminLink.href = '/dev-admin';
                 adminLink.className = 'ym-sidebar__link';
                 adminLink.id = 'ymAdminSidebarLink';
-                adminLink.innerHTML = '<span class="ym-sidebar__link-icon">⚙️</span>Developer Dashboard';
+                adminLink.innerHTML = '<span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>Developer Dashboard';
                 var dashboardLink = sidebarNav.querySelector('a[href="/dashboard"]');
                 if (dashboardLink) dashboardLink.after(adminLink);
                 else sidebarNav.appendChild(adminLink);

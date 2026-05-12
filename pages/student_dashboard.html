@@ -1,8 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="../css/tokens.css">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W7RQTL2ND7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W7RQTL2ND7');
+</script>
+<script>
+function trackEvent(action) {
+  if (typeof gtag === 'function') {
+    gtag('event', action, {
+      event_category: 'engagement',
+      event_label: action
+    });
+  }
+}
+</script>
+
+
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>YodhaMind — My Dashboard</title>
   <meta name="description" content="Your personal wellness dashboard. Track mood, view sessions, and manage your mental health journey.">
   <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
@@ -326,6 +349,11 @@
     .toast.ok { background: linear-gradient(135deg, var(--primary), var(--accent)); }
   </style>
   <link rel="stylesheet" href="../shared/nav.css" />
+    <!-- Vercel Analytics -->
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -333,25 +361,25 @@
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
       <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
+        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
         <span class="ym-sidebar__logo">YodhaMind</span>
       </div>
       <nav class="ym-sidebar__nav">
         <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
         <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◎</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
         <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
       </nav>
       <div class="ym-sidebar__footer">
         © 2026 YodhaMind<br>
@@ -366,7 +394,7 @@
         <span></span><span></span><span></span>
       </button>
       <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
+        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
         YodhaMind
       </a>
       <div class="ym-topbar__right">
@@ -401,7 +429,7 @@
 
   <!-- Tab bar -->
   <div class="dash-tabs">
-    <button class="tab-btn active" data-view="home" onclick="sv('home',this)">🏠 Home</button>
+    <button class="tab-btn active" data-view="home" onclick="sv('home',this)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</button>
     <button class="tab-btn" data-view="mood" onclick="sv('mood',this)">😊 Mood</button>
     <button class="tab-btn" data-view="notifs" onclick="sv('notifs',this)">🔔 Alerts</button>
     <button class="tab-btn" data-view="sessions" onclick="sv('sessions',this)">📅 Sessions</button>
@@ -455,11 +483,11 @@
     <div class="card" style="margin-top:16px">
       <div class="card-title">Quick Access ⚡</div>
       <div class="tools-grid">
-        <a class="tool-card" href="/tools/spirit-breathing-tool.html"><span class="tool-icon">🌬️</span><div class="tool-name">Breathing</div><div class="tool-sub">Box & 4-7-8</div></a>
-        <a class="tool-card" href="/games"><span class="tool-icon">🎮</span><div class="tool-name">Mind Games</div><div class="tool-sub">5 focus games</div></a>
+        <a class="tool-card" href="/tools/spirit-breathing-tool.html"><span class="tool-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></span><div class="tool-name">Breathing</div><div class="tool-sub">Box & 4-7-8</div></a>
+        <a class="tool-card" href="/games"><span class="tool-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span><div class="tool-name">Mind Games</div><div class="tool-sub"><span data-config-key="TOTAL_GAMES">7</span> focus games</div></a>
         <a class="tool-card" href="/journal"><span class="tool-icon">📔</span><div class="tool-name">Journal</div><div class="tool-sub">Write & reflect</div></a>
-        <a class="tool-card" href="/tools/Focusrealm.html"><span class="tool-icon">⏱️</span><div class="tool-name">Focus Timer</div><div class="tool-sub">Pomodoro</div></a>
-        <a class="tool-card" href="/assessment"><span class="tool-icon">📊</span><div class="tool-name">Assessment</div><div class="tool-sub">Check wellness</div></a>
+        <a class="tool-card" href="/tools/Focusrealm.html"><span class="tool-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg></span><div class="tool-name">Focus Timer</div><div class="tool-sub">Pomodoro</div></a>
+        <a class="tool-card" href="/assessment"><span class="tool-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span><div class="tool-name">Assessment</div><div class="tool-sub">Check wellness</div></a>
         <a class="tool-card" href="/community"><span class="tool-icon">🌿</span><div class="tool-name">Community</div><div class="tool-sub">Peer support</div></a>
       </div>
     </div>
@@ -507,12 +535,12 @@
   <!-- TOOLS (hidden — accessed from home view) -->
   <div class="view" id="view-tools">
     <div class="card">
-      <div class="card-title">Wellness Tools 🧘</div>
+      <div class="card-title">Wellness Tools <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M12 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 20h4l1.5 -3"/><path d="M18 20h-4l-1.4 -3.3"/><path d="M15 15l2 2.5"/><path d="M10 15l-2.5 2.5"/><path d="M12 17v-4"/><path d="M12 13l2.5 -3.5"/><path d="M12 13l-2.5 -3.5"/></svg></div>
       <div class="tools-grid">
-        <a class="tool-card" href="/tools/spirit-breathing-tool.html"><span class="tool-icon">🌬️</span><div class="tool-name">Breathing</div><div class="tool-sub">Guided exercises</div></a>
+        <a class="tool-card" href="/tools/spirit-breathing-tool.html"><span class="tool-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></span><div class="tool-name">Breathing</div><div class="tool-sub">Guided exercises</div></a>
         <a class="tool-card" href="/games"><span class="tool-icon">🧩</span><div class="tool-name">Mind Games</div><div class="tool-sub">5 cognitive games</div></a>
         <a class="tool-card" href="/journal"><span class="tool-icon">📔</span><div class="tool-name">Journal</div><div class="tool-sub">Daily reflection</div></a>
-        <a class="tool-card" href="/tools/Focusrealm.html"><span class="tool-icon">⏱️</span><div class="tool-name">Pomodoro</div><div class="tool-sub">Focus timer</div></a>
+        <a class="tool-card" href="/tools/Focusrealm.html"><span class="tool-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg></span><div class="tool-name">Pomodoro</div><div class="tool-sub">Focus timer</div></a>
         <a class="tool-card" href="/assessment"><span class="tool-icon">🧪</span><div class="tool-name">Self-Assessment</div><div class="tool-sub">Stress & Anxiety</div></a>
         <a class="tool-card" href="/community"><span class="tool-icon">🌿</span><div class="tool-name">Community</div><div class="tool-sub">Peer support</div></a>
       </div>
@@ -721,7 +749,7 @@ function renderNotifsFull() {
 }
 
 function notifHTML(n) {
-  const icons = { booking_confirmed:'✅', booking_cancelled:'❌', new_message:'💬', new_booking:'📅' };
+  const icons = { booking_confirmed:'✅', booking_cancelled:'❌', new_message:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', new_booking:'📅' };
   const age = relTime(n.created_at);
   return `<div class="notif-item ${n.is_read ? '' : 'unread'}" onclick="openNotif('${n.id}','${n.link||''}')">
     <div class="notif-icon">${icons[n.type] || '🔔'}</div>

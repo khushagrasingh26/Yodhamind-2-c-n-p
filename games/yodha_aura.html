@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="../shared/theme.js"></script>
+    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yodha Aura - Energy Flow</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         /* --- YodhaMind Design --- */
         :root {
-            --bg: #0f172a;
-            --text: #f8fafc;
-            --primary: #667eea;
+            --bg: var(--color-bg);
+            --text: var(--color-text-primary);
+            --primary: var(--color-accent);
         }
         body {
             margin: 0; padding: 0; background: var(--bg); color: var(--text);
@@ -19,6 +21,7 @@
             height: 100vh;
             user-select: none; /* Prevents text selection on touch */
             -webkit-user-select: none;
+            transition: background 0.3s, color 0.3s;
         }
         
         /* Canvas */
@@ -26,35 +29,36 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1; cursor: crosshair;
             touch-action: none; /* Prevents scrolling on mobile */
+            will-change: transform;
         }
 
         /* UI Layer */
         .ui-layer {
             position: absolute; bottom: 40px; z-index: 10;
             display: flex; gap: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px);
             padding: 8px 12px; border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             max-width: 90%;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .mode-btn {
-            background: transparent; border: 1px solid rgba(255,255,255,0.2);
-            color: rgba(255,255,255,0.7);
+            background: transparent; border: 1px solid rgba(0,0,0,0.1);
+            color: var(--text);
             padding: 10px 20px; border-radius: 20px; cursor: pointer;
             font-family: inherit; font-weight: 600; font-size: 0.85rem;
             transition: all 0.3s;
             white-space: nowrap;
         }
-        .mode-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+        .mode-btn:hover { background: rgba(98, 54, 255, 0.06); color: var(--text); }
         .mode-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #6236ff, #3b82f6);
             color: white; border-color: transparent;
-            box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 15px rgba(98, 54, 255, 0.4);
             transform: scale(1.05);
         }
 
@@ -69,10 +73,10 @@
 
         /* Minimalist Ghost Buttons */
         .ghost-btn {
-            position: absolute; top: 25px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: rgba(255, 255, 255, 0.8);
+            position: absolute; top: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text);
             padding: 8px 16px;
             border-radius: 30px;
             font-family: 'Poppins', sans-serif;
@@ -83,13 +87,14 @@
             backdrop-filter: blur(4px);
             display: flex; align-items: center; gap: 6px;
             text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
         .ghost-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: white;
+            background: rgba(238, 232, 248, 0.95);
+            border-color: rgba(98, 54, 255, 0.3);
+            color: var(--text);
             transform: translateY(-2px);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(98, 54, 255, 0.1);
         }
 
         /* Mobile specific adjustments */
@@ -130,25 +135,25 @@ body > div[id*="sound"] {
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
       <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
+        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
         <span class="ym-sidebar__logo">YodhaMind</span>
       </div>
       <nav class="ym-sidebar__nav">
         <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
         <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◎</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
 <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
       </nav>
       <div class="ym-sidebar__footer">
         © 2026 YodhaMind<br>
@@ -163,10 +168,11 @@ body > div[id*="sound"] {
         <span></span><span></span><span></span>
       </button>
       <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
+        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
         YodhaMind
       </a>
       <div class="ym-topbar__right">
+        <button class="ym-theme-toggle" onclick="window.ymToggleTheme()" id="ymThemeToggleBtn" aria-label="Toggle dark mode">🌙</button>
         <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
         <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
         <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
@@ -174,10 +180,16 @@ body > div[id*="sound"] {
     </header>
 
 
+    <div id="loading-screen" style="position: absolute; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:50; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+        <div style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 20px;">Loading Aura...</p>
+        <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+    </div>
+
     <canvas id="c"></canvas>
 
     <button class="ghost-btn" onclick="window.location.href='/dashboard'" style="left: 25px;">
-        🏠 Home
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home
     </button>
     <button class="ghost-btn" onclick="window.location.href='/games'" style="right: 25px;">
         ✕ Exit
@@ -192,6 +204,9 @@ body > div[id*="sound"] {
         <button class="mode-btn active" onclick="setMode('repel', this)">Repel</button>
         <button class="mode-btn" onclick="setMode('attract', this)">Attract</button>
         <button class="mode-btn" onclick="setMode('calm', this)">Calm</button>
+        <div style="border-left: 1px solid rgba(255,255,255,0.2); margin: 0 5px; height: 20px; align-self: center;"></div>
+        <button class="mode-btn" onclick="adjustSpeed(-0.2)">- Speed</button>
+        <button class="mode-btn" onclick="adjustSpeed(0.2)">+ Speed</button>
     </div>
 
     <script>
@@ -206,10 +221,29 @@ body > div[id*="sound"] {
         let particles = [];
         let mouse = { x: -1000, y: -1000, active: false };
         let mode = 'repel'; // repel, attract, calm
+        let simulationSpeed = parseFloat(localStorage.getItem('yodha_aura_speed')) || 0.4;
+        
+        // Audio Drone
+        const audioCtx = window.AudioContext ? new AudioContext() : null;
+        let droneOsc = null;
+        let droneGain = null;
+
+        function initAudio() {
+            if (!audioCtx || droneOsc) return;
+            droneOsc = audioCtx.createOscillator();
+            droneGain = audioCtx.createGain();
+            droneOsc.type = 'sine';
+            droneOsc.frequency.value = 100;
+            droneGain.gain.value = 0;
+            droneOsc.connect(droneGain);
+            droneGain.connect(audioCtx.destination);
+            droneOsc.start();
+        }
         
         // Configuration
         const IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const PIXEL_RATIO = window.devicePixelRatio || 1;
+        const PIXEL_RATIO = Math.min(window.devicePixelRatio || 1, 2);
+        let animationId;
         
         // Optimisation: Reduce particles on mobile, standard on desktop
         const PARTICLE_COUNT = IS_MOBILE ? 350 : 800;
@@ -262,8 +296,8 @@ body > div[id*="sound"] {
                 }
 
                 // Physics
-                this.x += this.vx;
-                this.y += this.vy;
+                this.x += this.vx * simulationSpeed;
+                this.y += this.vy * simulationSpeed;
 
                 // Boundaries (Bounce)
                 if(this.x < 0 || this.x > width) this.vx *= -1;
@@ -305,6 +339,14 @@ body > div[id*="sound"] {
             });
             canvas.addEventListener('mouseleave', () => { mouse.active = false; });
             canvas.addEventListener('mousedown', pulse);
+            
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    cancelAnimationFrame(animationId);
+                } else {
+                    animationId = requestAnimationFrame(loop);
+                }
+            });
 
             // Touch Input (Mobile Optimized)
             canvas.addEventListener('touchstart', e => {
@@ -357,11 +399,21 @@ body > div[id*="sound"] {
         // Expose to window for HTML buttons
         window.setMode = function(m, btn) {
             mode = m;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.mode-btn').forEach(b => {
+                if(b.textContent === 'Repel' || b.textContent === 'Attract' || b.textContent === 'Calm') {
+                    b.classList.remove('active');
+                }
+            });
             if(btn) btn.classList.add('active');
         };
 
+        window.adjustSpeed = function(delta) {
+            simulationSpeed = Math.max(0.1, Math.min(2.0, simulationSpeed + delta));
+            localStorage.setItem('yodha_aura_speed', simulationSpeed);
+        };
+
         function pulse() {
+            initAudio(); // Initialize audio on first interaction
             const cx = mouse.active ? mouse.x : width/2;
             const cy = mouse.active ? mouse.y : height/2;
             
@@ -417,12 +469,28 @@ body > div[id*="sound"] {
                         }
                     }
                 }
+
+                // Update drone frequency based on mouse movement
+                if (droneOsc && droneGain) {
+                    const centerDist = Math.sqrt(Math.pow(mouse.x - width/2, 2) + Math.pow(mouse.y - height/2, 2));
+                    const targetFreq = 100 + (centerDist / (width/2)) * 100;
+                    droneOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.5);
+                    droneGain.gain.setTargetAtTime(0.1, audioCtx.currentTime, 0.5);
+                }
+            } else {
+                if (droneGain) {
+                    droneGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1.0);
+                }
             }
 
-            requestAnimationFrame(loop);
+            animationId = requestAnimationFrame(loop);
         }
 
-        init();
+        setTimeout(() => {
+            init();
+            const loader = document.getElementById('loading-screen');
+            if (loader) loader.style.display = 'none';
+        }, 0);
 
     </script>
     <script src="../shared/game-sound-toggle.js"></script>

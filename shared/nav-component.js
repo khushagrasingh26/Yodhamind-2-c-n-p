@@ -632,7 +632,336 @@
 
   }
 
+  /* ══════════════════════════════════════════
+     11. MOBILE BOTTOM TAB BAR
+  ══════════════════════════════════════════ */
+  function initBottomTabBar() {
+    if (document.querySelector('.ym-bottom-tab-bar')) return; // already exists
+
+    var bar = document.createElement('nav');
+    bar.className = 'ym-bottom-tab-bar';
+    bar.setAttribute('aria-label', 'Main navigation');
+
+    var tabs = [
+      { href: '/', label: 'Home', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' },
+      { href: '/assessment', label: 'Check In', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' },
+      { href: '/games', label: 'Gym', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>' },
+      { href: '/journal', label: 'Journal', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>' },
+      { href: '/dashboard', label: 'You', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' }
+    ];
+
+    var currentPath = window.location.pathname;
+
+    tabs.forEach(function(tab) {
+      var a = document.createElement('a');
+      a.href = tab.href;
+      a.className = 'ym-tab-item';
+      a.setAttribute('aria-label', tab.label);
+
+      // Match active tab
+      if (tab.href === currentPath ||
+          (tab.href === '/' && (currentPath === '/' || currentPath === '/index.html' || currentPath.endsWith('/pages/index.html'))) ||
+          (tab.href !== '/' && currentPath.indexOf(tab.href) === 0)) {
+        a.classList.add('active');
+      }
+
+      a.innerHTML = tab.icon + '<span>' + tab.label + '</span>';
+      bar.appendChild(a);
+    });
+
+    document.body.appendChild(bar);
+  }
+
+  /* ══════════════════════════════════════════
+     12. PERSISTENT CRISIS FOOTER BAR
+  ══════════════════════════════════════════ */
+  function initCrisisBar() {
+    // Don't add on admin/auth pages
+    if (window.location.pathname.indexOf('dev_admin') !== -1 ||
+        window.location.pathname.indexOf('student_auth') !== -1) return;
+    if (document.querySelector('.ym-crisis-bar')) return; // already exists
+
+    var bar = document.createElement('div');
+    bar.className = 'ym-crisis-bar';
+    bar.setAttribute('role', 'complementary');
+    bar.setAttribute('aria-label', 'Mental health crisis support');
+    bar.innerHTML = [
+      '<span class="ym-crisis-bar__text">\u{1F198} In crisis?</span>',
+      '<a href="tel:9152987821" class="ym-crisis-bar__link">iCall: 9152987821</a>',
+      '<span class="ym-crisis-bar__sep" aria-hidden="true">\u00B7</span>',
+      '<a href="tel:18602662345" class="ym-crisis-bar__link">Vandrevala: 1860-266-2345</a>',
+      '<span class="ym-crisis-bar__sep" aria-hidden="true">\u00B7</span>',
+      '<a href="tel:104" class="ym-crisis-bar__link">104 (toll-free)</a>'
+    ].join('');
+
+    document.body.appendChild(bar);
+  }
+
+  /* ══════════════════════════════════════════
+     13. SKIP-TO-CONTENT LINK
+  ══════════════════════════════════════════ */
+  function initSkipLink() {
+    if (document.querySelector('.skip-link')) return; // already exists
+
+    // Create skip link
+    var link = document.createElement('a');
+    link.href = '#main-content';
+    link.className = 'skip-link';
+    link.textContent = 'Skip to main content';
+    document.body.insertBefore(link, document.body.firstChild);
+
+    // Add id="main-content" to the first <main> or first <section> after header
+    var main = document.querySelector('main');
+    if (main && !main.id) {
+      main.id = 'main-content';
+    } else if (!main) {
+      // Find first section after header/topbar
+      var firstSection = document.querySelector('.ym-topbar ~ section, header ~ section, nav ~ section');
+      if (firstSection && !firstSection.id) {
+        firstSection.id = 'main-content';
+      }
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     14. DARK MODE THEME TOGGLE
+  ══════════════════════════════════════════ */
+  function initThemeToggle() {
+    // Apply saved theme immediately (before paint)
+    var saved = localStorage.getItem('ym_theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+
+    // Don't inject if already exists
+    if (document.getElementById('ym-theme-toggle')) return;
+
+    var rightArea = $('.ym-topbar__right');
+    if (!rightArea) return;
+
+    var btn = document.createElement('button');
+    btn.id = 'ym-theme-toggle';
+    btn.setAttribute('aria-label', 'Toggle dark mode');
+    btn.setAttribute('aria-pressed', saved === 'dark' ? 'true' : 'false');
+    btn.style.cssText = [
+      'background:none', 'border:none', 'cursor:pointer', 'padding:8px',
+      'display:flex', 'align-items:center', 'justify-content:center',
+      'border-radius:50%', 'transition:background 0.2s',
+      'color:var(--ym-text)', 'width:40px', 'height:40px'
+    ].join(';');
+
+    function getIcon(isDark) {
+      return isDark
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    }
+
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+                 (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    btn.innerHTML = getIcon(isDark);
+
+    btn.addEventListener('click', function () {
+      var currentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      var newTheme = currentlyDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('ym_theme', newTheme);
+      btn.innerHTML = getIcon(!currentlyDark);
+      btn.setAttribute('aria-pressed', (!currentlyDark).toString());
+    });
+
+    // Hover effect
+    btn.addEventListener('mouseenter', function () {
+      btn.style.background = 'var(--ym-soft)';
+    });
+    btn.addEventListener('mouseleave', function () {
+      btn.style.background = 'none';
+    });
+
+    // Insert before auth button
+    var authBtn = rightArea.querySelector('.ym-auth-btn, .ym-avatar');
+    if (authBtn) {
+      rightArea.insertBefore(btn, authBtn);
+    } else {
+      rightArea.appendChild(btn);
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     15. ONBOARDING FLOW (first-time visitors)
+  ══════════════════════════════════════════ */
+  function initOnboarding() {
+    // Only show on homepage
+    var path = window.location.pathname;
+    var isHome = path === '/' || path === '/index.html' || path.endsWith('/pages/index.html');
+    if (!isHome) return;
+    if (localStorage.getItem('ym_onboarded')) return;
+
+    // Inject overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'ym-onboarding';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Welcome to YodhaMind');
+    overlay.style.cssText = [
+      'position:fixed', 'inset:0', 'background:rgba(14,11,20,0.85)',
+      'backdrop-filter:blur(8px)', '-webkit-backdrop-filter:blur(8px)',
+      'z-index:3000', 'display:flex', 'align-items:flex-end',
+      'justify-content:center', 'padding:0', 'opacity:0',
+      'transition:opacity 0.4s ease'
+    ].join(';');
+
+    var card = document.createElement('div');
+    card.style.cssText = [
+      'background:var(--ym-surface, #fff)', 'color:var(--ym-text, #1a1625)',
+      'border-radius:24px 24px 0 0', 'padding:32px 24px 40px',
+      'width:100%', 'max-width:480px', 'max-height:90vh',
+      'overflow-y:auto', 'transform:translateY(30px)',
+      'transition:transform 0.4s cubic-bezier(0.32,1.2,0.64,1)'
+    ].join(';');
+
+    card.innerHTML = [
+      '<div style="height:4px;background:var(--ym-border,#e8e3f0);border-radius:4px;margin-bottom:32px;overflow:hidden;">',
+      '  <div id="ob-progress" style="height:100%;background:var(--ym-primary,#7C5CBF);border-radius:4px;transition:width 0.4s ease;width:33%"></div>',
+      '</div>',
+      '<div id="ob-step-1" class="ob-step" style="display:block;">',
+      '  <p style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ym-text-light,#9b8bb4);margin-bottom:8px;">Let\'s personalise your experience</p>',
+      '  <h2 style="font-size:22px;font-weight:700;margin-bottom:24px;line-height:1.3;">What\'s been hardest lately?</h2>',
+      '  <div style="display:flex;flex-direction:column;gap:10px;">',
+      '    <button class="ob-opt" data-value="stress" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83d\ude24 Exam stress</button>',
+      '    <button class="ob-opt" data-value="sleep" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83d\ude34 Sleep & rest</button>',
+      '    <button class="ob-opt" data-value="motivation" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83e\udeb4 Low motivation</button>',
+      '    <button class="ob-opt" data-value="anxiety" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83d\ude30 Anxiety & overthinking</button>',
+      '    <button class="ob-opt" data-value="all" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83c\udf0a Everything at once</button>',
+      '  </div>',
+      '</div>',
+      '<div id="ob-step-2" class="ob-step" style="display:none;">',
+      '  <p style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ym-text-light,#9b8bb4);margin-bottom:8px;">Good to know</p>',
+      '  <h2 style="font-size:22px;font-weight:700;margin-bottom:24px;line-height:1.3;">How often do you want to check in?</h2>',
+      '  <div style="display:flex;flex-direction:column;gap:10px;">',
+      '    <button class="ob-opt" data-value="daily" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83c\udf05 Every day</button>',
+      '    <button class="ob-opt" data-value="weekly" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83d\udcc5 A few times a week</button>',
+      '    <button class="ob-opt" data-value="whenever" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83d\udcad When I remember</button>',
+      '  </div>',
+      '</div>',
+      '<div id="ob-step-3" class="ob-step" style="display:none;">',
+      '  <p style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ym-text-light,#9b8bb4);margin-bottom:8px;">One last thing</p>',
+      '  <h2 style="font-size:22px;font-weight:700;margin-bottom:24px;line-height:1.3;">What would help you most right now?</h2>',
+      '  <div style="display:flex;flex-direction:column;gap:10px;">',
+      '    <button class="ob-opt" data-dest="/assessment" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83d\udcca Understand my mental state</button>',
+      '    <button class="ob-opt" data-dest="/tools/spirit-breathing-tool.html" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83c\udf2c\ufe0f Calm down right now</button>',
+      '    <button class="ob-opt" data-dest="/games" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83c\udfae Mental reset with a game</button>',
+      '    <button class="ob-opt" data-dest="/journal" style="background:var(--ym-soft,#f0eafa);border:2px solid transparent;border-radius:14px;padding:14px 18px;text-align:left;font-size:16px;font-weight:500;color:var(--ym-text,#1a1625);cursor:pointer;transition:all 0.2s;min-height:52px;font-family:inherit;">\ud83d\udcd4 Write how I\'m feeling</button>',
+      '  </div>',
+      '</div>',
+      '<button id="ob-skip" style="display:block;margin:24px auto 0;background:none;border:none;color:var(--ym-text-light,#9b8bb4);font-size:13px;font-weight:500;cursor:pointer;padding:8px 16px;font-family:inherit;">Skip for now</button>'
+    ].join('\n');
+
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+
+    // Animate in
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        overlay.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      });
+    });
+
+    // Desktop: center card
+    if (window.innerWidth >= 600) {
+      overlay.style.alignItems = 'center';
+      card.style.borderRadius = '24px';
+    }
+
+    var step = 1;
+    var answers = {};
+    var progressMap = { 1: '33%', 2: '66%', 3: '100%' };
+
+    // Hover effects for option buttons
+    overlay.addEventListener('mouseover', function (e) {
+      var btn = e.target.closest('.ob-opt');
+      if (btn) {
+        btn.style.borderColor = 'var(--ym-primary, #7C5CBF)';
+        btn.style.background = 'var(--ym-border, #e8dcf7)';
+      }
+    });
+    overlay.addEventListener('mouseout', function (e) {
+      var btn = e.target.closest('.ob-opt');
+      if (btn) {
+        btn.style.borderColor = 'transparent';
+        btn.style.background = 'var(--ym-soft, #f0eafa)';
+      }
+    });
+
+    overlay.addEventListener('click', function (e) {
+      var btn = e.target.closest('.ob-opt');
+      if (!btn) return;
+
+      if (step === 1) {
+        answers.concern = btn.dataset.value;
+        goToStep(2);
+      } else if (step === 2) {
+        answers.frequency = btn.dataset.value;
+        goToStep(3);
+      } else if (step === 3) {
+        localStorage.setItem('ym_onboarded', '1');
+        localStorage.setItem('ym_concern', answers.concern || '');
+        localStorage.setItem('ym_frequency', answers.frequency || '');
+        closeOnboarding();
+        var dest = btn.dataset.dest || '/assessment';
+        window.location.href = dest;
+      }
+    });
+
+    // Skip button
+    var skipBtn = document.getElementById('ob-skip');
+    if (skipBtn) {
+      skipBtn.addEventListener('click', function () {
+        localStorage.setItem('ym_onboarded', '1');
+        closeOnboarding();
+      });
+    }
+
+    function goToStep(n) {
+      document.getElementById('ob-step-' + step).style.display = 'none';
+      step = n;
+      document.getElementById('ob-step-' + step).style.display = 'block';
+      document.getElementById('ob-progress').style.width = progressMap[n];
+    }
+
+    function closeOnboarding() {
+      overlay.style.opacity = '0';
+      card.style.transform = 'translateY(30px)';
+      setTimeout(function () { overlay.remove(); }, 400);
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     16. PWA INIT (Fix 18)
+  ══════════════════════════════════════════ */
+  function initPWA() {
+    // Inject manifest link if not present
+    if (!document.querySelector('link[rel="manifest"]')) {
+      var manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = '/manifest.json';
+      document.head.appendChild(manifestLink);
+    }
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(console.error);
+      });
+    }
+  }
+
   function init() {
+    // initThemeToggle();  // Dark mode removed
+    initSkipLink();
+    initBottomTabBar();
+    // initCrisisBar();    // Crisis bar removed
     initGlobalBreathingModal();
     initScrollShadow();
     initActiveLinks();
@@ -640,6 +969,8 @@
     initFadeIn();
     initSmoothNav();
     initPrivacyBanner();
+    initOnboarding();
+    initPWA();
 
     // YM-dependent features — retry after a tick in case
     // storage.js is deferred or loaded async

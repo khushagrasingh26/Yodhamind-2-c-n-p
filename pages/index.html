@@ -2,14 +2,38 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="../css/tokens.css">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7RQTL2ND7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-W7RQTL2ND7');
+    </script>
+    <script>
+        function trackEvent(action) {
+            if (typeof gtag === 'function') {
+                gtag('event', action, {
+                    event_category: 'engagement',
+                    event_label: action
+                });
+            }
+        }
+    </script>
+
+
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>YodhaMind — Mental Wellness for College Students</title>
     <meta name="description"
         content="YodhaMind helps college students manage exam stress, burnout, and anxiety with science-backed focus games, self-assessments, journaling, and psychologist support." />
     <!-- SEO & OpenGraph -->
     <meta property="og:title" content="YodhaMind — Mental Wellness for College Students" />
-    <meta property="og:description" content="YodhaMind helps college students manage exam stress, burnout, and anxiety with science-backed focus games, self-assessments, journaling, and psychologist support." />
+    <meta property="og:description"
+        content="YodhaMind helps college students manage exam stress, burnout, and anxiety with science-backed focus games, self-assessments, journaling, and psychologist support." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yodhamind.com/" />
     <link rel="canonical" href="https://yodhamind.com/" />
@@ -22,7 +46,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
 
     <!-- AOS scroll animations -->
@@ -43,6 +68,8 @@
             --shadow-hover: 0 30px 60px rgba(124, 92, 191, 0.15);
             --radius-card: 24px;
             --radius-btn: 50px;
+            --font-display: 'Fraunces', Georgia, serif;
+            --font-body: 'DM Sans', system-ui, sans-serif;
         }
 
         *,
@@ -54,16 +81,18 @@
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: var(--font-body);
             background: linear-gradient(180deg, var(--soft) 0%, var(--warm) 40%, #fff 100%);
             color: var(--text);
             overflow-x: hidden;
             scroll-behavior: smooth;
             min-height: 100dvh;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
         /* ── Navbar ────────────────────────────── */
-        nav {
+        nav:not(.ym-bottom-tab-bar) {
             position: fixed;
             top: 0;
             width: 100%;
@@ -75,7 +104,7 @@
             transition: all 0.3s;
         }
 
-        nav.scrolled {
+        nav:not(.ym-bottom-tab-bar).scrolled {
             padding: 10px 0;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
         }
@@ -139,7 +168,9 @@
             text-decoration: none;
             font-weight: 700;
             min-height: 48px;
-            display: inline-flex; align-items: center; justify-content: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.9rem;
             box-shadow: 0 8px 20px rgba(124, 92, 191, 0.25);
             transition: transform 0.2s, box-shadow 0.2s;
@@ -159,7 +190,8 @@
             background: none;
             border: none;
             color: var(--text);
-            min-width: 48px; min-height: 48px;
+            min-width: 48px;
+            min-height: 48px;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -190,9 +222,11 @@
             .nav-links a {
                 font-size: 1rem;
                 min-height: 48px;
-                display: flex; align-items: center;
+                display: flex;
+                align-items: center;
                 -webkit-tap-highlight-color: transparent;
             }
+
             .nav-links .btn-cta {
                 justify-content: center;
                 margin-top: 8px;
@@ -249,11 +283,12 @@
         }
 
         .hero-text h1 {
+            font-family: var(--font-display);
             font-size: clamp(2rem, 7vw, 3.8rem);
             line-height: 1.15;
             margin-bottom: 24px;
-            letter-spacing: -1.5px;
-            font-weight: 800;
+            letter-spacing: -0.02em;
+            font-weight: 700;
         }
 
         .hero-text h1 .highlight {
@@ -301,9 +336,13 @@
             text-decoration: none;
             transition: all 0.2s;
             min-height: 48px;
-            display: inline-flex; align-items: center; justify-content: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        .btn-secondary:active, .btn-cta:active {
+
+        .btn-secondary:active,
+        .btn-cta:active {
             transform: scale(0.97);
             opacity: 0.9;
         }
@@ -336,52 +375,7 @@
             font-weight: 600;
         }
 
-        /* Canvas spirit */
-        .hero-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #spiritCanvas {
-            width: 100%;
-            max-width: 440px;
-            height: 440px;
-            border-radius: 50%;
-        }
-
-        /* ── Trust Strip ───────────────────────── */
-        .trust-strip {
-            background: white;
-            padding: 20px 24px;
-            border-top: 1px solid #f0f0f0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .trust-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-
-        .trust-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .trust-icon {
-            font-size: 1.3rem;
-        }
-
-        /* ── Sections ──────────────────────────── */
+        /* ── Section Layout ───────────────────── */
         section {
             padding: 80px 24px;
         }
@@ -392,48 +386,50 @@
         }
 
         .section-label {
-            font-size: 0.78rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: var(--accent);
             text-transform: uppercase;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            color: var(--accent);
             margin-bottom: 12px;
         }
 
         .section-title {
-            font-size: 2.4rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 16px;
-            line-height: 1.2;
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: 12px;
+            color: var(--text);
         }
 
         .section-sub {
-            font-size: 1.05rem;
             color: var(--text-light);
-            max-width: 520px;
-            line-height: 1.6;
+            font-size: 1rem;
+            max-width: 620px;
         }
 
-        /* ── Feature Grid ──────────────────────── */
+        /* ── Features ─────────────────────────── */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 24px;
-            margin-top: 48px;
+            margin-top: 36px;
         }
 
         .feat-card {
             background: white;
             border-radius: var(--radius-card);
-            padding: 32px 28px;
+            padding: 28px 24px;
             box-shadow: var(--shadow-soft);
-            transition: transform 0.25s, box-shadow 0.25s;
-            border: 1px solid rgba(124, 92, 191, 0.06);
+            border: 1px solid rgba(124, 92, 191, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .feat-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
             box-shadow: var(--shadow-hover);
         }
 
@@ -475,7 +471,10 @@
         .feat-link:hover {
             text-decoration: underline;
         }
-        .feat-link:active, .game-chip:active, .assess-card:active {
+
+        .feat-link:active,
+        .game-chip:active,
+        .assess-card:active {
             transform: scale(0.97);
             opacity: 0.85;
         }
@@ -837,6 +836,7 @@
                 flex-direction: column;
                 gap: 12px;
             }
+
             .hero-cta .btn-cta,
             .hero-cta .btn-secondary {
                 width: 100%;
@@ -935,7 +935,8 @@
 
             .footer-col a {
                 min-height: 44px;
-                display: flex; align-items: center;
+                display: flex;
+                align-items: center;
             }
         }
 
@@ -949,7 +950,8 @@
             }
 
             .hero-badge {
-                margin-left: auto; margin-right: auto;
+                margin-left: auto;
+                margin-right: auto;
             }
 
             .hero-disclaimer {
@@ -991,8 +993,15 @@
         }
 
         @keyframes floatHint {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .spirit-container:hover .spirit-hint {
@@ -1004,9 +1013,17 @@
             animation: none;
         }
 
-        .hint-hover { display: none; }
-        .spirit-container:hover .hint-default { display: none; }
-        .spirit-container:hover .hint-hover { display: inline; }
+        .hint-hover {
+            display: none;
+        }
+
+        .spirit-container:hover .hint-default {
+            display: none;
+        }
+
+        .spirit-container:hover .hint-hover {
+            display: inline;
+        }
 
         .breath-modal-overlay {
             position: fixed;
@@ -1026,6 +1043,36 @@
         .breath-modal-overlay.active {
             opacity: 1;
             pointer-events: all;
+        }
+
+        /* ── Zen Nightlight Mode (Modal Only) ── */
+        .breath-modal-overlay.dark-theme {
+            background: rgba(15, 10, 25, 0.85);
+        }
+        .breath-modal-content.dark-theme {
+            background: rgba(25, 20, 45, 0.95);
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+        }
+        .breath-modal-content.dark-theme h3 { color: #fff; }
+        .breath-modal-content.dark-theme .breath-text { color: #AFA5D9; }
+        .breath-modal-content.dark-theme .breath-mantra { color: rgba(255,255,255,0.7); }
+        .breath-modal-content.dark-theme .close-modal { background: rgba(255,255,255,0.1); color: #fff; }
+        .breath-modal-content.dark-theme .sound-toggle { background: rgba(255,255,255,0.1); color: #fff; }
+        .breath-modal-content.dark-theme .pattern-info { 
+            background: rgba(175, 165, 217, 0.15); 
+            border-color: rgba(175, 165, 217, 0.3);
+            color: #C79BE8;
+        }
+
+        .breath-vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, transparent 50%, rgba(124, 92, 191, 0.15) 100%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1999;
+            transition: opacity 2s ease;
         }
 
         .breath-modal-content {
@@ -1073,11 +1120,12 @@
 
         .modal-header {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 40px;
-            padding-top: 10px;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-top: 5px;
         }
 
         .modal-header h3 {
@@ -1085,6 +1133,33 @@
             font-weight: 800;
             color: var(--text);
             margin: 0;
+            transition: color 0.4s;
+        }
+
+        .modal-header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .pattern-info {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            background: rgba(124, 92, 191, 0.08);
+            border: 1px solid rgba(124, 92, 191, 0.2);
+            padding: 8px 18px;
+            border-radius: 50px;
+            margin-top: -10px;
+            margin-bottom: 32px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(124, 92, 191, 0.05);
+            min-height: 16px;
         }
 
         .sound-toggle {
@@ -1096,8 +1171,9 @@
             cursor: pointer;
             font-size: 1.1rem;
             transition: transform 0.2s, background 0.2s;
-            display: grid;
-            place-items: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             color: var(--text);
         }
 
@@ -1114,6 +1190,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            perspective: 1000px;
+            transform-style: preserve-3d;
         }
 
         .breath-circle {
@@ -1125,6 +1203,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transform-style: preserve-3d;
         }
 
         #modalSpiritCanvas {
@@ -1132,10 +1211,24 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 180px;
-            height: 180px;
+            width: 240px;
+            height: 240px;
+            cursor: pointer;
+            z-index: 10;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .interactive-hint {
+            position: absolute;
+            bottom: -15px;
+            font-size: 0.65rem;
+            color: var(--text-light);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.6;
             pointer-events: none;
-            z-index: 1;
+            animation: pulseHint 2s infinite;
         }
 
         @keyframes spiritAuraMorph {
@@ -1144,32 +1237,49 @@
             100% { border-radius: 55% 45% 48% 52% / 52% 48% 55% 45%; }
         }
 
+        @keyframes glowPulse {
+            0%, 100% { filter: blur(20px) brightness(1); }
+            50% { filter: blur(28px) brightness(1.15); }
+        }
+
         .breath-glow {
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-            background: linear-gradient(135deg, #56CFB2, #7C5CBF);
+            background: linear-gradient(135deg, #88E0C9, #AFA5D9, #C79BE8);
             filter: blur(20px);
-            opacity: 0.4;
+            opacity: 0.45;
             z-index: 1;
             transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease;
-            animation: spiritAuraMorph 7s ease-in-out infinite reverse;
+            animation: spiritAuraMorph 7s ease-in-out infinite reverse, glowPulse 4s ease-in-out infinite;
         }
 
         .breath-text {
-            font-size: 1.3rem;
-            font-weight: 700;
+            font-size: 1.4rem;
+            font-weight: 800;
             color: var(--primary);
-            margin-bottom: 32px;
+            margin-bottom: 8px;
             min-height: 32px;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .breath-mantra {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 1s ease;
+            margin-bottom: 24px;
+            height: 20px;
+            font-style: italic;
         }
 
         .breath-controls {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            align-items: stretch;
         }
 
         .breath-controls .btn-cta { width: 100%; }
@@ -1177,10 +1287,37 @@
             border: none;
             background: transparent;
             color: var(--text-light);
+            transition: opacity 0.3s, background 0.2s, color 0.2s;
         }
         .breath-controls .btn-secondary:hover {
             background: var(--soft);
             color: var(--text);
+        }
+
+        .session-toast {
+            position: absolute;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(124, 92, 191, 0.2);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(124, 92, 191, 0.1);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .session-toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @media (max-width: 480px) {
@@ -1190,8 +1327,9 @@
                 border-radius: 28px;
             }
             .close-modal { top: 16px; right: 16px; }
-            .modal-header { margin-bottom: 30px; }
+            .modal-header { margin-bottom: 24px; }
             .modal-header h3 { font-size: 1.25rem; }
+            .pattern-info { margin-top: -10px; margin-bottom: 24px; font-size: 0.7rem; padding: 6px 14px; }
             .breath-visual-container {
                 width: 200px;
                 height: 200px;
@@ -1200,12 +1338,13 @@
             .breath-circle { width: 76px; height: 76px; }
             #modalSpiritCanvas { width: 160px; height: 160px; }
             .breath-glow { width: 110px; height: 110px; }
-            .breath-text { font-size: 1.15rem; margin-bottom: 24px; min-height: 28px; }
+            .breath-text { font-size: 1.15rem; margin-bottom: 4px; min-height: 28px; }
+            .breath-mantra { font-size: 0.8rem; margin-bottom: 20px; }
         }
 
         @media (max-height: 650px) {
             .breath-modal-content { padding: 24px 20px; }
-            .modal-header { margin-bottom: 20px; }
+            .modal-header { margin-bottom: 16px; }
             .breath-visual-container { width: 180px; height: 180px; margin-bottom: 20px; }
             .breath-circle { width: 70px; height: 70px; }
             #modalSpiritCanvas { width: 140px; height: 140px; }
@@ -1214,70 +1353,346 @@
             .breath-controls { gap: 8px; }
             .breath-controls .btn-cta { min-height: 44px; padding: 10px 20px; }
         }
+
+        /* ── Reduced Motion Support ────────────── */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* ── Focus Styles ─────────────────────── */
+        *:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* ── Counselor Coming Soon ─────────────── */
+        .feat-card--coming-soon {
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .badge-coming-soon {
+            display: inline-block;
+            background: var(--soft);
+            color: var(--primary);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .priority-access-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            min-height: 44px;
+            -webkit-tap-highlight-color: transparent;
+            transition: opacity 0.2s;
+        }
+
+        .priority-access-btn:hover {
+            text-decoration: underline;
+        }
+
+
+        /* ── Fix 16: Streak Widget ── */
+        .streak-widget {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff8f0;
+            border: 1.5px solid #ffcf9d;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #8a4500;
+            width: fit-content;
+            margin-bottom: 16px;
+        }
+
+        .streak-fire {
+            font-size: 18px;
+        }
+
+        .streak-count {
+            font-size: 18px;
+            font-weight: 700;
+            color: #e07a00;
+        }
+
+        /* ── Fix 14: Progressive Disclosure ── */
+        .feat-card.hidden {
+            display: none;
+        }
+
+        .show-more-btn {
+            display: block;
+            margin: 32px auto 0;
+            background: var(--soft);
+            border: 1.5px solid var(--border-color, #e8e3f0);
+            color: var(--primary);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .show-more-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ── Fix 17: Testimonials Redesign ── */
+        .testimonial-card {
+            background: var(--surface, #fff);
+            border: 1.5px solid var(--border-color, #e8e3f0);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: left;
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7C5CBF, #b08ff0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .testimonial-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .testimonial-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .testimonial-school {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .testimonial-stars {
+            color: #f0a500;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .testimonial-quote {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text);
+            margin: 0;
+            font-style: italic;
+        }
+
+        .testimonial-tag {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--soft);
+            padding: 4px 10px;
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .suggestion-widget {
+            background: var(--color-accent-light);
+            border-left: 3px solid var(--color-accent);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            padding: var(--space-3) var(--space-4);
+            margin-top: var(--space-4);
+            max-width: 360px;
+        }
+
+        .suggestion-reason {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin: 0 0 6px;
+        }
+
+        .suggestion-link {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-accent);
+            text-decoration: none;
+        }
     </style>
     <link rel="stylesheet" href="../shared/nav.css" />
+    <!-- Vercel Analytics -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
 <body>
 
+    <!-- ── Fix 15: Return Visitor & Fix 16: Streak JS ── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. Personalized Greeting
+            const lastVisit = localStorage.getItem('ym_last_visit');
+            const lastMood = localStorage.getItem('ym_last_mood');
+            const heroHeadline = document.querySelector('.hero-headline');
+
+            if (lastVisit && heroHeadline) {
+                const daysSince = Math.floor((Date.now() - parseInt(lastVisit)) / 86400000);
+                let greeting = 'Welcome back.';
+                if (daysSince === 0) greeting = 'You\'re back today.';
+                else if (daysSince === 1) greeting = 'Good to see you again.';
+                else if (daysSince >= 3) greeting = `It's been ${daysSince} days. How are you?`;
+
+                const moodNote = lastMood ? ` Your last mood was ${lastMood}.` : '';
+                const highlightSpan = heroHeadline.querySelector('.highlight');
+                const highlightHtml = highlightSpan ? `<br /><span class="highlight">${highlightSpan.textContent}</span>` : '';
+
+                heroHeadline.innerHTML = `${greeting}${moodNote}${highlightHtml}`;
+
+                // Update primary CTA
+                const primaryCTA = document.querySelector('.hero-cta .btn-cta');
+                if (primaryCTA) {
+                    primaryCTA.textContent = 'Check in now →';
+                    primaryCTA.href = '/assessment';
+                }
+            }
+            localStorage.setItem('ym_last_visit', Date.now().toString());
+
+            // 2. Streak Counter
+            const streak = parseInt(localStorage.getItem('ym_streak') || '0');
+            if (streak > 0) {
+                const widget = document.getElementById('streak-widget');
+                const count = document.getElementById('streak-count');
+                if (widget && count) {
+                    count.textContent = streak;
+                    widget.removeAttribute('hidden');
+                }
+            }
+        });
+    </script>
+
     <!-- ═══════════ YM SIDEBAR ═══════════ -->
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
-      <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
-        <span class="ym-sidebar__logo">YodhaMind</span>
-      </div>
-      <nav class="ym-sidebar__nav">
-        <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
-        <div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
-<div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
-      </nav>
-      <div class="ym-sidebar__footer">
-        © 2026 YodhaMind<br>
-        Made with 💛 for Indian students<br>
-        <a href="/pages/privacy.html">Privacy Policy</a>
-      </div>
+        <div class="ym-sidebar__header">
+            <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
+            <span class="ym-sidebar__logo">YodhaMind</span>
+        </div>
+        <nav class="ym-sidebar__nav">
+            <div class="ym-sidebar__section-label">Navigate</div>
+            <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+            <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+            <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+            <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self
+                Assessment</a>
+            <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
+            <div class="ym-sidebar__divider"></div>
+            <div class="ym-sidebar__section-label">Wellness</div>
+            <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span
+                    class="ym-sidebar__link-icon">◎</span>Breathing</a>
+            <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus
+                Timer</a>
+            <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
+            <div class="ym-sidebar__divider"></div>
+            <div class="ym-sidebar__section-label">Support</div>
+            <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall:
+                9152987821</a>
+            <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala:
+                1860-266-2345</a>
+        </nav>
+        <div class="ym-sidebar__footer">
+            © 2026 YodhaMind<br>
+            Made with 💛 for Indian students<br>
+            <a href="/pages/privacy.html">Privacy Policy</a>
+        </div>
     </aside>
 
     <!-- ═══════════ YM TOPBAR ═══════════ -->
     <header class="ym-topbar" id="ymTopbar">
-      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
-      <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
-        YodhaMind
-      </a>
-      <div class="ym-topbar__right">
-        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
-        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
-        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
-      </div>
+        <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+        <a href="/" class="ym-topbar__logo">
+            <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="ym-nav-icon">
+                    <path
+                        d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5" />
+                    <path d="M12 2v20" />
+                    <path d="M12 12h5" />
+                    <path d="M12 8h4" />
+                    <path d="M12 16h3" />
+                    <path d="M12 12h-5" />
+                    <path d="M12 8h-4" />
+                    <path d="M12 16h-3" />
+                </svg></span>
+            YodhaMind
+        </a>
+        <div class="ym-topbar__right">
+            <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
+            <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
+            <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
+        </div>
     </header>
 
 
     <!-- ══════════ NAV ══════════ -->
-<!-- ══════════ HERO ══════════ -->
+    <!-- ══════════ HERO ══════════ -->
     <section style="padding:0;">
         <div class="hero">
             <div class="hero-text" data-aos="fade-right">
+                <div class="streak-widget" id="streak-widget" hidden aria-live="polite">
+                    <span class="streak-fire">🔥</span>
+                    <span class="streak-count" id="streak-count">0</span>
+                    <span class="streak-label">day streak</span>
+                </div>
                 <div class="hero-badge">
                     <span class="badge-dot"></span>
                     Free for college students
                 </div>
-                <h1>Your mind deserves<br /><span class="highlight">support too.</span></h1>
+                <h1 class="hero-headline">Your mind deserves<br /><span class="highlight">support too.</span></h1>
                 <p>Science-backed tools to manage exam stress, beat burnout, sharpen focus, and connect with real
                     counselors - built specifically for college life.</p>
                 <div class="hero-disclaimer" role="note" aria-label="Mental health support disclaimer">
@@ -1285,15 +1700,16 @@
                 </div>
 
                 <div class="hero-cta">
-                    <a href="/dashboard" class="btn-cta">Open Dashboard -></a>
-                    <a href="/assessment" class="btn-secondary">Take a Free Check-In</a>
+                    <a href="/assessment" class="btn-cta" aria-label="Start your mental health check-in">How are you
+                        feeling today?</a>
+                    <a href="#features" class="btn-secondary">Explore the tools</a>
                 </div>
+                <div id="ym-suggestion" class="suggestion-widget" hidden aria-live="polite"></div>
 
                 <div class="hero-stats">
-                    <div class="stat"><span class="stat-num">5</span><span class="stat-lbl">Cognitive Games</span></div>
+                    <div class="stat"><span class="stat-num" data-config-key="TOTAL_GAMES">7</span><span
+                            class="stat-lbl">Cognitive Games</span></div>
                     <div class="stat"><span class="stat-num">4</span><span class="stat-lbl">Science-backed Tests</span>
-                    </div>
-                    <div class="stat"><span class="stat-num">7</span><span class="stat-lbl">Verified Counselors</span>
                     </div>
                     <div class="stat"><span class="stat-num">∞</span><span class="stat-lbl">Judgment-free Space</span>
                     </div>
@@ -1306,39 +1722,56 @@
                         <span class="hint-default">✨ Click here for magic</span>
                         <span class="hint-hover">Start a calming breath &rarr;</span>
                     </div>
-                    <canvas id="spiritCanvas" width="440" height="440" aria-label="YodhaMind wellness spirit animation"></canvas>
+                    <canvas id="spiritCanvas" width="440" height="440"
+                        aria-label="YodhaMind wellness spirit animation"></canvas>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ══════════ TRUST STRIP ══════════ -->
-    <div class="trust-strip">
-        <div class="trust-inner">
-            <div class="trust-item"><span class="trust-icon">🔒</span> 100% Private</div>
-            <div class="trust-item"><span class="trust-icon">🧪</span> Evidence-based</div>
-            <div class="trust-item"><span class="trust-icon">🏥</span> RCI-Verified Counselors</div>
-            <div class="trust-item"><span class="trust-icon">📱</span> Works on any device</div>
-            <div class="trust-item"><span class="trust-icon">💛</span> Made for Indian colleges</div>
+    <!-- ══════════ SOCIAL PROOF + TRUST ══════════ -->
+    <div class="trust-strip" data-aos="fade-up">
+        <div class="trust-inner" style="flex-direction:column; gap:16px;">
+            <!-- Row: Trust badges (no emojis) -->
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+                <span
+                    style="background:var(--soft); color:var(--primary); font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; white-space:nowrap;">100%
+                    Private</span>
+                <span
+                    style="background:var(--soft); color:var(--primary); font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; white-space:nowrap;">Evidence-based</span>
+                <span
+                    style="background:var(--soft); color:var(--primary); font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; white-space:nowrap;">Works
+                    offline</span>
+            </div>
         </div>
     </div>
 
+    <div class="breath-vignette" id="breathVignette"></div>
     <div class="breath-modal-overlay" id="breathModal">
         <div class="breath-modal-content">
             <button class="close-modal" id="closeBreathModal" aria-label="Close modal">&times;</button>
             <div class="modal-header">
                 <h3>Calm Breathing</h3>
-                <button class="sound-toggle" id="soundToggle" aria-label="Toggle ambient sound">🔈</button>
-            </div>
-
-            <div class="breath-visual-container">
-                <div class="breath-glow" id="breathGlow"></div>
-                <div class="breath-circle" id="breathCircle">
-                    <canvas id="modalSpiritCanvas" width="360" height="360"></canvas>
+                <div class="modal-header-actions">
+                    <button class="sound-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+                    <button class="sound-toggle" id="soundToggle" aria-label="Toggle ambient sound">🔈</button>
                 </div>
             </div>
 
+            <div class="pattern-info" id="patternInfo">Best for deep sleep & anxiety</div>
+
+            <div class="breath-visual-container">
+                <div class="session-toast" id="sessionToast">1 Cycle Completed</div>
+                <div class="breath-glow" id="breathGlow"></div>
+                <div class="breath-circle" id="breathCircle">
+                    <canvas id="modalSpiritCanvas" width="480" height="480"></canvas>
+                </div>
+
+                <div class="interactive-hint">Pet to soothe</div>
+            </div>
+
             <div class="breath-text" id="breathText">Ready when you are</div>
+            <div class="breath-mantra" id="breathMantra"></div>
 
             <div class="breath-controls">
                 <button class="btn-cta" id="startBreathBtn">Start 4-4-6 Breath</button>
@@ -1357,15 +1790,19 @@
 
             <div class="features-grid">
                 <div class="feat-card" data-aos="fade-up" data-aos-delay="0">
-                    <div class="feat-icon" style="background:#F0EBF8;">🧠</div>
+                    <div class="feat-icon" style="background:#F0EBF8;">
+                        <img src="/public/icons/feature-mindgym.svg" width="32" height="32" alt="" />
+                    </div>
                     <h3>Mind Gym</h3>
-                    <p>5 short cognitive games — memory, reaction, pattern recognition, breathing rhythm. Each takes
+                    <p>7 short cognitive games — memory, reaction, pattern recognition, breathing rhythm. Each takes
                         under 2 minutes and tracks your performance history.</p>
                     <a href="/games" class="feat-link">Play now →</a>
                 </div>
 
                 <div class="feat-card" data-aos="fade-up" data-aos-delay="80">
-                    <div class="feat-icon" style="background:#E0FFF8;">📊</div>
+                    <div class="feat-icon" style="background:#E0FFF8;">
+                        <img src="/public/icons/feature-assessment.svg" width="32" height="32" alt="" />
+                    </div>
                     <h3>Self-Assessment</h3>
                     <p>PSS-10 Stress, GAD-7 Anxiety, MBI-SS Burnout, and Focus tests — clinically validated tools that
                         generate a wellness score with personalised suggestions.</p>
@@ -1373,7 +1810,9 @@
                 </div>
 
                 <div class="feat-card" data-aos="fade-up" data-aos-delay="160">
-                    <div class="feat-icon" style="background:#FFF8F0;">📔</div>
+                    <div class="feat-icon" style="background:#FFF8F0;">
+                        <img src="/public/icons/feature-journal.svg" width="32" height="32" alt="" />
+                    </div>
                     <h3>Private Journal</h3>
                     <p>A completely private journal with mood tagging, writing prompts, search, and streaks. Your
                         entries are encrypted locally — only you can read them.</p>
@@ -1381,29 +1820,45 @@
                 </div>
 
                 <div class="feat-card" data-aos="fade-up" data-aos-delay="0">
-                    <div class="feat-icon" style="background:#EFF6FF;">🧘</div>
+                    <div class="feat-icon" style="background:#EFF6FF;">
+                        <img src="/public/icons/feature-breathing.svg" width="32" height="32" alt="" />
+                    </div>
                     <h3>Breathing & Flow</h3>
                     <p>Guided breathing exercises (4-7-8, box breathing, coherence), Pomodoro focus timer, and ambient
                         sound — tools to calm and focus your mind quickly.</p>
                     <a href="/tools/spirit-breathing-tool.html" class="feat-link">Open Spirit Breathing Tool →</a>
                 </div>
 
-                <div class="feat-card" data-aos="fade-up" data-aos-delay="80">
-                    <div class="feat-icon" style="background:#F5F0FF;">👨‍⚕️</div>
-                    <h3>Counselor Connect</h3>
-                    <p>Browse verified psychologists, view their specialisations and fees, book sessions via chat,
-                        video, or phone — and manage all your appointments in one place.</p>
-                    <a href="#" class="feat-link" style="pointer-events: none; opacity: 0.6;">Coming soon →</a>
+                <div class="feat-card" data-aos="fade-up" data-aos-delay="80" aria-label="Counselor Connect">
+                    <div class="feat-icon" style="background:#F5F0FF;">
+                        <img src="/public/icons/feature-counselor.svg" width="32" height="32" alt="" />
+                    </div>
+                    <h3>Counselors</h3>
+                    <p>Counselor network coming soon — chat/video sessions and appointment management built for Indian
+                        college students.</p>
+                    <span class="feat-link">Coming soon</span>
                 </div>
 
-                <div class="feat-card" data-aos="fade-up" data-aos-delay="160">
-                    <div class="feat-icon" style="background:#FFF0F5;">🌿</div>
+                <div class="feat-card hidden" data-aos="fade-up" data-aos-delay="160">
+                    <div class="feat-icon" style="background:#FFF0F5;">
+                        <img src="/public/icons/feature-community.svg" width="32" height="32" alt="" />
+                    </div>
                     <h3>Anonymous Community</h3>
                     <p>Share what you're going through, ask questions, and relate to others — completely anonymously. A
                         moderated space where no one judges and everyone gets it.</p>
                     <a href="/community" class="feat-link">Join the space →</a>
                 </div>
             </div>
+            <button id="show-more-features" class="show-more-btn" aria-expanded="false">
+                Show all tools ↓
+            </button>
+            <script>
+                document.getElementById('show-more-features')?.addEventListener('click', function () {
+                    document.querySelectorAll('.feat-card.hidden').forEach(c => c.classList.remove('hidden'));
+                    this.style.display = 'none';
+                    this.setAttribute('aria-expanded', 'true');
+                });
+            </script>
         </div>
     </section>
 
@@ -1446,40 +1901,16 @@
                     <h4>Memory Matrix</h4>
                     <p>Pattern memory</p>
                 </a>
+                <a href="/games/untangle.html" class="game-chip">
+                    <div class="emoji">🧶</div>
+                    <h4>Untangle</h4>
+                    <p>Logic & clarity</p>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- ══════════ HOW IT WORKS ══════════ -->
-    <section>
-        <div class="section-inner">
-            <p class="section-label">How it works</p>
-            <h2 class="section-title">Start in 60 seconds.<br />No account required.</h2>
 
-            <div class="steps" data-aos="fade-up">
-                <div class="step">
-                    <div class="step-num">1</div>
-                    <h4>Open the Dashboard</h4>
-                    <p>Your personal wellness hub — no signup needed to start. Log in to sync across devices.</p>
-                </div>
-                <div class="step">
-                    <div class="step-num">2</div>
-                    <h4>Log your mood</h4>
-                    <p>A 5-second daily check-in. Builds a 7-day trend that drives your wellness score.</p>
-                </div>
-                <div class="step">
-                    <div class="step-num">3</div>
-                    <h4>Play or assess</h4>
-                    <p>Pick a 2-minute game or take a clinical test to understand your current mental state.</p>
-                </div>
-                <div class="step">
-                    <div class="step-num">4</div>
-                    <h4>Get support</h4>
-                    <p>Journal privately, breathe with Spirit Breathing Tool, or book a session with a real counselor.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- ══════════ ASSESSMENT PREVIEW ══════════ -->
     <section style="background: var(--soft); border-radius: 0;">
@@ -1519,48 +1950,71 @@
         </div>
     </section>
 
-    <!-- ══════════ TESTIMONIALS ══════════ -->
+    <!-- ══════════ EVIDENCE & RESEARCH ══════════ -->
     <section>
         <div class="section-inner">
-            <p class="section-label">Student voices</p>
-            <h2 class="section-title">From students who actually use it</h2>
+            <p class="section-label" data-aos="fade-up">Evidence & research</p>
+            <h2 class="section-title" data-aos="fade-up">Built on science, not slogans</h2>
 
-            <div class="testimonials-grid" data-aos="fade-up">
-                <div class="testimonial">
-                    <p>"I did the burnout check and got a score I wasn't expecting. Booked a session with Dr. Priya the
-                        same day. Best decision of my semester."</p>
-                    <div class="t-author">
-                        <div class="t-avatar">AM</div>
-                        <div>
-                            <div class="t-name">Arjun M.</div>
-                            <div class="t-role">3rd year, IIT Delhi</div>
+            <div class="testimonials-grid">
+                <article class="testimonial-card" aria-label="Evidence-backed screening" data-aos="fade-up"
+                    data-aos-delay="0">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar" aria-hidden="true">RX</div>
+                        <div class="testimonial-meta">
+                            <span class="testimonial-name">Validated screening tools</span>
+                            <span class="testimonial-school">GAD-7, PHQ-9, MBI-SS</span>
+                        </div>
+                        <div class="testimonial-stars" aria-label="Evidence-based" role="img">
+                            ✓ ✓ ✓ ✓ ✓
                         </div>
                     </div>
-                </div>
+                    <div class="testimonial-quote">
+                        These questionnaires are widely used in research and clinical settings to screen anxiety,
+                        depression, and burnout trends in students and adults.
+                    </div>
+                    <div class="testimonial-tag">Focus: early insight, not diagnosis</div>
+                </article>
 
-                <div class="testimonial">
-                    <p>"The 4-7-8 breathing exercise from Spirit Breathing Tool has genuinely helped me sleep before exams. I use
-                        it every night now without thinking about it."</p>
-                    <div class="t-author">
-                        <div class="t-avatar">SR</div>
-                        <div>
-                            <div class="t-name">Sneha R.</div>
-                            <div class="t-role">2nd year, BITS Pilani</div>
+                <article class="testimonial-card" aria-label="Evidence-backed breathing" data-aos="fade-up"
+                    data-aos-delay="100">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar" aria-hidden="true"
+                            style="background: linear-gradient(135deg, #56CFB2, #3db59b);">BR</div>
+                        <div class="testimonial-meta">
+                            <span class="testimonial-name">Paced breathing protocols</span>
+                            <span class="testimonial-school">Parasympathetic activation</span>
+                        </div>
+                        <div class="testimonial-stars" aria-label="Evidence-based" role="img">
+                            ✓ ✓ ✓ ✓ ✓
                         </div>
                     </div>
-                </div>
+                    <div class="testimonial-quote">
+                        Slow, rhythmic breathing is associated with reduced physiological arousal and improved
+                        self-regulation in stress research.
+                    </div>
+                    <div class="testimonial-tag">Used in mindfulness and CBT-informed practice</div>
+                </article>
 
-                <div class="testimonial">
-                    <p>"The anonymous community was the first place I ever said 'I'm struggling'. Someone replied with
-                        three words: 'same here, yaar.' That helped more than anything."</p>
-                    <div class="t-author">
-                        <div class="t-avatar">RN</div>
-                        <div>
-                            <div class="t-name">Rahul N.</div>
-                            <div class="t-role">1st year, NIT Trichy</div>
+                <article class="testimonial-card" aria-label="Evidence-backed support" data-aos="fade-up"
+                    data-aos-delay="200">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar" aria-hidden="true"
+                            style="background: linear-gradient(135deg, #F59E0B, #d97706);">SS</div>
+                        <div class="testimonial-meta">
+                            <span class="testimonial-name">Social support matters</span>
+                            <span class="testimonial-school">Protective factor in mental health</span>
+                        </div>
+                        <div class="testimonial-stars" aria-label="Evidence-based" role="img">
+                            ✓ ✓ ✓ ✓ ✓
                         </div>
                     </div>
-                </div>
+                    <div class="testimonial-quote">
+                        Peer connection and supportive check-ins are consistently linked with lower distress and
+                        better coping outcomes in student populations.
+                    </div>
+                    <div class="testimonial-tag">Community + counselor pathways</div>
+                </article>
             </div>
         </div>
     </section>
@@ -1569,8 +2023,8 @@
     <section style="padding: 40px 0 80px;">
         <div class="cta-banner" data-aos="zoom-in">
             <h2>Your mental health is not a luxury.<br />It's the foundation.</h2>
-            <p>Open your dashboard. Log your mood. Take one step today.</p>
-            <a href="/dashboard" class="btn-white">Open Dashboard →</a>
+            <p>Check in with yourself. Log your mood. Take one step today.</p>
+            <a href="/assessment" class="btn-white">Start your check-in →</a>
         </div>
     </section>
 
@@ -1579,7 +2033,19 @@
         <div class="footer-inner">
             <div class="footer-grid">
                 <div>
-                    <div class="footer-logo">🧠 YodhaMind</div>
+                    <div class="footer-logo"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon">
+                            <path
+                                d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5" />
+                            <path d="M12 2v20" />
+                            <path d="M12 12h5" />
+                            <path d="M12 8h4" />
+                            <path d="M12 16h3" />
+                            <path d="M12 12h-5" />
+                            <path d="M12 8h-4" />
+                            <path d="M12 16h-3" />
+                        </svg> YodhaMind</div>
                     <p class="footer-desc">A mental wellness platform built specifically for Indian college students —
                         combining clinical tools, cognitive games, and human support in one calm space.</p>
                 </div>
@@ -1592,7 +2058,7 @@
                 </div>
                 <div class="footer-col">
                     <h5>Support</h5>
-                    <a href="#" style="pointer-events: none; opacity: 0.6;">Counselor (Coming Soon)</a>
+                    <a href="/pages/counselors.html">Counselors</a>
                     <a href="/community">Community</a>
                     <a href="/tools/spirit-breathing-tool.html">Breathing Tools</a>
                     <a href="/tools/Focusrealm.html">Focus Realm</a>
@@ -1678,22 +2144,29 @@
 
             // Aura
             const aura = ctx.createRadialGradient(cx, cy, 60 * sc, cx, cy, 180 * sc);
-            aura.addColorStop(0, 'rgba(86,207,178,0.22)');
-            aura.addColorStop(1, 'rgba(86,207,178,0)');
+            aura.addColorStop(0, 'rgba(199, 155, 232, 0.22)');
+            aura.addColorStop(1, 'rgba(199, 155, 232, 0)');
             drawBlob(cx, cy, 130 * sc, aura, 1.5, 1.5 * sc);
 
             // Body
             const body = ctx.createLinearGradient(cx - 50 * sc, cy - 50 * sc, cx + 50 * sc, cy + 50 * sc);
-            body.addColorStop(0, '#56CFB2'); body.addColorStop(1, '#7C5CBF');
-            ctx.shadowColor = 'rgba(124,92,191,0.4)'; ctx.shadowBlur = 40 * sc;
+            body.addColorStop(0, '#88E0C9'); 
+            body.addColorStop(0.5, '#AFA5D9'); 
+            body.addColorStop(1, '#C79BE8');
+            ctx.shadowColor = 'rgba(124,92,191,0.2)'; 
+            ctx.shadowBlur = 40 * sc;
             drawBlob(cx, cy, 100 * sc, body, 1, 1 * sc);
             ctx.shadowBlur = 0;
 
-            // Eyes
-            const ex = Math.max(-10 * sc, Math.min(10 * sc, mouseX * 0.05));
-            const ey = Math.max(-10 * sc, Math.min(10 * sc, mouseY * 0.05));
-            ctx.fillStyle = 'white';
+            // Cute Blush
+            ctx.fillStyle = 'rgba(255, 140, 160, 0.35)';
+            ctx.beginPath(); ctx.ellipse(cx - 28 * sc, cy + 6 * sc, 12 * sc, 6 * sc, -0.1, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(cx + 28 * sc, cy + 6 * sc, 12 * sc, 6 * sc, 0.1, 0, Math.PI * 2); ctx.fill();
 
+            // Eyes & Expression
+            const ex = Math.max(-8 * sc, Math.min(8 * sc, mouseX * 0.04));
+            const ey = Math.max(-8 * sc, Math.min(8 * sc, mouseY * 0.04));
+            
             blinkCountdown--;
             if (blinkCountdown <= 0) {
                 isBlinking = true; blinkCountdown = Math.random() * 200 + 150;
@@ -1701,15 +2174,34 @@
             }
 
             if (!isBlinking) {
-                ctx.beginPath(); ctx.ellipse(cx - 35 * sc + ex, cy - 10 * sc + ey, 10 * sc, 16 * sc, 0, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(cx + 35 * sc + ex, cy - 10 * sc + ey, 10 * sc, 16 * sc, 0, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = 'rgba(255,255,255,0.8)';
-                ctx.beginPath(); ctx.arc(cx - 30 * sc + ex, cy - 16 * sc + ey, 4 * sc, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(cx + 40 * sc + ex, cy - 16 * sc + ey, 4 * sc, 0, Math.PI * 2); ctx.fill();
+                // Big Kawaii Eyes
+                ctx.fillStyle = '#312759';
+                ctx.beginPath(); ctx.ellipse(cx - 25 * sc + ex, cy - 2 * sc + ey, 9 * sc, 13 * sc, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(cx + 25 * sc + ex, cy - 2 * sc + ey, 9 * sc, 13 * sc, 0, 0, Math.PI * 2); ctx.fill();
+                
+                // Cute Catchlights
+                ctx.fillStyle = 'white';
+                ctx.beginPath(); ctx.arc(cx - 28 * sc + ex, cy - 6 * sc + ey, 3.5 * sc, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(cx - 22 * sc + ex, cy + 4 * sc + ey, 1.5 * sc, 0, Math.PI * 2); ctx.fill();
+                
+                ctx.beginPath(); ctx.arc(cx + 22 * sc + ex, cy - 6 * sc + ey, 3.5 * sc, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(cx + 28 * sc + ex, cy + 4 * sc + ey, 1.5 * sc, 0, Math.PI * 2); ctx.fill();
+
+                // Tiny smile
+                ctx.strokeStyle = '#312759';
+                ctx.lineWidth = 3 * sc;
+                ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(cx - 4 * sc + ex, cy + 10 * sc + ey); ctx.quadraticCurveTo(cx + ex, cy + 14 * sc + ey, cx + 4 * sc + ex, cy + 10 * sc + ey); ctx.stroke();
             } else {
-                ctx.strokeStyle = 'white'; ctx.lineWidth = 3 * sc;
-                ctx.beginPath(); ctx.moveTo(cx - 45 * sc + ex, cy - 5 * sc + ey); ctx.quadraticCurveTo(cx - 35 * sc + ex, cy + 5 * sc + ey, cx - 25 * sc + ex, cy - 5 * sc + ey); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx + 25 * sc + ex, cy - 5 * sc + ey); ctx.quadraticCurveTo(cx + 35 * sc + ex, cy + 5 * sc + ey, cx + 45 * sc + ex, cy - 5 * sc + ey); ctx.stroke();
+                // Happy blink
+                ctx.strokeStyle = '#312759'; 
+                ctx.lineWidth = 3.5 * sc;
+                ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(cx - 34 * sc + ex, cy + ey); ctx.quadraticCurveTo(cx - 25 * sc + ex, cy + 6 * sc + ey, cx - 16 * sc + ex, cy + ey); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(cx + 16 * sc + ex, cy + ey); ctx.quadraticCurveTo(cx + 25 * sc + ex, cy + 6 * sc + ey, cx + 34 * sc + ex, cy + ey); ctx.stroke();
+                
+                // Tiny smile
+                ctx.beginPath(); ctx.moveTo(cx - 4 * sc + ex, cy + 10 * sc + ey); ctx.quadraticCurveTo(cx + ex, cy + 14 * sc + ey, cx + 4 * sc + ex, cy + 10 * sc + ey); ctx.stroke();
             }
 
             requestAnimationFrame(animateSpirit);
@@ -1717,22 +2209,74 @@
         animateSpirit();
 
         /* ── Interactive Spirit Breathing Logic ── */
+        const isZenMode = false; // Ensures canvas colors don't break without Zen Mode
         const spiritContainer = document.getElementById('spiritContainer');
         const breathModal = document.getElementById('breathModal');
         const closeBreathModal = document.getElementById('closeBreathModal');
         const startBreathBtn = document.getElementById('startBreathBtn');
         const patternBtn = document.getElementById('patternBtn');
         const breathText = document.getElementById('breathText');
+        const breathMantra = document.getElementById('breathMantra');
         const breathCircle = document.getElementById('breathCircle');
         const breathGlow = document.getElementById('breathGlow');
         const soundToggle = document.getElementById('soundToggle');
+        const patternInfo = document.getElementById('patternInfo');
+        const sessionToast = document.getElementById('sessionToast');
+        const breathModalContent = document.querySelector('.breath-modal-content');
+        const breathVignette = document.getElementById('breathVignette');
+        const themeToggle = document.getElementById('themeToggle');
+        const breathModalOverlay = document.getElementById('breathModal');
 
         let isBreathing = false;
         let breathTimeout;
-        let audioCtx, masterGain, synthFilter;
+        let audioCtx, masterGain, purrGain, purrOsc;
         let isSoundOn = false;
+        let isDarkMode = false;
+        let completedCycles = 0;
+        let currentPhaseStart = 0;
+        let currentPhaseDuration = 1;
 
-        /* ── Liquid Modal Spirit Animation ── */
+        const therapeuticMantras = {
+            'Inhale': ["Draw in calm", "Fill your lungs", "Gather fresh energy", "Breathe in peace"],
+            'Hold': ["Notice the stillness", "You are safe", "Be present here", "Let the mind settle"],
+            'Exhale': ["Release tension", "Soften your shoulders", "Let it all go", "Breathe out worry"]
+        };
+
+        const breathingPatterns = [
+            { name: '4-7-8 Relax', desc: 'Best for deep sleep & anxiety', inhale: 4000, hold1: 7000, exhale: 8000, hold2: 0 },
+            { name: 'Box Breathing', desc: 'Navy SEAL focus & control', inhale: 4000, hold1: 4000, exhale: 4000, hold2: 4000 },
+            { name: 'Coherence', desc: 'Balances heart & mind', inhale: 5500, hold1: 0, exhale: 5500, hold2: 0 },
+            { name: 'Awake (6-0-2)', desc: 'Energize & boost alertness', inhale: 6000, hold1: 0, exhale: 2000, hold2: 0 },
+            { name: '4-4-6 Calm', desc: 'Quick nervous system reset', inhale: 4000, hold1: 4000, exhale: 6000, hold2: 0 }
+        ];
+        let currentPatternIdx = 0;
+        let currentPattern = breathingPatterns[0];
+
+        if (startBreathBtn) startBreathBtn.textContent = `Start ${currentPattern.name}`;
+        if (patternInfo) patternInfo.textContent = currentPattern.desc;
+
+        if (patternBtn) {
+            patternBtn.addEventListener('click', () => {
+                currentPatternIdx = (currentPatternIdx + 1) % breathingPatterns.length;
+                currentPattern = breathingPatterns[currentPatternIdx];
+                if (!isBreathing) {
+                    startBreathBtn.textContent = `Start ${currentPattern.name}`;
+                    if (patternInfo) {
+                        patternInfo.style.transform = 'scale(0.95)';
+                        patternInfo.style.opacity = '0';
+                        setTimeout(() => {
+                            patternInfo.textContent = currentPattern.desc;
+                            patternInfo.style.transform = 'scale(1)';
+                            patternInfo.style.opacity = '1';
+                        }, 200);
+                    }
+                }
+            });
+        }
+
+        const sleep = ms => new Promise(r => { breathTimeout = setTimeout(r, ms); });
+
+        /* ── Advanced & Cute Modal Spirit Animation ── */
         const modalCanvas = document.getElementById('modalSpiritCanvas');
         const modalCtx = modalCanvas.getContext('2d');
         let modalTime = 0;
@@ -1741,20 +2285,119 @@
         let targetFaceOffset = 0;
         let isModalBlinking = false;
         let modalBlinkCountdown = 280;
+        let breathIntensity = 0;
+        let particles = [];
+        let ripples = [];
+        
+        let modMouseX = 0, modMouseY = 0;
+        let lastModMouseX = 0, lastModMouseY = 0;
+        let pettingScore = 0;
+        let isHolding = false;
+
+        modalCanvas.addEventListener('pointermove', (e) => {
+            const rect = modalCanvas.getBoundingClientRect();
+            modMouseX = (e.clientX - rect.left - rect.width / 2) * (modalCanvas.width / rect.width);
+            modMouseY = (e.clientY - rect.top - rect.height / 2) * (modalCanvas.height / rect.height);
+        });
+
+        modalCanvas.addEventListener('pointerdown', (e) => {
+            isHolding = true;
+            modalCanvas.setPointerCapture(e.pointerId);
+            ripples.push({ radius: 0, maxRadius: 150, life: 1, x: modMouseX, y: modMouseY });
+        });
+
+        modalCanvas.addEventListener('pointerup', (e) => {
+            isHolding = false;
+            modalCanvas.releasePointerCapture(e.pointerId);
+        });
+
+        modalCanvas.addEventListener('pointerleave', () => {
+            modMouseX = 0; modMouseY = 0;
+            pettingScore = 0;
+            isHolding = false;
+        });
+
+        function spawnParticle(isHeart = false) {
+            let angle = Math.random() * Math.PI * 2;
+            let dist = 100 + Math.random() * 20;
+            particles.push({
+                angle: angle,
+                dist: dist,
+                speed: (Math.random() * 0.01 + 0.005) * (Math.random() > 0.5 ? 1 : -1),
+                size: isHeart ? Math.random() * 4 + 3 : Math.random() * 3 + 1,
+                life: 1,
+                decay: isHeart ? 0.015 : 0.008,
+                x: 0,
+                y: 0,
+                vy: -0.5 - Math.random(),
+                isHeart: isHeart
+            });
+        }
+
+        function drawSparkle(ctx, x, y, size) {
+            ctx.beginPath();
+            ctx.moveTo(x, y - size);
+            ctx.quadraticCurveTo(x, y, x + size, y);
+            ctx.quadraticCurveTo(x, y, x, y + size);
+            ctx.quadraticCurveTo(x, y, x - size, y);
+            ctx.quadraticCurveTo(x, y, x, y - size);
+            ctx.fill();
+        }
+
+        function drawHeart(ctx, x, y, size) {
+            ctx.beginPath();
+            ctx.moveTo(x, y + size / 4);
+            ctx.quadraticCurveTo(x, y, x - size / 2, y);
+            ctx.quadraticCurveTo(x - size, y, x - size, y + size / 2.5);
+            ctx.quadraticCurveTo(x - size, y + size, x, y + size * 1.5);
+            ctx.quadraticCurveTo(x + size, y + size, x + size, y + size / 2.5);
+            ctx.quadraticCurveTo(x + size, y, x + size / 2, y);
+            ctx.quadraticCurveTo(x, y, x, y + size / 4);
+            ctx.fill();
+        }
 
         function drawModalBlob(cx, cy, baseR, fill, speed, complexity) {
             modalCtx.fillStyle = fill;
             modalCtx.beginPath();
-            for (let i = 0; i <= Math.PI * 2; i += 0.1) {
+            for (let i = 0; i <= Math.PI * 2; i += 0.05) {
                 const r = baseR
-                    + Math.sin(i * 3 + modalTime * speed) * (5 * complexity)
-                    + Math.cos(i * 5 - modalTime * speed) * (5 * complexity)
-                    + Math.sin(i * 7 + modalTime) * (2 * complexity);
-                const x = cx + Math.cos(i) * r;
-                const y = cy + Math.sin(i) * r;
+                    + Math.sin(i * 3 + modalTime * speed) * (8 * complexity)
+                    + Math.cos(i * 5 - modalTime * speed * 1.2) * (6 * complexity)
+                    + Math.sin(i * 7 + modalTime) * (3 * complexity);
+                
+                let x = cx + Math.cos(i) * r;
+                let y = cy + Math.sin(i) * r;
+                
+                if (isHolding) {
+                    let dx = x - (cx + modMouseX);
+                    let dy = y - (cy + modMouseY);
+                    let distToMouse = Math.sqrt(dx*dx + dy*dy);
+                    if (distToMouse < 100) {
+                        x -= dx * 0.15;
+                        y -= dy * 0.15;
+                    }
+                }
+                
                 i === 0 ? modalCtx.moveTo(x, y) : modalCtx.lineTo(x, y);
             }
             modalCtx.closePath(); modalCtx.fill();
+        }
+
+        function playSparkleSound() {
+            if (!isSoundOn || !audioCtx || audioCtx.state === 'suspended') return;
+            if (Math.random() > 0.1) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            const notes = [864, 972, 1080, 1296, 1440];
+            osc.frequency.setValueAtTime(notes[Math.floor(Math.random() * notes.length)], audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+            
+            osc.connect(gain); gain.connect(masterGain);
+            osc.start(); osc.stop(audioCtx.currentTime + 1);
         }
 
         function animateModalSpirit() {
@@ -1764,96 +2407,231 @@
             modalCtx.clearRect(0, 0, w, h);
             modalTime += 0.015;
 
-            modalCtx.shadowColor = 'rgba(124,92,191,0.35)';
-            modalCtx.shadowBlur = 25;
-            modalCtx.shadowOffsetY = 10;
+            if (isDarkMode) {
+                let lightGrad = modalCtx.createRadialGradient(cx, cy, 0, cx, cy, 220);
+                lightGrad.addColorStop(0, `rgba(175, 165, 217, ${0.15 + breathIntensity * 0.1})`);
+                lightGrad.addColorStop(1, 'rgba(175, 165, 217, 0)');
+                modalCtx.fillStyle = lightGrad;
+                modalCtx.beginPath(); modalCtx.arc(cx, cy, 220, 0, Math.PI * 2); modalCtx.fill();
+            }
 
-            const body = modalCtx.createLinearGradient(cx - 80, cy - 80, cx + 80, cy + 80);
-            body.addColorStop(0, '#56CFB2');
-            body.addColorStop(1, '#7C5CBF');
+            ripples.forEach((r, i) => {
+                r.radius += 3;
+                r.life -= 0.02;
+                modalCtx.strokeStyle = `rgba(136, 224, 201, ${r.life * 0.6})`;
+                modalCtx.lineWidth = 1.5;
+                modalCtx.beginPath(); modalCtx.arc(cx + r.x, cy + r.y, r.radius, 0, Math.PI * 2); modalCtx.stroke();
+                if (r.life <= 0) ripples.splice(i, 1);
+            });
 
-            drawModalBlob(cx, cy, 88, body, 0.5, 0.4);
+            let rubSpeed = Math.abs(modMouseX - lastModMouseX) + Math.abs(modMouseY - lastModMouseY);
+            if (rubSpeed > 0.5) {
+                pettingScore += rubSpeed * 0.05;
+                if (pettingScore > 10) pettingScore = 10;
+                if (Math.random() < 0.1) spawnParticle(true);
+            } else {
+                pettingScore *= 0.95;
+            }
+            lastModMouseX = modMouseX;
+            lastModMouseY = modMouseY;
 
+            let isBeingPetted = pettingScore > 4;
+
+            if (isSoundOn && purrGain) {
+                if (isBeingPetted || isHolding) {
+                    purrGain.gain.setTargetAtTime(0.3, audioCtx.currentTime, 0.5);
+                    if (typeof navigator.vibrate === 'function' && Math.random() < 0.2) navigator.vibrate(10);
+                } else {
+                    purrGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.5);
+                }
+            }
+
+            if (isHolding) {
+                if (Math.random() < 0.2) spawnParticle(true);
+                playSparkleSound();
+            }
+
+            if (spiritState === 'inhale') breathIntensity += (1 - breathIntensity) * 0.02;
+            else if (spiritState === 'exhale') breathIntensity += (0 - breathIntensity) * 0.02;
+            else if (spiritState === 'hold') breathIntensity += (0.5 - breathIntensity) * 0.02;
+            else breathIntensity += (0 - breathIntensity) * 0.05;
+
+            if (isBreathing && Math.random() < (0.05 + breathIntensity * 0.1)) spawnParticle(Math.random() > 0.8);
+            
+            particles.forEach((p, i) => {
+                p.life -= p.decay;
+                p.angle += p.speed;
+                p.dist += 0.2; 
+                p.x = cx + Math.cos(p.angle) * p.dist;
+                p.y = cy + Math.sin(p.angle) * p.dist + (1 - p.life) * -30; 
+
+                if (p.isHeart) {
+                    modalCtx.fillStyle = `rgba(255, 140, 160, ${Math.max(0, p.life * 0.8)})`;
+                    drawHeart(modalCtx, p.x, p.y, p.size * Math.max(0, p.life));
+                } else {
+                    modalCtx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, p.life * 0.9)})`;
+                    drawSparkle(modalCtx, p.x, p.y, p.size * Math.max(0, p.life));
+                }
+                if (p.life <= 0) particles.splice(i, 1);
+            });
+
+            let heartbeatPulse = 0;
+            if (isBreathing) {
+                heartbeatPulse = Math.max(0, Math.sin(Date.now() / 1000 * Math.PI * 2)) * 0.15;
+            }
+
+            let baseRadius = 110 + breathIntensity * 15 + (isBeingPetted ? 4 : 0);
+            let morphSpeed = 0.5 + breathIntensity * 0.8;
+            let morphComplexity = 0.4 + breathIntensity * 0.3;
+            
+            let gradAngle = modalTime * 0.8;
+            const bodyGrad = modalCtx.createLinearGradient(
+                cx + Math.cos(gradAngle)*120, cy + Math.sin(gradAngle)*120, 
+                cx - Math.cos(gradAngle)*120, cy - Math.sin(gradAngle)*120
+            );
+            
+            bodyGrad.addColorStop(0, '#88E0C9');
+            bodyGrad.addColorStop(0.5, '#AFA5D9');
+            bodyGrad.addColorStop(1, '#C79BE8');
+            
+            modalCtx.shadowColor = 'rgba(124,92,191,0.2)';
+            modalCtx.shadowBlur = 20;
+            drawModalBlob(cx, cy, baseRadius, bodyGrad, morphSpeed, morphComplexity);
             modalCtx.shadowBlur = 0;
-            modalCtx.shadowOffsetY = 0;
+
+            if (heartbeatPulse > 0) {
+                const heartGrad = modalCtx.createRadialGradient(cx, cy, 0, cx, cy, baseRadius);
+                heartGrad.addColorStop(0, `rgba(255, 255, 255, ${heartbeatPulse})`);
+                heartGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                modalCtx.fillStyle = heartGrad;
+                modalCtx.beginPath();
+                modalCtx.arc(cx, cy, baseRadius, 0, Math.PI * 2);
+                modalCtx.fill();
+            }
 
             faceOffsetY += (targetFaceOffset - faceOffsetY) * 0.1;
             modalCtx.save();
-            modalCtx.translate(0, faceOffsetY);
-            modalCtx.fillStyle = 'white';
-            modalCtx.strokeStyle = 'white';
+            let faceY = cy + faceOffsetY;
+            
+            let blushAlpha = isHolding ? 0.7 : (0.4 + breathIntensity * 0.2 + (pettingScore*0.05));
+            let blushSize = isHolding ? 15 : 12;
+            modalCtx.fillStyle = `rgba(255, 140, 160, ${blushAlpha})`;
+            modalCtx.beginPath(); modalCtx.ellipse(cx - 32, faceY + 12, blushSize, 6, -0.15, 0, Math.PI * 2); modalCtx.fill();
+            modalCtx.beginPath(); modalCtx.ellipse(cx + 32, faceY + 12, blushSize, 6, 0.15, 0, Math.PI * 2); modalCtx.fill();
+
+            modalCtx.fillStyle = '#312759'; 
+            modalCtx.strokeStyle = '#312759';
             modalCtx.lineCap = 'round';
             modalCtx.lineJoin = 'round';
 
             modalBlinkCountdown--;
-            if (modalBlinkCountdown <= 0 && spiritState === 'default') {
+            if (modalBlinkCountdown <= 0 && spiritState === 'default' && !isBeingPetted && !isHolding) {
                 isModalBlinking = true;
                 modalBlinkCountdown = Math.random() * 200 + 150;
                 setTimeout(() => isModalBlinking = false, 150);
             }
 
-            if (spiritState === 'inhale') {
-                modalCtx.beginPath(); modalCtx.ellipse(cx - 30, cy - 12, 11, 17, 0, 0, Math.PI * 2); modalCtx.fill();
-                modalCtx.beginPath(); modalCtx.ellipse(cx + 30, cy - 12, 11, 17, 0, 0, Math.PI * 2); modalCtx.fill();
+            if (isHolding) {
+                modalCtx.lineWidth = 5;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 40, faceY + 4); modalCtx.quadraticCurveTo(cx - 30, faceY - 10, cx - 20, faceY + 4); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.moveTo(cx + 20, faceY + 4); modalCtx.quadraticCurveTo(cx + 30, faceY - 10, cx + 40, faceY + 4); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.arc(cx, faceY + 10, 6, 0, Math.PI, false); modalCtx.fill();
+            } else if (isBeingPetted) {
+                modalCtx.lineWidth = 4.5;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 38, faceY + 2); modalCtx.quadraticCurveTo(cx - 28, faceY - 6, cx - 18, faceY + 2); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.moveTo(cx + 18, faceY + 2); modalCtx.quadraticCurveTo(cx + 28, faceY - 6, cx + 38, faceY + 2); modalCtx.stroke();
                 modalCtx.lineWidth = 3.5;
-                modalCtx.beginPath(); modalCtx.arc(cx, cy + 14, 5, 0, Math.PI * 2); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 6, faceY + 12); 
+                modalCtx.quadraticCurveTo(cx, faceY + 20, cx + 6, faceY + 12); 
+                modalCtx.stroke();
+            } else if (spiritState === 'inhale') {
+                modalCtx.lineWidth = 4.5;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 38, faceY - 2); modalCtx.quadraticCurveTo(cx - 28, faceY - 14, cx - 18, faceY - 2); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.moveTo(cx + 18, faceY - 2); modalCtx.quadraticCurveTo(cx + 28, faceY - 14, cx + 38, faceY - 2); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.ellipse(cx, faceY + 14, 4, 6, 0, 0, Math.PI * 2); modalCtx.fill();
             } else if (spiritState === 'hold') {
-                modalCtx.lineWidth = 4;
-                modalCtx.beginPath(); modalCtx.moveTo(cx - 42, cy - 6); modalCtx.quadraticCurveTo(cx - 30, cy - 16, cx - 18, cy - 6); modalCtx.stroke();
-                modalCtx.beginPath(); modalCtx.moveTo(cx + 18, cy - 6); modalCtx.quadraticCurveTo(cx + 30, cy - 16, cx + 42, cy - 6); modalCtx.stroke();
-
-                modalCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                modalCtx.beginPath(); modalCtx.ellipse(cx - 44, cy + 6, 8, 4, 0, 0, Math.PI * 2); modalCtx.fill();
-                modalCtx.beginPath(); modalCtx.ellipse(cx + 44, cy + 6, 8, 4, 0, 0, Math.PI * 2); modalCtx.fill();
-
-                modalCtx.lineWidth = 3;
-                modalCtx.beginPath(); modalCtx.arc(cx, cy + 6, 3, 0, Math.PI, false); modalCtx.stroke();
+                modalCtx.lineWidth = 4.5;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 38, faceY - 6); modalCtx.lineTo(cx - 28, faceY + 2); modalCtx.lineTo(cx - 18, faceY - 6); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.moveTo(cx + 18, faceY - 6); modalCtx.lineTo(cx + 28, faceY + 2); modalCtx.lineTo(cx + 38, faceY - 6); modalCtx.stroke();
+                modalCtx.lineWidth = 3.5;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 6, faceY + 12); 
+                modalCtx.quadraticCurveTo(cx - 3, faceY + 16, cx, faceY + 12); 
+                modalCtx.quadraticCurveTo(cx + 3, faceY + 16, cx + 6, faceY + 12); 
+                modalCtx.stroke();
             } else if (spiritState === 'exhale') {
-                modalCtx.lineWidth = 4;
-                modalCtx.beginPath(); modalCtx.moveTo(cx - 40, cy - 12); modalCtx.quadraticCurveTo(cx - 30, cy - 4, cx - 20, cy - 12); modalCtx.stroke();
-                modalCtx.beginPath(); modalCtx.moveTo(cx + 20, cy - 12); modalCtx.quadraticCurveTo(cx + 30, cy - 4, cx + 40, cy - 12); modalCtx.stroke();
-
-                modalCtx.lineWidth = 3;
-                modalCtx.beginPath(); modalCtx.arc(cx, cy + 12, 4, 0, Math.PI * 2); modalCtx.stroke();
-
-                modalCtx.lineWidth = 2.5;
-                modalCtx.strokeStyle = `rgba(255, 255, 255, ${0.2 + 0.8 * Math.sin(modalTime * 8)})`;
-                modalCtx.beginPath(); modalCtx.moveTo(cx, cy + 22); modalCtx.lineTo(cx, cy + 32); modalCtx.stroke();
+                modalCtx.lineWidth = 4.5;
+                modalCtx.beginPath(); modalCtx.moveTo(cx - 38, faceY - 8); modalCtx.quadraticCurveTo(cx - 28, faceY + 4, cx - 18, faceY - 8); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.moveTo(cx + 18, faceY - 8); modalCtx.quadraticCurveTo(cx + 28, faceY + 4, cx + 38, faceY - 8); modalCtx.stroke();
+                modalCtx.beginPath(); modalCtx.ellipse(cx, faceY + 14, 3.5, 3.5, 0, 0, Math.PI * 2); modalCtx.fill();
+                
+                modalCtx.fillStyle = 'white';
+                let b1Y = faceY + 22 + (modalTime * 30 % 20);
+                modalCtx.globalAlpha = Math.max(0, 1 - ((b1Y - (faceY + 22)) / 20));
+                modalCtx.beginPath(); modalCtx.arc(cx + Math.sin(modalTime * 4) * 4, b1Y, 3, 0, Math.PI*2); modalCtx.fill();
+                modalCtx.globalAlpha = 1.0;
             } else {
                 if (!isModalBlinking) {
+                    modalCtx.beginPath(); modalCtx.ellipse(cx - 28, faceY, 10, 14, 0, 0, Math.PI * 2); modalCtx.fill();
+                    modalCtx.beginPath(); modalCtx.ellipse(cx + 28, faceY, 10, 14, 0, 0, Math.PI * 2); modalCtx.fill();
+
                     modalCtx.fillStyle = 'white';
-                    modalCtx.beginPath(); modalCtx.ellipse(cx - 30, cy - 9, 9, 14, 0, 0, Math.PI * 2); modalCtx.fill();
-                    modalCtx.beginPath(); modalCtx.ellipse(cx + 30, cy - 9, 9, 14, 0, 0, Math.PI * 2); modalCtx.fill();
+                    modalCtx.beginPath(); modalCtx.arc(cx - 31, faceY - 5, 4.5, 0, Math.PI * 2); modalCtx.fill();
+                    modalCtx.beginPath(); modalCtx.arc(cx - 24, faceY + 6, 2, 0, Math.PI * 2); modalCtx.fill();
+                    
+                    modalCtx.beginPath(); modalCtx.arc(cx + 25, faceY - 5, 4.5, 0, Math.PI * 2); modalCtx.fill();
+                    modalCtx.beginPath(); modalCtx.arc(cx + 32, faceY + 6, 2, 0, Math.PI * 2); modalCtx.fill();
 
-                    modalCtx.fillStyle = 'rgba(255,255,255,0.8)';
-                    modalCtx.beginPath(); modalCtx.arc(cx - 25, cy - 14, 3.5, 0, Math.PI * 2); modalCtx.fill();
-                    modalCtx.beginPath(); modalCtx.arc(cx + 35, cy - 14, 3.5, 0, Math.PI * 2); modalCtx.fill();
-                } else {
                     modalCtx.lineWidth = 3.5;
-                    modalCtx.beginPath(); modalCtx.moveTo(cx - 40, cy - 4); modalCtx.quadraticCurveTo(cx - 30, cy + 6, cx - 20, cy - 4); modalCtx.stroke();
-                    modalCtx.beginPath(); modalCtx.moveTo(cx + 20, cy - 4); modalCtx.quadraticCurveTo(cx + 30, cy + 6, cx + 40, cy - 4); modalCtx.stroke();
+                    modalCtx.beginPath(); modalCtx.moveTo(cx - 5, faceY + 12); modalCtx.quadraticCurveTo(cx, faceY + 16, cx + 5, faceY + 12); modalCtx.stroke();
+                } else {
+                    modalCtx.lineWidth = 4.5;
+                    modalCtx.beginPath(); modalCtx.moveTo(cx - 38, faceY + 4); modalCtx.quadraticCurveTo(cx - 28, faceY - 2, cx - 18, faceY + 4); modalCtx.stroke();
+                    modalCtx.beginPath(); modalCtx.moveTo(cx + 18, faceY + 4); modalCtx.quadraticCurveTo(cx + 28, faceY - 2, cx + 38, faceY + 4); modalCtx.stroke();
+                    
+                    modalCtx.lineWidth = 3.5;
+                    modalCtx.beginPath(); modalCtx.moveTo(cx - 5, faceY + 12); modalCtx.quadraticCurveTo(cx, faceY + 16, cx + 5, faceY + 12); modalCtx.stroke();
                 }
-
-                modalCtx.strokeStyle = 'white';
-                modalCtx.lineWidth = 2.5;
-                modalCtx.beginPath(); modalCtx.moveTo(cx - 6, cy + 12); modalCtx.quadraticCurveTo(cx, cy + 16, cx + 6, cy + 12); modalCtx.stroke();
             }
             modalCtx.restore();
 
-            modalCtx.save();
-            drawModalBlob(cx, cy, 88, 'transparent', 0.5, 0.4);
-            modalCtx.clip();
-
-            const highlight = modalCtx.createRadialGradient(cx - 40, cy - 40, 0, cx, cy, 120);
-            highlight.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
-            highlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            modalCtx.fillStyle = highlight;
-            modalCtx.fill();
-            modalCtx.restore();
+            let phaseProgress = 0;
+            if (isBreathing && currentPhaseDuration > 0) {
+                phaseProgress = Math.min(1, Math.max(0, (Date.now() - currentPhaseStart) / currentPhaseDuration));
+                
+                let ringRadius = baseRadius + 22;
+                modalCtx.lineWidth = 3.5;
+                modalCtx.lineCap = 'round';
+                
+                modalCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                modalCtx.beginPath();
+                modalCtx.arc(cx, cy, ringRadius, 0, Math.PI * 2);
+                modalCtx.stroke();
+                
+                modalCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                modalCtx.beginPath();
+                modalCtx.arc(cx, cy, ringRadius, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * phaseProgress));
+                modalCtx.stroke();
+            }
 
             requestAnimationFrame(animateModalSpirit);
         }
         animateModalSpirit();
+
+        function playTransitionChime() {
+            if(!isSoundOn || !audioCtx || audioCtx.state === 'suspended') return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(432, audioCtx.currentTime); 
+            
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.05); 
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5); 
+
+            osc.connect(gain); gain.connect(masterGain);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 3);
+        }
 
         function initAudio() {
             if (!audioCtx) {
@@ -1862,23 +2640,32 @@
                 masterGain.gain.value = 0;
                 masterGain.connect(audioCtx.destination);
 
-                const osc1 = audioCtx.createOscillator();
-                const osc2 = audioCtx.createOscillator();
-                osc1.type = 'sine'; osc2.type = 'sine';
-
-                osc1.frequency.value = 174;
-                osc2.frequency.value = 178;
-
-                synthFilter = audioCtx.createBiquadFilter();
-                synthFilter.type = 'lowpass';
-                synthFilter.frequency.value = 300;
-
-                osc1.connect(synthFilter);
-                osc2.connect(synthFilter);
-                synthFilter.connect(masterGain);
-
-                osc1.start(); osc2.start();
+                purrOsc = audioCtx.createOscillator();
+                purrOsc.type = 'triangle';
+                purrOsc.frequency.value = 45;
+                
+                let purrLFO = audioCtx.createOscillator();
+                purrLFO.frequency.value = 15; 
+                let purrLFOGain = audioCtx.createGain();
+                purrLFOGain.gain.value = 10;
+                
+                purrLFO.connect(purrLFOGain);
+                purrLFOGain.connect(purrOsc.frequency);
+                
+                purrGain = audioCtx.createGain();
+                purrGain.gain.value = 0;
+                purrOsc.connect(purrGain);
+                purrGain.connect(masterGain);
+                
+                purrOsc.start(); purrLFO.start();
             }
+        }
+
+        function showToast(message) {
+            if(!sessionToast) return;
+            sessionToast.textContent = message;
+            sessionToast.classList.add('show');
+            setTimeout(() => { sessionToast.classList.remove('show'); }, 3000);
         }
 
         function closeBreathingModal() {
@@ -1890,97 +2677,165 @@
             breathModal.classList.add('active');
         }
 
-        function drawSpiritBackdrop() {}
-
         function stopBreathing() {
             isBreathing = false;
             clearTimeout(breathTimeout);
             spiritState = 'default';
             targetFaceOffset = 0;
-            startBreathBtn.textContent = 'Start 4-4-6 Breath';
-            breathText.style.opacity = '0';
-
-            setTimeout(() => {
-                breathText.textContent = 'Ready when you are';
+            
+            if (completedCycles > 0) {
+                breathText.textContent = `Session complete. ${completedCycles} cycles done.`;
                 breathText.style.opacity = '1';
-            }, 300);
+                completedCycles = 0;
+            } else {
+                if (breathText) breathText.style.opacity = '0';
+                setTimeout(() => {
+                    if (!isBreathing && breathText) {
+                        breathText.textContent = 'Ready when you are';
+                        breathText.style.opacity = '1';
+                    }
+                }, 300);
+            }
 
-            breathCircle.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)';
-            breathGlow.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease';
-            breathCircle.style.transform = 'scale(1)';
-            breathGlow.style.transform = 'scale(1)';
-            breathGlow.style.opacity = '0.3';
+            if (startBreathBtn) startBreathBtn.textContent = `Start ${currentPattern.name}`;
+            if (patternBtn) {
+                patternBtn.style.opacity = '1';
+                patternBtn.style.pointerEvents = 'auto';
+            }
+            if (breathMantra) breathMantra.style.opacity = '0';
+            if (sessionToast) sessionToast.classList.remove('show');
 
-            if (masterGain) masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1);
+            if (breathCircle && breathGlow) {
+                breathCircle.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)';
+                breathGlow.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease';
+                breathCircle.style.transform = 'scale(1) translateY(0px)';
+                breathGlow.style.transform = 'scale(1) translateY(0px)';
+                breathGlow.style.opacity = '0.3';
+            }
+            
+            if (breathModalContent) {
+                breathModalContent.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)';
+                breathModalContent.style.transform = 'translateY(0) scale(1)';
+            }
+
+            if (breathVignette) breathVignette.style.opacity = '0';
+
+            if (masterGain && audioCtx) masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1);
         }
 
-        const sleep = ms => new Promise(r => { breathTimeout = setTimeout(r, ms); });
+        async function runPhase(phaseName, durationMs, scaleVal, faceState, faceOff) {
+            if (!isBreathing) return false;
+            spiritState = faceState;
+            targetFaceOffset = faceOff;
+            
+            currentPhaseStart = Date.now();
+            currentPhaseDuration = durationMs;
+
+            let phaseMantras = therapeuticMantras[phaseName];
+            let randomMantra = phaseMantras[Math.floor(Math.random() * phaseMantras.length)];
+
+            if (breathMantra) {
+                breathMantra.style.opacity = '0';
+                setTimeout(() => {
+                    if(isBreathing) {
+                        breathMantra.textContent = randomMantra;
+                        breathMantra.style.opacity = '1';
+                    }
+                }, 300);
+            }
+
+            playTransitionChime();
+
+            let easing = (phaseName === 'Hold') ? 'linear' : 'cubic-bezier(0.4, 0, 0.2, 1)';
+            let floatY = (phaseName === 'Inhale' || faceState === 'hold') ? -12 : 0;
+
+            breathCircle.style.transition = `transform ${durationMs}ms ${easing}`;
+            breathGlow.style.transition = `transform ${durationMs}ms ${easing}, opacity ${durationMs}ms ease`;
+            
+            if (breathVignette) {
+                if (phaseName === 'Inhale') breathVignette.style.opacity = '1';
+                else if (phaseName === 'Exhale') breathVignette.style.opacity = '0';
+            }
+
+            if (breathModalContent) {
+                breathModalContent.style.transition = `transform ${durationMs}ms ${easing}`;
+                let modalScale = phaseName === 'Inhale' ? 1.02 : (phaseName === 'Exhale' ? 0.98 : 1.02);
+                breathModalContent.style.transform = `translateY(0) scale(${modalScale})`;
+            }
+
+            if (phaseName === 'Inhale') {
+                breathCircle.style.transform = `scale(${scaleVal}) translateY(${floatY}px)`;
+                breathGlow.style.transform = `scale(${scaleVal + 0.4}) translateY(${floatY}px)`;
+                breathGlow.style.opacity = '0.8';
+            } else if (phaseName === 'Exhale') {
+                breathCircle.style.transform = `scale(${scaleVal}) translateY(${floatY}px)`;
+                breathGlow.style.transform = `scale(1) translateY(${floatY}px)`;
+                breathGlow.style.opacity = '0.3';
+            } else if (phaseName === 'Hold') {
+                let currentScale = scaleVal;
+                breathCircle.style.transform = `scale(${currentScale + (faceOff < 0 ? 0.05 : -0.05)}) translateY(${floatY}px)`;
+            }
+
+            breathText.style.transition = 'opacity 0.2s';
+            breathText.style.opacity = '0';
+            await sleep(200);
+            if (!isBreathing) return false;
+
+            let startTime = Date.now();
+            let endTime = startTime + durationMs;
+            let lastRemaining = -1;
+            
+            while (Date.now() < endTime && isBreathing) {
+                let remaining = Math.ceil((endTime - Date.now()) / 1000);
+                if (remaining !== lastRemaining) {
+                    breathText.style.transform = 'scale(1.08)';
+                    setTimeout(() => { if (breathText) breathText.style.transform = 'scale(1)'; }, 150);
+                    breathText.textContent = `${phaseName} • ${remaining}`;
+                    breathText.style.opacity = '1';
+                    lastRemaining = remaining;
+                }
+                await sleep(16); 
+            }
+            return true;
+        }
 
         async function startBreathingCycle() {
             if (isBreathing) return stopBreathing();
             isBreathing = true;
-            startBreathBtn.textContent = 'Pause';
+            completedCycles = 0;
+            
+            if (startBreathBtn) startBreathBtn.textContent = 'Pause';
+            if (patternBtn) {
+                patternBtn.style.opacity = '0.5';
+                patternBtn.style.pointerEvents = 'none';
+            }
 
             if (isSoundOn && !audioCtx) initAudio();
             if (isSoundOn && audioCtx) {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
-                masterGain.gain.setTargetAtTime(0.15, audioCtx.currentTime, 1);
             }
 
             try {
                 while (isBreathing) {
-                    spiritState = 'inhale';
-                    targetFaceOffset = -8;
-                    breathText.style.opacity = '0';
-                    await sleep(300);
-                    if (!isBreathing) break;
-                    breathText.textContent = 'Inhale...';
-                    breathText.style.opacity = '1';
+                    if (!await runPhase('Inhale', currentPattern.inhale, 2.2, 'inhale', -8)) break;
+                    if (currentPattern.hold1 > 0) {
+                        if (!await runPhase('Hold', currentPattern.hold1, 2.2, 'hold', -4)) break;
+                    }
+                    if (!await runPhase('Exhale', currentPattern.exhale, 1, 'exhale', 8)) break;
+                    if (currentPattern.hold2 > 0) {
+                        if (!await runPhase('Hold', currentPattern.hold2, 1, 'default', 0)) break;
+                    }
 
-                    breathCircle.style.transition = 'transform 4s cubic-bezier(0.4, 0, 0.2, 1)';
-                    breathGlow.style.transition = 'transform 4s cubic-bezier(0.4, 0, 0.2, 1), opacity 4s ease';
-                    breathCircle.style.transform = 'scale(2.2)';
-                    breathGlow.style.transform = 'scale(2.6)';
-                    breathGlow.style.opacity = '0.8';
+                    completedCycles++;
 
-                    if (isSoundOn && synthFilter) synthFilter.frequency.setTargetAtTime(800, audioCtx.currentTime, 2);
-
-                    await sleep(4000);
-                    if (!isBreathing) break;
-
-                    spiritState = 'hold';
-                    targetFaceOffset = -4;
-                    breathText.style.opacity = '0';
-                    await sleep(300);
-                    if (!isBreathing) break;
-                    breathText.textContent = 'Hold...';
-                    breathText.style.opacity = '1';
-
-                    breathCircle.style.transition = 'transform 4s linear';
-                    breathCircle.style.transform = 'scale(2.25)';
-
-                    await sleep(4000);
-                    if (!isBreathing) break;
-
-                    spiritState = 'exhale';
-                    targetFaceOffset = 8;
-                    breathText.style.opacity = '0';
-                    await sleep(300);
-                    if (!isBreathing) break;
-                    breathText.textContent = 'Exhale...';
-                    breathText.style.opacity = '1';
-
-                    breathCircle.style.transition = 'transform 6s cubic-bezier(0.4, 0, 0.2, 1)';
-                    breathGlow.style.transition = 'transform 6s cubic-bezier(0.4, 0, 0.2, 1), opacity 6s ease';
-                    breathCircle.style.transform = 'scale(1)';
-                    breathGlow.style.transform = 'scale(1)';
-                    breathGlow.style.opacity = '0.3';
-
-                    if (isSoundOn && synthFilter) synthFilter.frequency.setTargetAtTime(300, audioCtx.currentTime, 3);
-
-                    await sleep(6000);
+                    if (completedCycles === 1) showToast("1 Cycle Done. Good start.");
+                    else if (completedCycles === 3) showToast("3 Cycles. Heart rate slowing.");
+                    else if (completedCycles === 5) showToast("5 Cycles. Deep relaxation.");
+                    else if (completedCycles % 5 === 0) showToast(`${completedCycles} Cycles. Nervous system reset.`);
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.error("Breathing cycle error:", e);
+            }
         }
 
         if (spiritContainer) {
@@ -1995,24 +2850,26 @@
             startBreathBtn.addEventListener('click', startBreathingCycle);
         }
 
-        if (patternBtn) {
-            patternBtn.addEventListener('click', () => {
-                const patterns = ['4-7-8 Breath', 'Box Breathing', 'Coherence Breath'];
-                const random = patterns[Math.floor(Math.random() * patterns.length)];
-                startBreathBtn.textContent = `Start ${random}`;
-            });
-        }
-
         if (soundToggle) {
             soundToggle.addEventListener('click', () => {
                 if (!audioCtx) initAudio();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 isSoundOn = !isSoundOn;
                 soundToggle.textContent = isSoundOn ? '🔊' : '🔈';
-                if (isSoundOn && isBreathing) {
-                    masterGain.gain.setTargetAtTime(0.15, audioCtx.currentTime, 1);
-                } else if (!isSoundOn && masterGain) {
-                    masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1);
+            });
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                isDarkMode = !isDarkMode;
+                if (isDarkMode) {
+                    breathModalContent.classList.add('dark-theme');
+                    breathModalOverlay.classList.add('dark-theme');
+                    themeToggle.textContent = '☀️';
+                } else {
+                    breathModalContent.classList.remove('dark-theme');
+                    breathModalOverlay.classList.remove('dark-theme');
+                    themeToggle.textContent = '🌙';
                 }
             });
         }
@@ -2032,45 +2889,47 @@
 
     <script src="../shared/supabase-auth.js"></script>
     <script>
-      /* ── Sidebar toggle ── */
-      (function() {
-        var hamburger = document.getElementById('ymHamburger');
-        var sidebar = document.getElementById('ymSidebar');
-        var backdrop = document.getElementById('ymSidebarBackdrop');
-        var topbar = document.getElementById('ymTopbar');
+        /* ── Sidebar toggle ── */
+        (function () {
+            var hamburger = document.getElementById('ymHamburger');
+            var sidebar = document.getElementById('ymSidebar');
+            var backdrop = document.getElementById('ymSidebarBackdrop');
+            var topbar = document.getElementById('ymTopbar');
 
-        function toggleSidebar() {
-          var isOpen = sidebar.classList.contains('open');
-          sidebar.classList.toggle('open');
-          backdrop.classList.toggle('open');
-          hamburger.classList.toggle('open');
-          document.body.style.overflow = isOpen ? '' : 'hidden';
-        }
+            function toggleSidebar() {
+                var isOpen = sidebar.classList.contains('open');
+                sidebar.classList.toggle('open');
+                backdrop.classList.toggle('open');
+                hamburger.classList.toggle('open');
+                document.body.style.overflow = isOpen ? '' : 'hidden';
+            }
 
-        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
-        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+            if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+            if (backdrop) backdrop.addEventListener('click', toggleSidebar);
 
-        /* ── Scroll shadow ── */
-        if (topbar) {
-          window.addEventListener('scroll', function() {
-            topbar.classList.toggle('scrolled', window.scrollY > 10);
-          }, { passive: true });
-        }
+            /* ── Scroll shadow ── */
+            if (topbar) {
+                window.addEventListener('scroll', function () {
+                    topbar.classList.toggle('scrolled', window.scrollY > 10);
+                }, { passive: true });
+            }
 
-        /* ── Highlight active sidebar link ── */
-        var currentPath = window.location.pathname;
-        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
-          var href = link.getAttribute('href');
-          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
-            link.classList.add('active');
-          }
-        });
-      })();
+            /* ── Highlight active sidebar link ── */
+            var currentPath = window.location.pathname;
+            document.querySelectorAll('.ym-sidebar__link').forEach(function (link) {
+                var href = link.getAttribute('href');
+                if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
+                    link.classList.add('active');
+                }
+            });
+        })();
     </script>
     <!-- Analytics Tracking -->
     <script src="/shared/ym-track.js"></script>
+    <!-- Feedback Widget -->
+    <script src="/shared/feedback-widget.js?v=3"></script>
+    <!-- Personalization Engine -->
+    <script src="/js/personalization.js"></script>
 </body>
 
 </html>
-
-

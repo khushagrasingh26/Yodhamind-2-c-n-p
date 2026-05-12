@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="../css/tokens.css">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W7RQTL2ND7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W7RQTL2ND7');
+</script>
+<script>
+function trackEvent(action) {
+  if (typeof gtag === 'function') {
+    gtag('event', action, {
+      event_category: 'engagement',
+      event_label: action
+    });
+  }
+}
+</script>
+
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
@@ -227,6 +250,11 @@
       .charts-grid { grid-template-columns: 1fr; }
     }
   </style>
+    <!-- Vercel Analytics -->
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -239,7 +267,7 @@
   <!-- Header -->
   <header class="admin-header">
     <div class="admin-brand">
-      🧠 <span>YodhaMind DevDash</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg> <span>YodhaMind DevDash</span>
     </div>
     <div class="admin-actions">
       <select id="dateRange" class="btn">
@@ -259,6 +287,7 @@
     <div class="nav-tab" data-target="tab-games">Game Analytics</div>
     <div class="nav-tab" data-target="tab-funnels">Funnels & CTAs</div>
     <div class="nav-tab" data-target="tab-health">Health Signals</div>
+    <div class="nav-tab" data-target="tab-feedback"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Feedback</div>
   </nav>
 
   <!-- Main Content -->
@@ -401,6 +430,42 @@
       </div>
     </div>
 
+    <!-- 6. FEEDBACK TAB -->
+    <div id="tab-feedback" class="tab-pane">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Feedback</div>
+          <div class="kpi-value" id="feedbackTotalVal">-</div>
+          <div class="kpi-trend" style="color:var(--text-muted)">All time</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Average Rating</div>
+          <div class="kpi-value" id="feedbackAvgVal">-</div>
+          <div class="kpi-trend" style="color:var(--text-muted)">Out of 5</div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight: 600;">User Feedback</span>
+          <button class="btn" id="refreshFeedbackBtn">Refresh</button>
+        </div>
+        <table id="feedbackTable">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Rating</th>
+              <th>Message</th>
+              <th>Page</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -476,6 +541,7 @@
       loadHealthSignals();
       loadFunnels();
       loadRealtime();
+      loadFeedback();
     }
 
     async function loadOverview() {
@@ -754,6 +820,56 @@
         document.getElementById(tab.dataset.target).classList.add('active');
       });
     });
+
+    // --- Feedback Loader ---
+    async function loadFeedback() {
+      try {
+        const { data, error, count } = await sb
+          .from('platform_feedback')
+          .select('*', { count: 'exact' })
+          .order('created_at', { ascending: false })
+          .limit(100);
+
+        if (error) throw error;
+        
+        const total = count || 0;
+        document.getElementById('feedbackTotalVal').textContent = total;
+
+        // Calculate average rating
+        const rated = data.filter(f => f.rating);
+        const avg = rated.length > 0 ? (rated.reduce((s, f) => s + f.rating, 0) / rated.length).toFixed(1) : '-';
+        document.getElementById('feedbackAvgVal').textContent = avg;
+
+        const ratingEmojis = { 1: '😞', 2: '😐', 3: '🙂', 4: '😊', 5: '🤩' };
+        const tbody = document.querySelector('#feedbackTable tbody');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:2rem;">No feedback submitted yet</td></tr>';
+          return;
+        }
+
+        data.forEach(f => {
+          const time = new Date(f.created_at).toLocaleString();
+          const ratingDisplay = f.rating ? `${ratingEmojis[f.rating] || ''} ${f.rating}/5` : '<span style="color:var(--text-muted)">-</span>';
+          const msg = f.message || '<span style="color:var(--text-muted)">No message</span>';
+          const page = f.page || '-';
+
+          tbody.innerHTML += `
+            <tr>
+              <td style="color:var(--text-muted); white-space:nowrap;">${time}</td>
+              <td>${ratingDisplay}</td>
+              <td style="max-width:400px; overflow:hidden; text-overflow:ellipsis;">${msg}</td>
+              <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${page}">${page}</td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error('Feedback load error:', err);
+      }
+    }
+
+    document.getElementById('refreshFeedbackBtn').addEventListener('click', loadFeedback);
 
     // --- Init ---
     checkAuth();

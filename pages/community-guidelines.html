@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/tokens.css">
+    <link rel="stylesheet" href="/css/shell.css">
+    <link rel="stylesheet" href="../shared/nav.css">
+    <title>Community Guidelines — YodhaMind</title>
+    <style>
+        .page-main {
+            padding: var(--space-20) var(--space-4) var(--space-20);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .guidelines-header {
+            margin-bottom: var(--space-12);
+        }
+
+        .guidelines-header h1 {
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            margin-bottom: var(--space-4);
+            color: var(--color-text-primary);
+        }
+
+        .guidelines-header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .guideline-section {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .guideline-section h2 {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .guideline-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .guideline-section li {
+            position: relative;
+            padding-left: var(--space-6);
+            margin-bottom: var(--space-4);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+        }
+
+        .guideline-section li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .guideline-section li:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- ═══════════ YM SIDEBAR ═══════════ -->
+    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
+    <aside class="ym-sidebar" id="ymSidebar">
+        <div class="ym-sidebar__header">
+            <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
+            <span class="ym-sidebar__logo">YodhaMind</span>
+        </div>
+        <nav class="ym-sidebar__nav">
+            <div class="ym-sidebar__section-label">Navigate</div>
+            <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+            <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+            <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+            <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self
+                Assessment</a>
+            <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
+            <div class="ym-sidebar__divider"></div>
+            <div class="ym-sidebar__section-label">Wellness</div>
+            <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span
+                    class="ym-sidebar__link-icon">◎</span>Breathing</a>
+            <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus
+                Timer</a>
+            <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
+            <a href="/pages/counselors.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Counselors</a>
+            <div class="ym-sidebar__divider"></div>
+            <div class="ym-sidebar__section-label">Support</div>
+            <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall:
+                9152987821</a>
+            <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala:
+                1860-266-2345</a>
+        </nav>
+        <div class="ym-sidebar__footer">
+            © 2026 YodhaMind<br>
+            Made with 💛 for Indian students<br>
+            <a href="/pages/privacy.html">Privacy Policy</a>
+        </div>
+    </aside>
+
+    <!-- ═══════════ YM TOPBAR ═══════════ -->
+    <header class="ym-topbar" id="ymTopbar">
+        <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+        <a href="/" class="ym-topbar__logo">
+            <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
+            YodhaMind
+        </a>
+        <div class="ym-topbar__right">
+            <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
+            <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
+            <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
+        </div>
+    </header>
+
+    <main id="main-content" class="page-main">
+        <div class="guidelines-header">
+            <h1>Community Guidelines</h1>
+            <p>YodhaMind's student community is built on empathy, support, and strict moderation. Our goal is to create a safe space for every Indian student to feel heard, seen, and supported without fear of judgment.</p>
+        </div>
+
+        <section class="guideline-section">
+            <h2>🛡️ The Golden Rules</h2>
+            <ul>
+                <li><strong>100% Anonymity:</strong> Do not post personally identifiable information (PII) like full names, phone numbers, email addresses, or exact locations.</li>
+                <li><strong>Zero Tolerance for Bullying:</strong> Name-calling, discrimination, hate speech, or targeted harassment will result in an immediate ban.</li>
+                <li><strong>Empathy First:</strong> Be kind. If you cannot offer constructive support or a listening ear, scroll past.</li>
+            </ul>
+        </section>
+
+        <section class="guideline-section">
+            <h2>🚨 Safety & Crisis</h2>
+            <ul>
+                <li><strong>No Harmful Content:</strong> Posts promoting self-harm, suicide, or violence against others are strictly prohibited. The system automatically detects and intercepts distress keywords to connect the user with immediate professional help.</li>
+                <li><strong>Medical Disclaimer:</strong> This community is not a substitute for professional therapy or medical advice. Please consult a counselor or call emergency services if you are in a crisis.</li>
+            </ul>
+        </section>
+        
+        <section class="guideline-section">
+            <h2>✨ Moderation Process</h2>
+            <ul>
+                <li><strong>Active Review:</strong> Every post is actively reviewed. Content violating guidelines will be removed within 2 hours.</li>
+                <li><strong>Reporting:</strong> Users can report posts they believe violate guidelines. Moderation teams review reports continuously.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="../shared/supabase-auth.js"></script>
+    <script>
+        /* ── Sidebar toggle ── */
+        (function () {
+            var hamburger = document.getElementById('ymHamburger');
+            var sidebar = document.getElementById('ymSidebar');
+            var backdrop = document.getElementById('ymSidebarBackdrop');
+            var topbar = document.getElementById('ymTopbar');
+
+            function toggleSidebar() {
+                var isOpen = sidebar.classList.contains('open');
+                sidebar.classList.toggle('open');
+                backdrop.classList.toggle('open');
+                hamburger.classList.toggle('open');
+                document.body.style.overflow = isOpen ? '' : 'hidden';
+            }
+
+            if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+            if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+
+            /* ── Scroll shadow ── */
+            if (topbar) {
+                window.addEventListener('scroll', function () {
+                    topbar.classList.toggle('scrolled', window.scrollY > 10);
+                }, { passive: true });
+            }
+
+            /* ── Highlight active sidebar link ── */
+            var currentPath = window.location.pathname;
+            document.querySelectorAll('.ym-sidebar__link').forEach(function (link) {
+                var href = link.getAttribute('href');
+                if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
+                    link.classList.add('active');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

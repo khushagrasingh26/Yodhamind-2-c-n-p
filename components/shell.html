@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
+  <script src="/shared/theme.js"></script>
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/shell.css">
+  <link rel="stylesheet" href="/css/[page-specific].css">
+  <title>[Page Title] — YodhaMind</title>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="app-header">
+    <a href="/" class="app-logo" aria-label="YodhaMind home">
+      <span class="logo-text">YodhaMind</span>
+    </a>
+    <div class="header-actions">
+      <button id="theme-toggle" aria-label="Toggle dark mode"><!-- sun/moon icon --></button>
+      <button class="sign-in-btn">Sign In</button>
+    </div>
+  </header>
+
+  <main id="main-content" class="page-main">
+    <!-- page content here -->
+  </main>
+
+  <nav class="bottom-tab-bar" aria-label="Main navigation">
+    <!-- bottom tabs from Fix 2 -->
+  </nav>
+
+  <div class="crisis-bar">
+    <!-- crisis numbers from Fix 11 -->
+  </div>
+
+  <script src="/js/shell.js"></script>
+  <script src="/js/[page-specific].js"></script>
+</body>
+</html>

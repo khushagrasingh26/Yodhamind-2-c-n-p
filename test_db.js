@@ -1,5 +1,9 @@
-const db = require('./api/db');
-db.query("SELECT COUNT(DISTINCT session_id) AS sessions, COUNT(DISTINCT fingerprint_id) AS unique_visitors FROM tracking_events WHERE created_at >= NOW() - ($1 || ' days')::INTERVAL", [1])
-  .then(r => console.log('Current Period:', r.rows))
-  .catch(err => console.error('Error 1:', err))
-  .finally(() => process.exit(0));
+require('dotenv').config();
+const db = require('./api/db/index');
+db.query('INSERT INTO platform_feedback (rating, message, page, user_agent) VALUES ($1, $2, $3, $4)', [5, 'test script', '/test', 'script']).then(() => {
+  console.log('success');
+  process.exit(0);
+}).catch(e => {
+  console.error('DB ERROR:', e.message);
+  process.exit(1);
+});

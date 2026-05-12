@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="../shared/theme.js"></script>
+    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yodha Check-in</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f3f4f6;
-            --card-color: #ffffff;
             --primary: #6366f1;
             --success: #10b981;
             --danger: #ef4444;
-            --text: #1f2937;
+            --color-surface-variant: #f0eafa;
         }
 
         * { box-sizing: border-box; user-select: none; touch-action: none; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0; padding: 0;
-            background: var(--bg-color);
+            background: var(--color-bg);
             font-family: 'Outfit', sans-serif;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 100vh; width: 100vw;
             overflow: hidden;
-            transition: background 0.3s;
+            transition: background 0.3s, color 0.3s;
         }
 
         /* --- UI Layers --- */
         .top-bar {
-            position: absolute; top: 0; width: 100%;
+            position: absolute; top: 60px; width: 100%;
             padding: 20px;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 10;
         }
 
         .progress-pill {
-            background: rgba(0,0,0,0.05);
+            background: var(--color-surface-variant);
             padding: 5px 15px; border-radius: 20px;
-            font-size: 0.8rem; font-weight: 600; color: #6b7280;
+            font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary);
         }
 
         .close-btn {
-            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #374151;
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text-primary);
         }
 
         /* --- Card Stack --- */
@@ -57,7 +57,7 @@
         .card {
             position: absolute;
             width: 100%; height: 100%;
-            background: var(--card-color);
+            background: var(--color-surface);
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -69,9 +69,17 @@
             transform-origin: 50% 100%;
         }
 
-        .card h2 { font-size: 1.8rem; margin-bottom: 10px; color: var(--text); line-height: 1.3; }
-        .card p { color: #6b7280; font-size: 1rem; margin-top: 0; }
+        .card h2 { font-size: 1.8rem; margin-bottom: 10px; color: var(--color-text-primary); line-height: 1.3; }
+        .card p { color: var(--color-text-secondary); font-size: 1rem; margin-top: 0; }
         .card-icon { font-size: 4rem; margin-bottom: 20px; }
+
+        /* Hide content of cards behind the top card so text doesn't bleed through */
+        .card:not(:last-child) .card-icon,
+        .card:not(:last-child) h2,
+        .card:not(:last-child) p,
+        .card:not(:last-child) .stamp {
+            visibility: hidden;
+        }
 
         /* Status stamps that appear on swipe */
         .stamp {
@@ -97,10 +105,11 @@
             border-radius: 50%;
             border: none;
             background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
             font-size: 1.5rem; cursor: pointer;
             transition: transform 0.2s;
             display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(0,0,0,0.06);
         }
         .action-btn:active { transform: scale(0.9); }
         .btn-no { color: var(--danger); }
@@ -126,11 +135,15 @@
         .score-label { font-size: 0.8rem; opacity: 0.9; }
         
         .restart-btn {
-            background: var(--text); color: white;
+            background: linear-gradient(135deg, #6236ff, #3b82f6); color: white;
             padding: 15px 30px; border-radius: 30px;
             border: none; font-weight: 600; font-size: 1rem;
             cursor: pointer; margin-top: 20px;
+            box-shadow: 0 8px 24px rgba(98, 54, 255, 0.25);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+        .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(98, 54, 255, 0.35); }
+        .restart-btn:active { transform: scale(0.97); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -143,25 +156,25 @@
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
       <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
+        <span style="font-size:1.4rem;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
         <span class="ym-sidebar__logo">YodhaMind</span>
       </div>
       <nav class="ym-sidebar__nav">
         <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>Journal</a>
         <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg></span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Community</a>
 <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>Vandrevala: 1860-266-2345</a>
       </nav>
       <div class="ym-sidebar__footer">
         © 2026 YodhaMind<br>
@@ -176,10 +189,11 @@
         <span></span><span></span><span></span>
       </button>
       <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
+        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
         YodhaMind
       </a>
       <div class="ym-topbar__right">
+        <button class="ym-theme-toggle" onclick="window.ymToggleTheme()" id="ymThemeToggleBtn" aria-label="Toggle dark mode">&#x1F319;</button>
         <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
         <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
         <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
@@ -189,15 +203,15 @@
 
     <div class="top-bar">
         <div class="progress-pill" id="progress">1 / 10</div>
-        <button class="close-btn" onclick="exitGame()">✕</button>
+        <button class="close-btn" onclick="exitGame()">&times;</button>
     </div>
 
     <div class="stack-container" id="stack">
         </div>
 
     <div class="controls" id="controls">
-        <button class="action-btn btn-no" onclick="triggerSwipe('left')">✕</button>
-        <button class="action-btn btn-yes" onclick="triggerSwipe('right')">✓</button>
+        <button class="action-btn btn-no" onclick="triggerSwipe('left')">&times;</button>
+        <button class="action-btn btn-yes" onclick="triggerSwipe('right')">&#10003;</button>
     </div>
 
     <div class="end-screen" id="endScreen">
@@ -223,16 +237,16 @@
 
         // Relevant Wellness Questions
         const questions = [
-            { id: 1, text: "Did you get enough sleep last night?", sub: "7-8 hours is ideal.", icon: "😴" },
-            { id: 2, text: "Have you drank water recently?", sub: "Hydration fuels the brain.", icon: "💧" },
-            { id: 3, text: "Are you feeling stressed right now?", sub: "Be honest with yourself.", icon: "⚡", reverse: true }, // 'No' is good
-            { id: 4, text: "Did you move your body today?", sub: "Even a walk counts.", icon: "🏃" },
-            { id: 5, text: "Have you connected with a friend?", sub: "Socializing boosts mood.", icon: "💬" },
-            { id: 6, text: "Are you holding onto tension?", sub: "Check your shoulders and jaw.", icon: "😬", reverse: true },
-            { id: 7, text: "Did you eat something healthy?", sub: "Fuel your vessel.", icon: "🍎" },
-            { id: 8, text: "Did you learn something new?", sub: "Growth mindset.", icon: "🧠" },
-            { id: 9, text: "Are you being kind to yourself?", sub: "No negative self-talk.", icon: "❤️" },
-            { id: 10, text: "Are you ready to own the day?", sub: "Let's go!", icon: "🚀" }
+            { id: 1, text: "Did you get enough sleep last night?", sub: "7-8 hours is ideal.", icon: "&#x1F634;" },
+            { id: 2, text: "Have you drank water recently?", sub: "Hydration fuels the brain.", icon: "&#x1F4A7;" },
+            { id: 3, text: "Are you feeling stressed right now?", sub: "Be honest with yourself.", icon: "&#x26A1;", reverse: true }, // 'No' is good
+            { id: 4, text: "Did you move your body today?", sub: "Even a walk counts.", icon: "&#x1F3C3;" },
+            { id: 5, text: "Have you connected with a friend?", sub: "Socializing boosts mood.", icon: "&#x1F465;" },
+            { id: 6, text: "Are you holding onto tension?", sub: "Check your shoulders and jaw.", icon: "&#x1F62C;", reverse: true },
+            { id: 7, text: "Did you eat something healthy?", sub: "Fuel your vessel.", icon: "&#x1F34E;" },
+            { id: 8, text: "Did you learn something new?", sub: "Growth mindset.", icon: "&#x1F9E0;" },
+            { id: 9, text: "Are you being kind to yourself?", sub: "No negative self-talk.", icon: "&#x2764;&#xFE0F;" },
+            { id: 10, text: "Are you ready to own the day?", sub: "Let's go!", icon: "&#x1F680;" }
         ];
 
         let activeIndex = 0;
@@ -320,7 +334,7 @@
                 if (!isDragging) return;
                 isDragging = false;
                 card.style.transition = 'transform 0.3s ease-out';
-                document.body.style.background = '#f3f4f6'; // Reset bg
+                document.body.style.background = ''; // Reset to CSS var
 
                 const threshold = 100; // Pixel distance to trigger swipe
 
@@ -416,13 +430,13 @@
 
             // Dynamic Feedback
             if(positiveCount >= 8) {
-                titleEl.innerText = "Yodha Master! 🌟";
+                titleEl.innerText = "Yodha Master!";
                 msgEl.innerText = "You are in great balance today. Keep this energy flowing.";
             } else if (positiveCount >= 5) {
-                titleEl.innerText = "Good Balance 🌱";
+                titleEl.innerText = "Good Balance";
                 msgEl.innerText = "You're doing okay, but there's room to treat yourself better.";
             } else {
-                titleEl.innerText = "Take a Breath 🍃";
+                titleEl.innerText = "Take a Breath";
                 msgEl.innerText = "It seems like a tough day. Try to rest and drink some water.";
             }
         }
@@ -435,8 +449,6 @@
         init();
 
     </script>
-    <script src="../shared/game-sound-toggle.js"></script>
-
     <script src="../shared/supabase-auth.js"></script>
     <script>
       /* ── Sidebar toggle ── */

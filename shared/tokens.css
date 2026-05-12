@@ -1,0 +1,76 @@
+/* ══════════════════════════════════════════════
+   YodhaMind Premium Design System — tokens.css
+   Link as FIRST stylesheet in every HTML <head>
+══════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap');
+
+:root {
+  /* ── Deep Premium Indigo & Lavender Scale ── */
+  --ym-purple-50:  #f8f6fc;
+  --ym-purple-100: #eee8f8;
+  --ym-purple-200: #ddd1f2;
+  --ym-purple-400: #8c6cf0;
+  --ym-purple-600: #6236ff;
+  --ym-purple-800: #421bb8;
+  --ym-purple-900: #290f7a;
+
+  /* ── Ink scale ── */
+  --ym-ink-900: #0a0514;
+  --ym-ink-700: #2c2145;
+  --ym-ink-500: #6b5f80;
+  --ym-ink-300: #a196b3;
+  --ym-ink-100: #eae4f2;
+  --ym-ink-50:  #fdfcfc;
+
+  /* ── Status colors ── */
+  --ym-success: #10b981;
+  --ym-warning: #f59e0b;
+  --ym-danger:  #ef4444;
+  --ym-info:    #3b82f6;
+
+  /* ── Semantic aliases ── */
+  --color-bg:             var(--ym-ink-50);
+  --color-surface:        #ffffff;
+  --color-border:         var(--ym-ink-100);
+  --color-text-primary:   var(--ym-ink-900);
+  --color-text-secondary: var(--ym-ink-500);
+  --color-text-muted:     var(--ym-ink-300);
+  --color-accent:         var(--ym-purple-600);
+  --color-accent-light:   var(--ym-purple-50);
+
+  /* ── Spacing (4px base) ── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ── Border radius ── */
+  --radius-sm:   10px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-xl:   32px;
+  --radius-full: 999px;
+
+  /* ── Shadows (Premium Multi-layered) ── */
+  --shadow-sm: 0 2px 8px rgba(98, 54, 255, 0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-md: 0 8px 24px rgba(98, 54, 255, 0.06), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-lg: 0 16px 48px rgba(98, 54, 255, 0.08), 0 8px 16px rgba(0,0,0,0.04);
+
+  /* ── Typography ── */
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* ── Transitions ── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   400ms;
+}
+
+/* ── Dark mode removed — light only ── */

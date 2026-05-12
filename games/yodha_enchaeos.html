@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="../shared/theme.js"></script>
+    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
     <!-- Optimized viewport to prevent accidental pinch-zoom on mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yodha Echoes - Sonic Therapy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- YodhaMind Design System --- */
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --bg-deep: #0f172a;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-glow: #a78bfa;
+            --primary-gradient: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 100%);
+            --bg-deep: var(--color-bg);
+            --glass: rgba(255, 255, 255, 0.8);
+            --glass-border: var(--color-border);
+            --text-main: var(--color-text-primary);
+            --text-muted: var(--color-text-secondary);
+            --accent-glow: var(--ym-purple-300);
         }
 
         * { box-sizing: border-box; user-select: none; outline: none; }
@@ -24,27 +26,22 @@
             margin: 0;
             padding: 0;
             background-color: var(--bg-deep);
-            /* Subtle starry background */
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
-            background-size: 550px 550px, 350px 350px, 250px 250px;
-            background-position: 0 0, 40px 60px, 130px 270px;
             font-family: 'Poppins', sans-serif;
             color: var(--text-main);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            overscroll-behavior-y: none; /* Prevents pull-to-refresh on mobile */
+            overscroll-behavior-y: none;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* --- Navigation --- */
+        /* --- Navigation (uses YM topbar, this is the sub-nav) --- */
         nav {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px);
             padding: 15px 20px;
+            margin-top: 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,9 +51,9 @@
 
         /* Minimalist Ghost Buttons */
         .ghost-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-main);
             padding: 8px 16px;
             border-radius: 30px;
             font-family: 'Poppins', sans-serif;
@@ -69,11 +66,11 @@
             gap: 6px;
         }
         .ghost-btn:hover, .ghost-btn:active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: white;
+            background: rgba(238, 232, 248, 0.95);
+            border-color: rgba(98, 54, 255, 0.3);
+            color: var(--text-main);
             transform: translateY(-2px);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(98, 54, 255, 0.1);
         }
 
         /* --- Main Layout --- */
@@ -91,13 +88,12 @@
         /* The Sequencer */
         .echo-circle-wrapper {
             position: relative;
-            /* Uses both vw and vh to ensure it fits completely on small screens without pushing controls off */
             width: min(90vw, 55vh, 500px);
             height: min(90vw, 55vh, 500px);
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.02);
-            box-shadow: 0 0 50px rgba(102, 126, 234, 0.1);
-            border: 1px solid var(--glass-border);
+            background: #0f172a;
+            box-shadow: 0 0 50px rgba(102, 126, 234, 0.1), 0 20px 60px rgba(0,0,0,0.15);
+            border: 1px solid rgba(0,0,0,0.1);
             transition: transform 0.1s;
         }
 
@@ -107,6 +103,7 @@
             width: 100%;
             height: 100%;
             touch-action: none; /* critical for fluid mobile canvas drawing */
+            will-change: transform;
         }
 
         /* Overlay Text */
@@ -127,19 +124,20 @@
         /* Bottom Toolbar */
         .toolbar {
             margin-top: 25px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             backdrop-filter: blur(10px);
             padding: 15px 25px;
             border-radius: 30px;
             display: flex;
-            flex-wrap: wrap; /* Allows wrap on mobile */
+            flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
             align-items: center;
             z-index: 50;
             width: 95%;
             max-width: 600px;
+            box-shadow: 0 8px 32px rgba(98, 54, 255, 0.06);
         }
 
         .tool-btn {
@@ -154,12 +152,12 @@
             transition: all 0.2s;
             min-width: 60px;
         }
-        .tool-btn:hover, .tool-btn:active { color: white; transform: translateY(-3px); }
-        .tool-btn.active { color: #a78bfa; }
+        .tool-btn:hover, .tool-btn:active { color: var(--text-main); transform: translateY(-3px); }
+        .tool-btn.active { color: #6236ff; }
 
         .icon {
             font-size: 1.4rem;
-            background: rgba(255,255,255,0.05);
+            background: rgba(98, 54, 255, 0.06);
             width: 45px; height: 45px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -167,8 +165,8 @@
             transition: all 0.3s;
         }
         .tool-btn:hover .icon, .tool-btn:active .icon { 
-            background: rgba(255,255,255,0.1); 
-            border-color: rgba(255,255,255,0.2); 
+            background: rgba(98, 54, 255, 0.12); 
+            border-color: rgba(98, 54, 255, 0.2); 
         }
         .tool-btn.active .icon { 
             background: var(--primary-gradient); 
@@ -209,7 +207,7 @@
         .start-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
@@ -266,8 +264,7 @@
         }
 
         /* --- Floating Sound Button Positioning & Style --- */
-[id*="sound"], 
-[class*="sound"] {
+.ym-sound-container {
     position: fixed !important;
     bottom: 25px !important;
     right: 25px !important;
@@ -275,13 +272,12 @@
     left: auto !important;
     z-index: 9999 !important;
     
-    /* Styling to match the Echoes dark glass theme */
-    background: rgba(15, 23, 42, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    color: #f8fafc !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    color: var(--text-main) !important;
     padding: 12px !important;
     border-radius: 50px !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
     transition: transform 0.2s ease, background 0.2s ease !important;
@@ -291,16 +287,30 @@
     justify-content: center !important;
 }
 
-[id*="sound"]:hover, 
-[class*="sound"]:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
+.ym-sound-container:hover {
+    background: rgba(238, 232, 248, 0.95) !important;
+    border-color: rgba(98, 54, 255, 0.2) !important;
     transform: translateY(-2px) !important;
+}
+
+.ym-sound-container .ym-sound-toggle {
+    background: transparent !important;
+    border: none !important;
+    color: inherit !important;
+    padding: 0 !important;
+}
+
+.ym-sound-container .ym-sound-slider {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
 }
 
 /* On very small screens, tuck it tighter into the corner so it doesn't overlap the toolbar */
 @media (max-width: 500px) {
-    [id*="sound"], [class*="sound"] {
+    .ym-sound-container {
         bottom: 15px !important;
         right: 15px !important;
     }
@@ -315,25 +325,25 @@
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
       <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
+        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
         <span class="ym-sidebar__logo">YodhaMind</span>
       </div>
       <nav class="ym-sidebar__nav">
         <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
         <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◎</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
 <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
       </nav>
       <div class="ym-sidebar__footer">
         © 2026 YodhaMind<br>
@@ -348,10 +358,11 @@
         <span></span><span></span><span></span>
       </button>
       <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
+        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
         YodhaMind
       </a>
       <div class="ym-topbar__right">
+        <button class="ym-theme-toggle" onclick="window.ymToggleTheme()" id="ymThemeToggleBtn" aria-label="Toggle dark mode">🌙</button>
         <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
         <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
         <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
@@ -361,6 +372,10 @@
 <div class="app-container">
         
         <div class="echo-circle-wrapper">
+            <div id="loading-screen" style="position: absolute; top:0; left:0; width:100%; height:100%; border-radius: 50%; background:var(--bg-deep); z-index:50; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+                <div style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: #a78bfa; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+            </div>
             <canvas id="musicCanvas"></canvas>
             <div class="status-text" id="statusText">
                 Tap anywhere to place a star.<br>Listen to the echo.
@@ -446,6 +461,14 @@
                 speed = parseFloat(e.target.value);
             });
             
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    if (isPlaying) cancelAnimationFrame(animationId);
+                } else {
+                    if (isPlaying) animationId = requestAnimationFrame(animate);
+                }
+            });
+            
             // Initial render call to draw center point
             renderFrame(); 
         }
@@ -454,7 +477,7 @@
             const rect = document.querySelector('.echo-circle-wrapper').getBoundingClientRect();
             
             // Fix for blurry canvas on high pixel density mobile screens
-            const dpr = window.devicePixelRatio || 1;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
             
             cssWidth = rect.width;
             cssHeight = rect.height;
@@ -494,9 +517,9 @@
             const gain = audioCtx.createGain();
             
             const dist = Math.sqrt(Math.pow(node.x - centerX, 2) + Math.pow(node.y - centerY, 2));
-            const normalizedDist = dist / radius; 
-            const index = Math.floor(normalizedDist * SCALE.length);
-            const freq = SCALE[Math.min(index, SCALE.length - 1)];
+            const normalizedDist = Math.max(0, Math.min(1, dist / radius)); 
+            const index = Math.floor((1 - normalizedDist) * SCALE.length);
+            const freq = SCALE[Math.max(0, Math.min(index, SCALE.length - 1))];
 
             osc.type = 'sine';
             osc.frequency.value = freq;
@@ -646,11 +669,16 @@
             angle += speed;
             if(angle > Math.PI * 2) angle -= Math.PI * 2;
 
-            requestAnimationFrame(animate);
+            animationId = requestAnimationFrame(animate);
         }
 
         // Launch Setup
-        window.addEventListener('load', init);
+        let animationId;
+        setTimeout(() => {
+            init();
+            const loader = document.getElementById('loading-screen');
+            if (loader) loader.style.display = 'none';
+        }, 0);
 
     </script>
     <script src="../shared/game-sound-toggle.js"></script>

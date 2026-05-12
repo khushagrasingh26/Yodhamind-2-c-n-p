@@ -2,6 +2,29 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="../css/tokens.css">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W7RQTL2ND7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W7RQTL2ND7');
+</script>
+<script>
+function trackEvent(action) {
+  if (typeof gtag === 'function') {
+    gtag('event', action, {
+      event_category: 'engagement',
+      event_label: action
+    });
+  }
+}
+</script>
+
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>YodhaMind - Mind Gym</title>
@@ -41,7 +64,7 @@
         }
 
         /* ---------- Navigation & Audio Toggle ---------- */
-        nav {
+        nav:not(.ym-bottom-tab-bar) {
             position: fixed;
             top: 0;
             width: 100%;
@@ -407,6 +430,11 @@
         }
     </style>
     <link rel="stylesheet" href="../shared/nav.css" />
+    <!-- Vercel Analytics -->
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
 <body>
@@ -415,25 +443,25 @@
     <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
     <aside class="ym-sidebar" id="ymSidebar">
       <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;">🧠</span>
+        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
         <span class="ym-sidebar__logo">YodhaMind</span>
       </div>
       <nav class="ym-sidebar__nav">
         <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🏠</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📊</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🎮</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📋</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📝</span>Journal</a>
+        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
+        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
+        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
+        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
+        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
         <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">🌬️</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⏱️</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">💬</span>Community</a>
+        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◎</span>Breathing</a>
+        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus Timer</a>
+        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
 <div class="ym-sidebar__divider"></div>
         <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">📞</span>Vandrevala: 1860-266-2345</a>
+        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
+        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
       </nav>
       <div class="ym-sidebar__footer">
         © 2026 YodhaMind<br>
@@ -448,7 +476,7 @@
         <span></span><span></span><span></span>
       </button>
       <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
+        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
         YodhaMind
       </a>
       <div class="ym-topbar__right">
@@ -482,11 +510,11 @@
         <div class="games-grid" id="gamesGrid">
             
             <!-- Game 11 (Moved to First) -->
-            <a href="/games/yodha.html" class="game-card" data-mood="okay tired" onclick="trackGameClick()">
+            <a href="/games/yodha.html" class="game-card" data-mood="okay tired" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-cards"></div>
                 <div class="card-content">
                     <div class="card-meta">
-                        <span class="mood-tag">📝 For Check-in</span>
+                        <span class="mood-tag"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> For Check-in</span>
                         <span class="time-badge">⏱ 1 min</span>
                     </div>
                     <h3>🃏 Yodha Cards</h3>
@@ -496,11 +524,11 @@
             </a>
 
             <!-- Game 1 -->
-            <a href="/games/yodha_aura.html" class="game-card" data-mood="anxiety stress" onclick="trackGameClick()">
+            <a href="/games/yodha_aura.html" class="game-card" data-mood="anxiety stress" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-aura"></div>
                 <div class="card-content">
                     <div class="card-meta">
-                        <span class="mood-tag">🧘 For Anxiety</span>
+                        <span class="mood-tag"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M12 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 20h4l1.5 -3"/><path d="M18 20h-4l-1.4 -3.3"/><path d="M15 15l2 2.5"/><path d="M10 15l-2.5 2.5"/><path d="M12 17v-4"/><path d="M12 13l2.5 -3.5"/><path d="M12 13l-2.5 -3.5"/></svg> For Anxiety</span>
                         <span class="time-badge">⏱ 3 min</span>
                     </div>
                     <h3>✨ Yodha Aura</h3>
@@ -510,7 +538,7 @@
             </a>
 
             <!-- Game 2 -->
-            <a href="/tools/spirit-breathing-tool.html" class="game-card" data-mood="anxiety numb okay" onclick="trackGameClick()">
+            <a href="/tools/spirit-breathing-tool.html" class="game-card" data-mood="anxiety numb okay" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-flow"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -524,7 +552,7 @@
             </a>
 
             <!-- Game 3 -->
-            <a href="/games/yodha_break.html" class="game-card" data-mood="stress anger" onclick="trackGameClick()">
+            <a href="/games/yodha_break.html" class="game-card" data-mood="stress anger" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-break"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -538,7 +566,7 @@
             </a>
 
             <!-- Game 4 -->
-            <a href="/tools/Focusrealm.html" class="game-card" data-mood="okay numb" onclick="trackGameClick()">
+            <a href="/tools/Focusrealm.html" class="game-card" data-mood="okay numb" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-focus"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -552,7 +580,7 @@
             </a>
 
             <!-- Game 7 -->
-            <a href="/games/yodha_mandala.html" class="game-card" data-mood="anxiety numb" onclick="trackGameClick()">
+            <a href="/games/yodha_mandala.html" class="game-card" data-mood="anxiety numb" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-mandala"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -566,7 +594,7 @@
             </a>
 
             <!-- Game 8 -->
-            <a href="/games/yodhamatch.html" class="game-card" data-mood="tired okay" onclick="trackGameClick()">
+            <a href="/games/yodhamatch.html" class="game-card" data-mood="tired okay" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-match"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -580,7 +608,7 @@
             </a>
 
             <!-- Game 10 -->
-            <a href="/games/untangle.html" class="game-card" data-mood="anxiety numb" onclick="trackGameClick()">
+            <a href="/games/untangle.html" class="game-card" data-mood="anxiety numb" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-untangle"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -593,11 +621,11 @@
                 </div>
             </a>
 
-            <a href="/games/memory_matrix.html" class="game-card" data-mood="tired okay anxiety" onclick="trackGameClick()">
+            <a href="/games/memory_matrix.html" class="game-card" data-mood="tired okay anxiety" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-memory"></div>
                 <div class="card-content">
                     <div class="card-meta">
-                        <span class="mood-tag">🧠 For Memory</span>
+                        <span class="mood-tag"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg> For Memory</span>
                         <span class="time-badge">⏱ 3 min</span>
                     </div>
                     <h3>🟨 Memory Matrix</h3>
@@ -607,7 +635,7 @@
             </a>
 
              <!-- Game 12 -->
-             <a href="/games/yodha_enchaeos.html" class="game-card" data-mood="tired anxiety" onclick="trackGameClick()">
+             <a href="/games/yodha_enchaeos.html" class="game-card" data-mood="tired anxiety" onclick="trackGameClick(); trackEvent('game_click');">
                 <div class="card-visual visual-echoes"></div>
                 <div class="card-content">
                     <div class="card-meta">
@@ -651,9 +679,9 @@
     </footer>
 
     <div class="mobile-nav">
-        <a href="/"><span>🏠</span>Home</a>
-        <a href="/games" style="color:var(--primary)"><span>🎮</span>Mind Gym</a>
-        <a href="/dashboard"><span>📊</span>Dashboard</a>
+        <a href="/"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</a>
+        <a href="/games" style="color:var(--primary)"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span>Mind Gym</a>
+        <a href="/dashboard"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span>Dashboard</a>
     </div>
 
     <script>
@@ -737,8 +765,8 @@
             const el = document.getElementById('dashSummary');
             if (el) {
                 el.innerHTML = `
-                    🧠 Moods checked: <strong>${m.moods}</strong><br>
-                    🎮 Games played: <strong>${m.games}</strong><br>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg> Moods checked: <strong>${m.moods}</strong><br>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg> Games played: <strong>${m.games}</strong><br>
                     📅 Last active: <strong>${m.lastActive || 'Today'}</strong>
                 `;
             }
