@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <script src="../shared/theme.js"></script>
-    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Untangle - YodhaMind</title>
-    
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <title>Untangle - YodhaMind Cognitive Training</title>
+
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         :root {
-            /* Dark Theme for this specific game (Relaxation/Space) */
-            --bg-start: var(--color-surface);
-            --bg-end: var(--color-bg);
+            /* Premium Dark Theme */
+            --bg-start: #0f172a;
+            --bg-end: #020617;
             --primary: #6366f1;
-            --secondary: #a855f7;
-            --accent: #22d3ee;
-            --safe: #2dd4bf;   /* Teal for solved lines */
-            --danger: #f43f5e; /* Red for crossed lines */
+            --safe: #2dd4bf;
+            --danger: #fb7185;
             --text-main: #f8fafc;
-            
-            /* Glassmorphism */
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-strong: rgba(15, 23, 42, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-muted: #94a3b8;
+
+            /* Enhanced Glassmorphism */
+            --glass-bg: rgba(15, 23, 42, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.12);
+            --blur-md: blur(12px);
+            --blur-lg: blur(24px);
         }
 
         * {
@@ -34,25 +36,29 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            touch-action: none; /* Disables browser handling of gestures */
+            touch-action: none;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            padding: 0;
             width: 100vw;
             height: 100vh;
-            height: 100dvh; /* Mobile viewport fix */
+            height: 100dvh;
             overflow: hidden;
-            background: radial-gradient(circle at center, var(--bg-end), var(--bg-start));
+            background: radial-gradient(circle at center, var(--bg-start), var(--bg-end));
             font-family: 'Outfit', sans-serif;
             color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
         }
 
         #game-container {
             position: relative;
             width: 100%;
             height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         canvas {
@@ -62,15 +68,17 @@
             cursor: grab;
             outline: none;
             will-change: transform;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
         }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         canvas:active {
             cursor: grabbing;
         }
 
-        /* --- UI Layers --- */
+        /* --- UI Layers & Glass Panels --- */
         .ui-layer {
             position: absolute;
             top: 0;
@@ -81,7 +89,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: calc(max(20px, env(safe-area-inset-top)) + var(--ym-topbar-height, 60px)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+            padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
             z-index: 10;
         }
 
@@ -91,120 +99,110 @@
             align-items: flex-start;
             width: 100%;
         }
-        
+
         .hud-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid var(--glass-highlight);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         .level-badge {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
             padding: 10px 24px;
-            border-radius: 50px;
+            border-radius: 100px;
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
             display: inline-flex;
             align-items: center;
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
         }
 
         .hud-text {
-            background: var(--glass-strong);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #f8fafc;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-main);
             align-self: flex-start;
             transition: all 0.3s ease;
         }
 
-        /* --- Top Right Controls --- */
+        /* --- Controls --- */
         .top-controls {
             display: flex;
             gap: 12px;
             align-items: center;
-            pointer-events: auto; /* Buttons need to be clickable */
+            pointer-events: auto;
         }
 
-        .btn-icon {
-            background: var(--glass);
+        .btn-icon,
+        .btn-top {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
             border: 1px solid var(--glass-border);
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            text-decoration: none;
+            /* Keeps the link tags clean */
+        }
+
+        .btn-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             font-size: 1.1rem;
         }
 
         .btn-top {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 8px 18px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
+            padding: 0 20px;
+            height: 44px;
+            border-radius: 100px;
             gap: 8px;
-            cursor: pointer;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
+            font-family: inherit;
+            font-weight: 500;
             font-size: 0.95rem;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .btn-top:hover, .btn-icon:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .btn-icon:hover,
+        .btn-top:hover {
+            background: rgba(255, 255, 255, 0.1);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            border-color: var(--glass-highlight);
         }
-        
-        .btn-top:active, .btn-icon:active {
+
+        .btn-icon:active,
+        .btn-top:active {
             transform: scale(0.95);
         }
 
-        .btn-top#btn-exit:hover {
-            background: rgba(244, 63, 94, 0.2);
-            border-color: rgba(244, 63, 94, 0.4);
-            color: #fda4af;
-        }
-
         .btn-icon.muted {
-            background: rgba(244, 63, 94, 0.15);
-            border-color: rgba(244, 63, 94, 0.3);
-            color: #fda4af;
+            color: var(--danger);
+            border-color: rgba(251, 113, 133, 0.3);
         }
 
-        /* --- Overlays --- */
+        /* --- Overlays & Modals --- */
         .overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            inset: 0;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: var(--blur-lg);
+            -webkit-backdrop-filter: var(--blur-lg);
             z-index: 20;
             display: flex;
             flex-direction: column;
@@ -214,65 +212,81 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.4s ease, visibility 0s linear 0.4s;
-            padding: 20px;
+            transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+            padding: 24px;
         }
 
         .overlay.active {
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
-            transition: opacity 0.4s ease, visibility 0s linear 0s;
+            transition: opacity 0.5s ease, visibility 0s linear 0s;
+        }
+
+        .modal-content {
+            max-width: 500px;
+            width: 100%;
+            padding: 48px 32px;
+            border-radius: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translateY(20px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .overlay.active .modal-content {
+            transform: translateY(0);
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             margin: 0 0 16px 0;
-            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            background: linear-gradient(135deg, var(--text-main), var(--text-muted));
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         h2 {
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--text-main);
         }
 
         p {
             font-size: 1.1rem;
-            color: #cbd5e1;
-            max-width: 450px;
+            color: var(--text-muted);
             line-height: 1.6;
-            margin-bottom: 40px;
-            font-weight: 300;
+            margin-bottom: 32px;
+            font-weight: 400;
         }
 
-        /* Stats UI */
+        /* --- Stats --- */
         .stats-container {
             display: flex;
-            gap: 20px;
-            margin-bottom: 35px;
+            gap: 16px;
+            margin-bottom: 32px;
+            width: 100%;
             justify-content: center;
         }
 
         .stat-box {
-            background: var(--glass-strong);
-            border: 1px solid var(--glass-border);
-            padding: 12px 24px;
-            border-radius: 16px;
+            flex: 1;
+            max-width: 140px;
+            padding: 16px;
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 110px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
 
         .stat-box span {
-            font-size: 0.85rem;
-            color: #94a3b8;
+            font-size: 0.8rem;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 4px;
@@ -281,1033 +295,597 @@
 
         .stat-box strong {
             font-size: 1.8rem;
-            color: white;
+            color: var(--text-main);
             font-weight: 700;
         }
 
+        /* --- Action Buttons --- */
         .btn-group {
             display: flex;
             gap: 16px;
-            flex-wrap: wrap;
+            width: 100%;
             justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 16px 32px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 100px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--text-main);
+            color: var(--bg-end);
             border: none;
-            padding: 16px 42px;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-family: 'Outfit', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--glass-border);
-            padding: 14px 32px;
-            color: white;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Outfit', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
         }
 
-        .btn-primary:active, .btn-secondary:active {
-            transform: scale(0.95);
-        }
-        
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--glass-highlight);
+        }
+
+        .btn-primary:active,
+        .btn-secondary:active {
+            transform: scale(0.96);
         }
 
         /* Mobile specific adjustments */
         @media (max-width: 600px) {
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 1.8rem; }
-            .btn-primary, .btn-secondary { width: 100%; max-width: 300px; justify-content: center; }
-            .level-badge { font-size: 1rem; padding: 8px 16px; }
-            .stats-container { gap: 10px; }
-            .stat-box { min-width: 90px; padding: 10px 16px; }
-            
-            /* Responsive top-right buttons */
-            .btn-text { display: none; }
-            .btn-top { 
-                padding: 0; 
-                justify-content: center; 
-                width: 44px; 
-                height: 44px; 
-                border-radius: 50%; 
+            h1 {
+                font-size: 2.2rem;
             }
-            .top-controls { gap: 8px; }
-        }
 
-        /* Landscape orientation safety */
-        @media (max-width: 900px) and (orientation: landscape) {
-            h1 { font-size: 2rem; margin-bottom: 8px; }
-            h2 { font-size: 1.6rem; margin-bottom: 8px; }
-            p { margin-bottom: 20px; font-size: 1rem; }
-            .btn-primary { padding: 12px 32px; font-size: 1rem; }
-            .ui-layer { padding: 10px; }
-            .stats-container { margin-bottom: 15px; }
+            .modal-content {
+                padding: 32px 20px;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+
+            .btn-text {
+                display: none;
+            }
+
+            .btn-top {
+                padding: 0;
+                width: 44px;
+                justify-content: center;
+            }
+
+            .ui-layer {
+                padding: max(16px, env(safe-area-inset-top)) 16px 16px 16px;
+            }
         }
     </style>
-    <link rel="stylesheet" href="../shared/nav.css" />
-    <link rel="stylesheet" href="../shared/micro-interactions.css" />
 </head>
+
 <body>
 
-    <!-- ═══════════ YM SIDEBAR ═══════════ -->
-    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
-    <aside class="ym-sidebar" id="ymSidebar">
-      <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
-        <span class="ym-sidebar__logo">YodhaMind</span>
-      </div>
-      <nav class="ym-sidebar__nav">
-        <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
-        <div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◎</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
-<div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
-      </nav>
-      <div class="ym-sidebar__footer">
-        © 2026 YodhaMind<br>
-        Made with 💛 for Indian students<br>
-        <a href="/pages/privacy.html">Privacy Policy</a>
-      </div>
-    </aside>
+    <div id="game-container">
+        <canvas id="canvas"></canvas>
 
-    <!-- ═══════════ YM TOPBAR ═══════════ -->
-    <header class="ym-topbar" id="ymTopbar">
-      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
-      <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
-        YodhaMind
-      </a>
-      <div class="ym-topbar__right">
-        <button class="ym-theme-toggle" onclick="window.ymToggleTheme()" id="ymThemeToggleBtn" aria-label="Toggle dark mode">🌙</button>
-        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
-        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
-        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
-      </div>
-    </header>
+        <!-- HUD -->
+        <div class="ui-layer">
+            <div class="top-bar">
+                <div class="hud-group">
+                    <div class="level-badge" id="level-indicator">Level 1</div>
+                    <div class="hud-text glass-panel" id="hud-crossings">Initializing Environment...</div>
+                </div>
 
-
-<div id="game-container">
-    <div id="loading-screen" class="overlay active" style="z-index: 50; background: var(--bg-start);">
-        <div class="loader" style="width: 40px; height: 40px; border: 4px solid var(--glass-border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <p style="margin-top: 20px;">Loading Game Engine...</p>
-    </div>
-    <canvas id="canvas"></canvas>
-
-    <!-- HUD -->
-    <div class="ui-layer">
-        <div class="top-bar">
-            <div class="hud-group">
-                <div class="level-badge" id="level-indicator">Level 1</div>
-                <div class="hud-text" id="hud-crossings">Initializing...</div>
+                <div class="top-controls">
+                    <!-- Distraction-free controls: Audio, Home, and Exit strictly -->
+                    <button class="btn-icon" id="btn-sound" aria-label="Toggle Sound"><i
+                            class="fas fa-volume-up"></i></button>
+                    <a href="/" class="btn-top" aria-label="Return Home"><i class="fas fa-home"></i> <span
+                            class="btn-text">Home</span></a>
+                    <button class="btn-top" id="btn-exit" aria-label="Exit Session"><i class="fas fa-sign-out-alt"></i>
+                        <span class="btn-text">Exit</span></button>
+                </div>
             </div>
-            
-            <!-- Dynamic Top Controls -->
-            <div class="top-controls">
-                <button class="btn-icon" id="btn-sound" aria-label="Toggle Sound">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-                <button class="btn-top" id="btn-restart" aria-label="Restart Level">
-                    <i class="fas fa-redo"></i> <span class="btn-text">Restart</span>
-                </button>
-                <button class="btn-top" id="btn-exit" aria-label="Exit Game">
-                    <i class="fas fa-sign-out-alt"></i> <span class="btn-text">Exit</span>
-                </button>
-                <button class="btn-icon" id="btn-reset" aria-label="Reset All Progress" title="Reset to Level 1">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="overlay active">
+            <div class="modal-content glass-panel">
+                <div style="font-size: 3rem; margin-bottom: 16px; color: var(--primary);"><i
+                        class="fa-solid fa-network-wired"></i></div>
+                <h1>Cognitive Untangle</h1>
+                <p>Train your sustained attention and spatial working memory. Drag the nodes to restructure the grid
+                    until no neural pathways intersect.</p>
+                <button class="btn-primary" id="btn-start" style="width: 100%;">Initialize Session</button>
+            </div>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="complete-screen" class="overlay">
+            <div class="modal-content glass-panel">
+                <div style="font-size: 3rem; margin-bottom: 16px; color: var(--safe);"><i
+                        class="fa-solid fa-check-circle"></i></div>
+                <h2>Pathways Optimized</h2>
+                <p id="affirmation-text">Cognitive load resolved efficiently.</p>
+
+                <div class="stats-container" id="stats-container">
+                    <div class="stat-box glass-panel">
+                        <span>Duration</span>
+                        <strong id="stat-time">0:00</strong>
+                    </div>
+                    <div class="stat-box glass-panel">
+                        <span>Moves</span>
+                        <strong id="stat-moves">0</strong>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-primary" id="btn-next">Next Structure <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn-secondary" id="btn-share"><i class="fas fa-share-nodes"></i> Share
+                        Metrics</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Start Screen -->
-    <div id="start-screen" class="overlay active">
-        <h1>UNTANGLE</h1>
-        <p>This focus puzzle helps calm your mind and improve patience. Drag the glowing nodes to rearrange the cosmic web until no lines overlap.</p>
-        <button class="btn-primary" id="btn-start">Start Session</button>
-    </div>
-
-    <!-- Level Complete Screen -->
-    <div id="complete-screen" class="overlay">
-        <div style="font-size: 4rem; margin-bottom: 15px;">✨</div>
-        <h2>Harmony Restored</h2>
-        <p id="affirmation-text" style="font-style: italic; color: var(--accent);">The energy flows freely again.</p>
-        
-        <div id="stats-toggle-container" style="text-align: center; margin-bottom: 20px;">
-            <button class="btn-secondary" id="btn-toggle-stats" style="margin: 0 auto; padding: 8px 16px; font-size: 0.9rem;" onclick="document.getElementById('stats-container').style.display = 'flex'; this.style.display = 'none';">Show Performance Stats</button>
-        </div>
-        
-        <div class="stats-container" id="stats-container" style="display: none;">
-            <div class="stat-box">
-                <span>Time</span>
-                <strong id="stat-time">0:00</strong>
-            </div>
-            <div class="stat-box">
-                <span>Moves</span>
-                <strong id="stat-moves">0</strong>
-            </div>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn-primary" id="btn-next">Next Pattern</button>
-            <button class="btn-secondary" id="btn-share"><i class="fas fa-share-nodes"></i> Share Result</button>
-        </div>
-    </div>
-</div>
-
-<script>
-/**
- * ==========================================
- * MODULE: Audio System
- * ==========================================
- */
-class AudioEngine {
-    constructor() {
-        this.ctx = null;
-        this.masterGain = null;
-        this.isMuted = false;
-        this.AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.initialized = false;
-    }
-
-    init() {
-        if (!this.AudioContext || this.initialized) return;
-        try {
-            this.ctx = new this.AudioContext();
-            this.masterGain = this.ctx.createGain();
-            this.masterGain.gain.value = 0.3; // Gentle volume
-            this.masterGain.connect(this.ctx.destination);
-            this.initialized = true;
-            this.resume();
-        } catch (e) {
-            console.warn("Audio init failed", e);
-        }
-    }
-
-    resume() {
-        if (this.ctx && this.ctx.state === 'suspended') {
-            this.ctx.resume().catch(() => {});
-        }
-    }
-
-    toggleMute() {
-        this.isMuted = !this.isMuted;
-        if(this.masterGain) {
-            this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.3, this.ctx.currentTime, 0.1);
-        }
-        return this.isMuted;
-    }
-
-    playTone(freq, type = 'sine', duration = 1, vol = 0.3) {
-        if (this.isMuted || !this.ctx) return;
-        this.resume();
-
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-        osc.type = type;
-        
-        gain.gain.setValueAtTime(0, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(vol, this.ctx.currentTime + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-
-        osc.connect(gain);
-        gain.connect(this.masterGain);
-        osc.start();
-        osc.stop(this.ctx.currentTime + duration);
-    }
-
-    playGrab() { this.playTone(300, 'sine', 0.2, 0.15); }
-    playRelease() { this.playTone(400, 'sine', 0.3, 0.15); }
-    playWin() {
-        const chord = [523.25, 659.25, 783.99, 1046.50];
-        chord.forEach((f, i) => setTimeout(() => this.playTone(f, 'triangle', 2.0, 0.1), i * 80));
-    }
-}
-
-/**
- * ==========================================
- * MODULE: Save Manager (Auto-Save System)
- * ==========================================
- */
-class SaveManager {
-    constructor(saveKey = 'untangle_autosave_v2') {
-        this.saveKey = saveKey;
-        this.saveTimeout = null;
-    }
-
-    /**
-     * Debounces saves to prevent excessive storage writes during fast operations.
-     * @param {Object} gameState - Current game data payload
-     * @param {Number} delay - Delay in ms
-     */
-    saveDebounced(gameState, delay = 2500) {
-        if (this.saveTimeout) {
-            clearTimeout(this.saveTimeout);
-        }
-        this.saveTimeout = setTimeout(() => {
-            this.saveImmediate(gameState);
-        }, delay);
-    }
-
-    /**
-     * Immediately saves the current game state
-     */
-    saveImmediate(gameState) {
-        try {
-            localStorage.setItem(this.saveKey, JSON.stringify(gameState));
-        } catch (e) {
-            console.warn("Auto-save failed:", e);
-        }
-    }
-
-    /**
-     * Retrieves and parses the game state. Returns null if missing or corrupted.
-     * @returns {Object|null}
-     */
-    load() {
-        try {
-            const data = localStorage.getItem(this.saveKey);
-            if (!data) return null;
-            return JSON.parse(data);
-        } catch (e) {
-            console.warn("Corrupted save data found, starting fresh.", e);
-            return null;
-        }
-    }
-}
-
-/**
- * ==========================================
- * MODULE: Math & Geometry Utils
- * ==========================================
- */
-const GEO = {
-    // Robust line segment intersection (p1-q1 vs p2-q2)
-    intersect: (p1, q1, p2, q2) => {
-        if (p1 === p2 || p1 === q2 || q1 === p2 || q1 === q2) return false;
-        const ccw = (a, b, c) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
-        return ccw(p1, p2, q2) !== ccw(q1, p2, q2) && ccw(p1, q1, p2) !== ccw(p1, q1, q2);
-    },
-    distSq: (p1, p2) => (p1.x - p2.x)**2 + (p1.y - p2.y)**2
-};
-
-/**
- * ==========================================
- * MODULE: Main Game Logic
- * ==========================================
- */
-class Game {
-    constructor() {
-        this.canvas = document.getElementById('canvas');
-        this.ctx = this.canvas.getContext('2d');
-        
-        // Modules
-        this.audio = new AudioEngine();
-        this.saveManager = new SaveManager();
-        
-        // Core persistent data
-        this.level = parseInt(localStorage.getItem('untangle_level')) || 1;
-        this.streak = parseInt(localStorage.getItem('untangle_streak')) || 0;
-        
-        // Theme & Config
-        this.colors = {
-            safe: '#2dd4bf', 
-            danger: '#f43f5e', 
-            node: '#fff',
-            nodeShadow: 'rgba(99, 102, 241, 0.6)'
-        };
-        this.baseNodeRadius = 18;
-        this.hitRadius = 40; 
-
-        // State variables
-        this.nodes = [];
-        this.initialNodes = []; // Kept to allow restarting a level without modifying save format
-        this.edges = [];
-        this.particles = [];
-        this.stars = [];
-        this.draggingNode = null;
-        this.isLevelComplete = false;
-        
-        // Metrics
-        this.moves = 0;
-        this.startTime = 0;
-        this.formattedTime = "0:00";
-        this.lastCrossedCount = -1;
-        this.hintFrames = 180;
-        
-        this.affirmations = [
-            "Untangling problems — one at a time 🧠",
-            "Your mind works better than you think.",
-            "Patience and focus. You have both.",
-            "Every knot has a solution. So does yours.",
-            "Clarity comes with practice. Well done."
-        ];
-        
-        // Init Setup
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
-        this.generateStars();
-        this.resize(true);
-        this.setupEvents();
-        this.initStartScreen();
-        
-        this.animationId = requestAnimationFrame((t) => this.loop(t));
-    }
-
-    /**
-     * Bootstraps the UI based on whether a save file exists
-     */
-    initStartScreen() {
-        const startBtn = document.getElementById('btn-start');
-        const savedState = this.saveManager.load();
-
-        if (savedState) {
-            startBtn.textContent = "Resume Session";
-            startBtn.onclick = () => {
-                this.audio.init();
-                document.getElementById('start-screen').classList.remove('active');
-                this.restoreState(savedState);
-            };
-        } else {
-            startBtn.textContent = "Start Session";
-            startBtn.onclick = () => {
-                this.audio.init();
-                document.getElementById('start-screen').classList.remove('active');
-                this.loadLevel(this.level); 
-            };
-        }
-    }
-
-    /**
-     * Extracts state to save locally
-     */
-    getGameState() {
-        return {
-            level: this.level,
-            moves: this.moves,
-            elapsedTime: Date.now() - this.startTime,
-            // Use abstract coordinates (U,V) between 0-1 for responsive saving
-            nodes: this.nodes.map(n => ({ id: n.id, u: n.x / this.width, v: n.y / this.height })),
-            edges: this.edges.map(e => ({ a: e.a, b: e.b })),
-            initialNodes: this.initialNodes // Keeps the original layout intact
-        };
-    }
-
-    /**
-     * Restores state from localStorage
-     * @param {Object} state - The parsed save data
-     * @param {Boolean} isRestart - Triggers a timer/moves reset if restarting the same level
-     */
-    restoreState(state, isRestart = false) {
-        this.level = state.level;
-        this.edges = state.edges.map(e => ({ a: e.a, b: e.b, isCrossed: false }));
-        this.initialNodes = state.initialNodes || [];
-
-        if (isRestart) {
-            // Restore from the initial tangled positions
-            this.moves = 0;
-            this.startTime = Date.now();
-            this.nodes = this.initialNodes.map(n => ({
-                id: n.id,
-                x: n.u * this.width,
-                y: n.v * this.height,
-                u: n.u, v: n.v,
-                vx: 0, vy: 0, isSafe: false
-            }));
-        } else {
-            // Standard Load
-            this.moves = state.moves || 0;
-            this.startTime = Date.now() - (state.elapsedTime || 0);
-            this.nodes = state.nodes.map(n => ({
-                id: n.id,
-                x: n.u * this.width,
-                y: n.v * this.height,
-                u: n.u, v: n.v,
-                vx: 0, vy: 0, isSafe: false
-            }));
-        }
-
-        this.updateEdgeStatus();
-        this.isLevelComplete = false;
-        this.updateHUDText();
-
-        // If it was a manual restart, instantly overwrite the save to match
-        if (isRestart) this.saveManager.saveImmediate(this.getGameState());
-    }
-
-    generateStars() {
-        this.stars = [];
-        for(let i=0; i<40; i++) {
-            this.stars.push({
-                x: Math.random() * this.width,
-                y: Math.random() * this.height,
-                s: Math.random() * 1.5 + 0.5,
-                v: Math.random() * 0.15 + 0.05
-            });
-        }
-    }
-
-    resize(isInit = false) {
-        if (!isInit && this.nodes.length > 0) {
-            this.nodes.forEach(n => {
-                n.u = n.x / this.width;
-                n.v = n.y / this.height;
-            });
-        }
-
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        
-        this.canvas.width = this.width * dpr;
-        this.canvas.height = this.height * dpr;
-        
-        this.ctx.resetTransform();
-        this.ctx.scale(dpr, dpr);
-
-        if (!isInit && this.nodes.length > 0) {
-            const padding = this.baseNodeRadius + 20;
-            this.nodes.forEach(n => {
-                let nx = n.u * this.width;
-                let ny = n.v * this.height;
-                n.x = Math.max(padding, Math.min(this.width - padding, nx));
-                n.y = Math.max(padding, Math.min(this.height - padding, ny));
-            });
-        }
-    }
-
-    setupEvents() {
-        window.addEventListener('resize', () => this.resize());
-        
-        const getPos = (e) => {
-            const rect = this.canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: clientX - rect.left, y: clientY - rect.top };
-        };
-
-        const handleStart = (e) => {
-            this.audio.init(); 
-            this.audio.resume();
-
-            if (this.isLevelComplete) return;
-            
-            const pos = getPos(e);
-            let closest = null;
-            let minDist = this.hitRadius ** 2;
-
-            for (let n of this.nodes) {
-                const d = GEO.distSq(pos, n);
-                if (d < minDist) {
-                    closest = n;
-                    minDist = d;
-                }
+    <script>
+        /**
+         * AUDIO ENGINE
+         */
+        class AudioEngine {
+            constructor() {
+                this.ctx = null;
+                this.masterGain = null;
+                this.isMuted = false;
+                this.initialized = false;
             }
-
-            if (closest) {
-                this.draggingNode = closest;
-                this.hintFrames = 0; 
-                this.audio.playGrab();
+            init() {
+                if (!window.AudioContext && !window.webkitAudioContext || this.initialized) return;
+                try {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    this.masterGain = this.ctx.createGain();
+                    this.masterGain.gain.value = 0.2;
+                    this.masterGain.connect(this.ctx.destination);
+                    this.initialized = true;
+                    this.resume();
+                } catch (e) { console.warn("Audio init failed", e); }
             }
+            resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => { }); }
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                if (this.masterGain) this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.2, this.ctx.currentTime, 0.1);
+                return this.isMuted;
+            }
+            playTone(freq, type = 'sine', duration = 0.2, vol = 0.2) {
+                if (this.isMuted || !this.ctx) return;
+                this.resume();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                osc.type = type;
+                gain.gain.setValueAtTime(0, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(vol, this.ctx.currentTime + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(this.masterGain);
+                osc.start(); osc.stop(this.ctx.currentTime + duration);
+            }
+            playGrab() { this.playTone(440, 'sine', 0.15, 0.1); }
+            playRelease() { this.playTone(523.25, 'sine', 0.2, 0.1); }
+            playWin() {
+                [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => setTimeout(() => this.playTone(f, 'triangle', 1.0, 0.1), i * 100));
+            }
+        }
+
+        /**
+         * SAVE MANAGER
+         */
+        class SaveManager {
+            constructor() { this.key = 'yodhamind_untangle_v2'; }
+            save(state) { try { localStorage.setItem(this.key, JSON.stringify(state)); } catch (e) { } }
+            load() { try { return JSON.parse(localStorage.getItem(this.key)); } catch (e) { return null; } }
+        }
+
+        /**
+         * MATH/GEO UTILS
+         */
+        const GEO = {
+            intersect: (p1, q1, p2, q2) => {
+                if (p1 === p2 || p1 === q2 || q1 === p2 || q1 === q2) return false;
+                const ccw = (a, b, c) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
+                return ccw(p1, p2, q2) !== ccw(q1, p2, q2) && ccw(p1, q1, p2) !== ccw(p1, q1, q2);
+            },
+            distSq: (p1, p2) => (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2,
+            lerp: (start, end, amt) => (1 - amt) * start + amt * end
         };
 
-        const handleMove = (e) => {
-            if (this.draggingNode) {
-                const pos = getPos(e);
-                const padding = this.baseNodeRadius + 15;
-                this.draggingNode.x = Math.max(padding, Math.min(this.width - padding, pos.x));
-                this.draggingNode.y = Math.max(padding, Math.min(this.height - padding, pos.y));
-            }
-        };
+        /**
+         * MAIN GAME ENGINE
+         */
+        class Game {
+            constructor() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d', { alpha: false }); // High performance
 
-        const handleEnd = () => {
-            if (this.draggingNode) {
-                this.moves++; 
+                this.audio = new AudioEngine();
+                this.saveManager = new SaveManager();
+
+                this.level = parseInt(localStorage.getItem('untangle_level')) || 1;
+                this.streak = parseInt(localStorage.getItem('untangle_streak')) || 0;
+
+                this.colors = {
+                    bg: '#0f172a',
+                    node: '#f8fafc',
+                    safeLine: '#2dd4bf',
+                    safeGlow: 'rgba(45, 212, 191, 0.2)',
+                    dangerLine: '#fb7185',
+                    dangerGlow: 'rgba(251, 113, 133, 0.2)'
+                };
+
+                this.nodeRadius = 14;
+                this.hitRadius = 45;
+                this.nodes = [];
+                this.edges = [];
                 this.draggingNode = null;
-                this.audio.playRelease();
-                this.checkSolution();
+                this.pointer = { x: 0, y: 0, isDown: false };
 
-                // Trigger auto-save securely on node drop
-                if (!this.isLevelComplete) {
-                    this.saveManager.saveDebounced(this.getGameState());
+                this.moves = 0;
+                this.startTime = 0;
+                this.lastCrossedCount = -1;
+                this.isComplete = false;
+
+                this.affirmations = [
+                    "Cognitive load resolved efficiently.",
+                    "Spatial reasoning patterns verified.",
+                    "Neural pathways optimally mapped.",
+                    "Sustained attention parameters met.",
+                    "Complex structure decoupled successfully."
+                ];
+
+                this.initDOM();
+                this.resize();
+                this.setupEvents();
+
+                requestAnimationFrame((t) => this.render(t));
+            }
+
+            initDOM() {
+                const state = this.saveManager.load();
+                const btn = document.getElementById('btn-start');
+
+                // Setup initial start button logic
+                if (state) {
+                    btn.textContent = "Resume Session";
+                    btn.onclick = () => {
+                        this.audio.init();
+                        this.hideModal('start-screen');
+                        this.restore(state);
+                    };
+                } else {
+                    btn.onclick = () => {
+                        this.audio.init();
+                        this.hideModal('start-screen');
+                        this.loadLevel(this.level);
+                    };
+                }
+
+                document.getElementById('btn-next').onclick = () => {
+                    this.hideModal('complete-screen');
+                    this.loadLevel(this.level + 1);
+                };
+
+                document.getElementById('btn-exit').onclick = () => {
+                    window.location.href = "/games";
+                };
+
+                document.getElementById('btn-sound').onclick = (e) => {
+                    this.audio.init();
+                    const muted = this.audio.toggleMute();
+                    e.currentTarget.classList.toggle('muted', muted);
+                    e.currentTarget.innerHTML = muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+                };
+
+                document.getElementById('btn-share').onclick = (e) => {
+                    const txt = `Analyzed and optimized Level ${this.level} on YodhaMind Cognitive Training in ${document.getElementById('stat-time').innerText} (${this.moves} moves). 🧠⚡`;
+                    if (navigator.share) {
+                        navigator.share({ text: txt }).catch(() => { });
+                    } else {
+                        navigator.clipboard.writeText(txt);
+                        e.currentTarget.innerHTML = '<i class="fas fa-check"></i> Copied';
+                        setTimeout(() => e.currentTarget.innerHTML = '<i class="fas fa-share-nodes"></i> Share Metrics', 2000);
+                    }
+                };
+            }
+
+            hideModal(id) { document.getElementById(id).classList.remove('active'); }
+            showModal(id) { document.getElementById(id).classList.add('active'); }
+
+            resize() {
+                this.width = window.innerWidth;
+                this.height = window.innerHeight;
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                this.canvas.width = this.width * dpr;
+                this.canvas.height = this.height * dpr;
+                this.ctx.resetTransform();
+                this.ctx.scale(dpr, dpr);
+
+                if (this.nodes.length) {
+                    const pad = 40;
+                    this.nodes.forEach(n => {
+                        n.x = Math.max(pad, Math.min(this.width - pad, n.u * this.width));
+                        n.y = Math.max(pad, Math.min(this.height - pad, n.v * this.height));
+                    });
                 }
             }
-        };
 
-        this.canvas.addEventListener('mousedown', handleStart);
-        window.addEventListener('mousemove', handleMove);
-        window.addEventListener('mouseup', handleEnd);
+            setupEvents() {
+                window.addEventListener('resize', () => this.resize());
 
-        this.canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, {passive: false});
-        this.canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, {passive: false});
-        window.addEventListener('touchend', handleEnd);
+                const getEvtPos = (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    return { x: clientX - rect.left, y: clientY - rect.top };
+                };
 
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                cancelAnimationFrame(this.animationId);
-            } else {
-                this.animationId = requestAnimationFrame((t) => this.loop(t));
+                const onDown = (e) => {
+                    if (this.isComplete) return;
+                    this.audio.resume();
+                    this.pointer.isDown = true;
+                    const pos = getEvtPos(e);
+                    this.pointer.x = pos.x; this.pointer.y = pos.y;
+
+                    let closest = null, minD = this.hitRadius ** 2;
+                    for (let n of this.nodes) {
+                        const d = GEO.distSq(pos, n);
+                        if (d < minD) { closest = n; minD = d; }
+                    }
+                    if (closest) {
+                        this.draggingNode = closest;
+                        this.audio.playGrab();
+                    }
+                };
+
+                const onMove = (e) => {
+                    if (!this.pointer.isDown) return;
+                    const pos = getEvtPos(e);
+                    this.pointer.x = pos.x; this.pointer.y = pos.y;
+                };
+
+                const onUp = () => {
+                    this.pointer.isDown = false;
+                    if (this.draggingNode) {
+                        this.moves++;
+                        this.draggingNode = null;
+                        this.audio.playRelease();
+                        this.checkSolution();
+                        if (!this.isComplete) this.save();
+                    }
+                };
+
+                this.canvas.addEventListener('mousedown', onDown);
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onUp);
+                this.canvas.addEventListener('touchstart', (e) => { e.preventDefault(); onDown(e); }, { passive: false });
+                this.canvas.addEventListener('touchmove', (e) => { e.preventDefault(); onMove(e); }, { passive: false });
+                window.addEventListener('touchend', onUp);
             }
-        });
 
-        // Core UI Flow Controls
-        document.getElementById('btn-next').addEventListener('click', () => {
-            document.getElementById('complete-screen').classList.remove('active');
-            this.loadLevel(this.level + 1);
-        });
+            loadLevel(lvl) {
+                this.level = lvl;
+                localStorage.setItem('untangle_level', lvl);
+                this.isComplete = false;
+                this.moves = 0;
+                this.startTime = Date.now();
+                this.nodes = [];
+                this.edges = [];
 
-        // Restart Current Level functionality
-        document.getElementById('btn-restart').addEventListener('click', () => {
-            const state = this.saveManager.load();
-            if (state && state.initialNodes) {
-                // Restore their initial layout from the start of the level
-                this.restoreState(state, true); 
-            } else {
-                // Fallback
-                this.loadLevel(this.level);
-            }
-        });
+                const count = Math.min(5 + Math.floor(lvl * 0.7), 16);
+                const cx = this.width / 2, cy = this.height / 2;
+                const radius = Math.min(cx, cy) * 0.6;
 
-        // Safe Exit Button to root path
-        document.getElementById('btn-exit').addEventListener('click', () => {
-            // Save state immediately right before exiting
-            if (!this.isLevelComplete) {
-                this.saveManager.saveImmediate(this.getGameState());
-            }
-            window.location.href = "/games";
-        });
-        
-        document.getElementById('btn-sound').addEventListener('click', (e) => {
-            this.audio.init();
-            const muted = this.audio.toggleMute();
-            const btn = e.currentTarget;
-            if (muted) {
-                btn.classList.add('muted');
-                btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            } else {
-                btn.classList.remove('muted');
-                btn.innerHTML = '<i class="fas fa-volume-up"></i>';
-            }
-        });
-
-        // Reset All Progress
-        document.getElementById('btn-reset').addEventListener('click', () => {
-            if (confirm('Reset all progress back to Level 1? This cannot be undone.')) {
-                localStorage.removeItem('untangle_level');
-                localStorage.removeItem('untangle_save');
-                this.loadLevel(1);
-            }
-        });
-
-        document.getElementById('btn-share').addEventListener('click', (e) => {
-            const shareText = `I just untangled Level ${this.level} on YodhaMind in ${this.formattedTime} with ${this.moves} moves 🧠⚔️ — can you beat it?`;
-            const btn = e.currentTarget;
-            
-            if (navigator.share) {
-                navigator.share({ title: 'YodhaMind Focus', text: shareText }).catch(()=>{});
-            } else {
-                navigator.clipboard.writeText(shareText);
-                const oldHTML = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                setTimeout(() => btn.innerHTML = oldHTML, 2000);
-            }
-        });
-    }
-
-    loadLevel(n) {
-        this.level = n;
-        localStorage.setItem('untangle_level', n); 
-        
-        // Reset toggle UI
-        const statsContainer = document.getElementById('stats-container');
-        const toggleBtn = document.getElementById('btn-toggle-stats');
-        if(statsContainer) statsContainer.style.display = 'none';
-        if(toggleBtn) toggleBtn.style.display = 'block';
-
-        this.isLevelComplete = false;
-        this.draggingNode = null;
-        this.nodes = [];
-        this.edges = [];
-        this.particles = [];
-        
-        this.moves = 0;
-        this.startTime = Date.now();
-        this.hintFrames = 180;
-        
-        this.updateHUDText();
-
-        const nodeCount = Math.min(4 + Math.floor(n * 0.8), 12);
-        const cx = this.width / 2;
-        const cy = this.height / 2;
-        const r = Math.min(cx, cy) * 0.55;
-
-        for (let i = 0; i < nodeCount; i++) {
-            const angle = (i / nodeCount) * Math.PI * 2;
-            this.nodes.push({ id: i, x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r, vx: 0, vy: 0, isSafe: false });
-        }
-
-        for (let i = 0; i < nodeCount; i++) {
-            this.addEdge(i, (i + 1) % nodeCount);
-        }
-
-        const desiredEdges = nodeCount + Math.floor(n * 1.5);
-        let attempts = 0;
-        
-        while (this.edges.length < desiredEdges && attempts < 200) {
-            attempts++;
-            const a = Math.floor(Math.random() * nodeCount);
-            const b = Math.floor(Math.random() * nodeCount);
-            
-            if (a === b) continue;
-            if (Math.abs(a - b) === 1 || Math.abs(a - b) === nodeCount - 1) continue;
-            if (this.edges.some(e => (e.a === a && e.b === b) || (e.a === b && e.b === a))) continue;
-
-            const nA = this.nodes[a];
-            const nB = this.nodes[b];
-            let safe = true;
-            for (let e of this.edges) {
-                if (GEO.intersect(nA, nB, this.nodes[e.a], this.nodes[e.b])) {
-                    safe = false;
-                    break;
+                // Position nodes in a circle
+                for (let i = 0; i < count; i++) {
+                    const angle = (i / count) * Math.PI * 2;
+                    this.nodes.push({ id: i, x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius });
                 }
-            }
-            if (safe) this.addEdge(a, b);
-        }
 
-        this.scrambleNodes();
+                // Add perimeter edges
+                for (let i = 0; i < count; i++) {
+                    this.edges.push({ a: i, b: (i + 1) % count });
+                }
 
-        // Capture initial configuration required for the Restart Button mechanism
-        this.initialNodes = this.nodes.map(n => ({
-            id: n.id,
-            u: n.x / this.width,
-            v: n.y / this.height
-        }));
+                // Fix for the Infinite Loop: Add interior chords mathematically safely
+                // A convex polygon with 'count' vertices can have at most (count - 3) non-crossing diagonals
+                let maxExtras = count - 3;
+                let extras = Math.max(1, Math.min(maxExtras, Math.floor(count * 0.5)));
+                let attempts = 0;
 
-        // Initial save for persistence
-        this.saveManager.saveImmediate(this.getGameState());
-    }
+                while (extras > 0 && attempts < 150) {
+                    attempts++;
+                    const a = Math.floor(Math.random() * count);
+                    const b = Math.floor(Math.random() * count);
 
-    addEdge(a, b) {
-        this.edges.push({ a, b, isCrossed: false });
-    }
-
-    scrambleNodes() {
-        const padding = 50; 
-        const safeW = this.width - padding * 2;
-        const safeH = this.height - padding * 2;
-        
-        let attempts = 0;
-        const minCrosses = Math.max(2, Math.floor(this.edges.length * 0.3));
-        
-        while (attempts < 50) {
-            attempts++;
-            this.nodes.forEach(n => {
-                n.x = padding + Math.random() * safeW;
-                n.y = padding + Math.random() * safeH;
-            });
-
-            let overlapping = false;
-            for(let i=0; i<this.nodes.length; i++) {
-                for(let j=i+1; j<this.nodes.length; j++) {
-                    if(GEO.distSq(this.nodes[i], this.nodes[j]) < 3600) { 
-                        overlapping = true;
-                        break;
+                    // Check validity: not same point, not adjacent points
+                    if (a !== b && Math.abs(a - b) !== 1 && Math.abs(a - b) !== count - 1) {
+                        // Check if edge already exists
+                        if (!this.edges.some(e => (e.a === a && e.b === b) || (e.a === b && e.b === a))) {
+                            let safe = true;
+                            // Ensure the new edge doesn't intersect existing edges
+                            for (let e of this.edges) {
+                                if (GEO.intersect(this.nodes[a], this.nodes[b], this.nodes[e.a], this.nodes[e.b])) {
+                                    safe = false;
+                                    break;
+                                }
+                            }
+                            if (safe) {
+                                this.edges.push({ a, b });
+                                extras--;
+                            }
+                        }
                     }
                 }
+
+                this.scramble();
+                this.updateUValues();
+                this.updateHUD();
+                this.save();
             }
-            if (overlapping && attempts < 45) continue;
 
-            if (this.countIntersections() >= minCrosses) break;
-        }
-        
-        this.updateEdgeStatus();
-    }
-
-    countIntersections() {
-        let count = 0;
-        for (let i = 0; i < this.edges.length; i++) {
-            for (let j = i + 1; j < this.edges.length; j++) {
-                const e1 = this.edges[i], e2 = this.edges[j];
-                const n1 = this.nodes[e1.a], n2 = this.nodes[e1.b];
-                const n3 = this.nodes[e2.a], n4 = this.nodes[e2.b];
-                if (GEO.intersect(n1, n2, n3, n4)) count++;
-            }
-        }
-        return count;
-    }
-
-    updateEdgeStatus() {
-        this.edges.forEach(e => e.isCrossed = false);
-        let foundCross = false;
-
-        for (let i = 0; i < this.edges.length; i++) {
-            for (let j = i + 1; j < this.edges.length; j++) {
-                const e1 = this.edges[i], e2 = this.edges[j];
-                const n1 = this.nodes[e1.a], n2 = this.nodes[e1.b];
-                const n3 = this.nodes[e2.a], n4 = this.nodes[e2.b];
-                
-                if (GEO.intersect(n1, n2, n3, n4)) {
-                    e1.isCrossed = true;
-                    e2.isCrossed = true;
-                    foundCross = true;
+            scramble() {
+                const pad = 60, safeW = this.width - pad * 2, safeH = this.height - pad * 2;
+                for (let a = 0; a < 40; a++) {
+                    this.nodes.forEach(n => { n.x = pad + Math.random() * safeW; n.y = pad + Math.random() * safeH; });
+                    this.calcCrossings();
+                    if (this.edges.filter(e => e.isCrossed).length >= Math.max(2, Math.floor(this.edges.length * 0.4))) break;
                 }
             }
-        }
-        return foundCross;
-    }
 
-    formatTime(ms) {
-        const totalSec = Math.floor(ms / 1000);
-        const m = Math.floor(totalSec / 60);
-        const s = totalSec % 60;
-        return `${m}:${s.toString().padStart(2, '0')}`;
-    }
-    
-    updateHUDText() {
-        const streakText = this.streak > 0 ? ` · 🔥 ${this.streak}` : '';
-        document.getElementById('level-indicator').textContent = `Level ${this.level}${streakText}`;
-    }
+            updateUValues() { this.nodes.forEach(n => { n.u = n.x / this.width; n.v = n.y / this.height; }); }
 
-    checkSolution() {
-        const hasCrosses = this.updateEdgeStatus();
-        if (!hasCrosses && !this.isLevelComplete) {
-            this.isLevelComplete = true;
-            this.audio.playWin();
-            this.spawnWinParticles();
-            
-            // Log metrics immediately
-            const endTime = Date.now();
-            this.formattedTime = this.formatTime(endTime - this.startTime);
-            
-            this.streak++;
-            localStorage.setItem('untangle_streak', this.streak);
-            
-            // Save state immediately on win
-            this.saveManager.saveImmediate(this.getGameState());
+            calcCrossings() {
+                this.edges.forEach(e => e.isCrossed = false);
+                let found = false;
+                for (let i = 0; i < this.edges.length; i++) {
+                    for (let j = i + 1; j < this.edges.length; j++) {
+                        if (GEO.intersect(this.nodes[this.edges[i].a], this.nodes[this.edges[i].b], this.nodes[this.edges[j].a], this.nodes[this.edges[j].b])) {
+                            this.edges[i].isCrossed = this.edges[j].isCrossed = found = true;
+                        }
+                    }
+                }
+                return found;
+            }
 
-            // Build UI
-            document.getElementById('stat-time').textContent = this.formattedTime;
-            document.getElementById('stat-moves').textContent = this.moves;
-            
-            const randomAffirmation = this.affirmations[Math.floor(Math.random() * this.affirmations.length)];
-            document.getElementById('affirmation-text').textContent = randomAffirmation;
-            
-            setTimeout(() => {
-                document.getElementById('complete-screen').classList.add('active');
-            }, 1800);
-        }
-    }
+            checkSolution() {
+                if (!this.calcCrossings() && !this.isComplete) {
+                    this.isComplete = true;
+                    this.audio.playWin();
+                    this.streak++;
+                    localStorage.setItem('untangle_streak', this.streak);
 
-    spawnWinParticles() {
-        this.nodes.forEach(n => {
-            for(let i=0; i<8; i++) {
-                this.particles.push({
-                    x: n.x, y: n.y,
-                    vx: (Math.random() - 0.5) * 6,
-                    vy: (Math.random() - 0.5) * 6,
-                    life: 1.0,
-                    color: this.colors.safe
+                    const timeSec = Math.floor((Date.now() - this.startTime) / 1000);
+                    document.getElementById('stat-time').innerText = `${Math.floor(timeSec / 60)}:${(timeSec % 60).toString().padStart(2, '0')}`;
+                    document.getElementById('stat-moves').innerText = this.moves;
+                    document.getElementById('affirmation-text').innerText = this.affirmations[Math.floor(Math.random() * this.affirmations.length)];
+
+                    setTimeout(() => this.showModal('complete-screen'), 1000);
+                }
+            }
+
+            save() {
+                this.saveManager.save({
+                    lvl: this.level,
+                    moves: this.moves,
+                    time: Date.now() - this.startTime,
+                    nodes: this.nodes.map(n => ({ id: n.id, u: n.u, v: n.v })),
+                    edges: this.edges.map(e => ({ a: e.a, b: e.b }))
                 });
             }
-        });
-    }
 
-    // --- Render Loop ---
-    loop(t) {
-        if (!this.isLevelComplete && this.draggingNode) {
-            this.updateEdgeStatus();
-        }
-
-        const crossedLines = this.edges.filter(e => e.isCrossed).length;
-        if (this.lastCrossedCount !== crossedLines && document.getElementById('start-screen').classList.contains('active') === false) {
-            this.lastCrossedCount = crossedLines;
-            const hud = document.getElementById('hud-crossings');
-            if (crossedLines === 0 && !this.isLevelComplete) {
-                hud.innerHTML = `<span style="color: var(--safe)">✓ All lines untangled</span>`;
-                hud.style.borderColor = 'var(--safe)';
-            } else if (crossedLines > 0) {
-                hud.innerHTML = `<span style="color: #fda4af">⚠ ${crossedLines} lines tangled</span>`;
-                hud.style.borderColor = 'var(--glass-border)';
+            restore(s) {
+                this.level = s.lvl;
+                this.moves = s.moves;
+                this.startTime = Date.now() - s.time;
+                this.nodes = s.nodes.map(n => ({ id: n.id, u: n.u, v: n.v, x: n.u * this.width, y: n.v * this.height }));
+                this.edges = s.edges.map(e => ({ a: e.a, b: e.b }));
+                this.calcCrossings();
+                this.updateHUD();
             }
-        }
 
-        for (let i = this.particles.length - 1; i >= 0; i--) {
-            let p = this.particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            p.life -= 0.02;
-            if (p.life <= 0) this.particles.splice(i, 1);
-        }
+            updateHUD() {
+                document.getElementById('level-indicator').innerText = `Level ${this.level}` + (this.streak > 0 ? ` · 🔥 ${this.streak}` : '');
+            }
 
-        this.ctx.clearRect(0, 0, this.width, this.height);
-        
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        this.stars.forEach(star => {
-            star.y += star.v;
-            if (star.y > this.height) star.y = 0;
-            if (star.x > this.width) star.x = 0;
-            
-            this.ctx.beginPath();
-            this.ctx.arc(star.x, star.y, star.s, 0, Math.PI*2);
-            this.ctx.fill();
-        });
+            render() {
+                if (this.draggingNode) {
+                    const pad = this.nodeRadius + 10;
+                    this.draggingNode.x = GEO.lerp(this.draggingNode.x, Math.max(pad, Math.min(this.width - pad, this.pointer.x)), 0.4);
+                    this.draggingNode.y = GEO.lerp(this.draggingNode.y, Math.max(pad, Math.min(this.height - pad, this.pointer.y)), 0.4);
+                    this.updateUValues();
+                    this.calcCrossings();
+                }
 
-        if (this.hintFrames > 0 && this.nodes.length > 0 && !this.isLevelComplete) {
-            const n = this.nodes[0];
-            this.ctx.beginPath();
-            const pulse = Math.sin(this.hintFrames * 0.1) * 6;
-            this.ctx.arc(n.x, n.y, this.baseNodeRadius + 12 + pulse, 0, Math.PI * 2);
-            this.ctx.strokeStyle = `rgba(34, 211, 238, ${this.hintFrames / 180})`;
-            this.ctx.lineWidth = 3;
-            this.ctx.stroke();
-            this.hintFrames--;
-        }
+                const crosses = this.edges.filter(e => e.isCrossed).length;
+                if (this.lastCrossedCount !== crosses && !document.getElementById('start-screen').classList.contains('active')) {
+                    this.lastCrossedCount = crosses;
+                    const hud = document.getElementById('hud-crossings');
+                    if (crosses === 0 && !this.isComplete) {
+                        hud.innerHTML = `<span style="color: var(--safe)">✓ Network Optimized</span>`;
+                        hud.style.borderColor = 'var(--safe)';
+                    } else if (crosses > 0) {
+                        hud.innerHTML = `<span style="color: var(--danger)">⚠ ${crosses} active conflicts</span>`;
+                        hud.style.borderColor = 'var(--glass-border)';
+                    }
+                }
 
-        this.ctx.lineCap = 'round';
-        this.edges.forEach(e => {
-            const n1 = this.nodes[e.a];
-            const n2 = this.nodes[e.b];
-            
-            this.ctx.beginPath();
-            this.ctx.moveTo(n1.x, n1.y);
-            this.ctx.lineTo(n2.x, n2.y);
-            
-            if (e.isCrossed) {
-                this.ctx.strokeStyle = this.colors.danger;
-                this.ctx.lineWidth = 3;
-                this.ctx.shadowColor = this.colors.danger;
-                this.ctx.shadowBlur = 8;
-            } else {
-                this.ctx.strokeStyle = this.colors.safe;
+                this.ctx.fillStyle = this.colors.bg;
+                this.ctx.fillRect(0, 0, this.width, this.height);
+
+                this.ctx.lineCap = 'round';
+                this.ctx.lineWidth = 10;
+                this.edges.forEach(e => {
+                    this.ctx.strokeStyle = e.isCrossed ? this.colors.dangerGlow : this.colors.safeGlow;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.nodes[e.a].x, this.nodes[e.a].y);
+                    this.ctx.lineTo(this.nodes[e.b].x, this.nodes[e.b].y);
+                    this.ctx.stroke();
+                });
+
                 this.ctx.lineWidth = 2;
-                this.ctx.shadowColor = this.colors.safe;
-                this.ctx.shadowBlur = 5;
+                this.edges.forEach(e => {
+                    this.ctx.strokeStyle = e.isCrossed ? this.colors.dangerLine : this.colors.safeLine;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.nodes[e.a].x, this.nodes[e.a].y);
+                    this.ctx.lineTo(this.nodes[e.b].x, this.nodes[e.b].y);
+                    this.ctx.stroke();
+                });
+
+                this.nodes.forEach(n => {
+                    const isSafe = this.edges.filter(e => e.a === n.id || e.b === n.id).every(e => !e.isCrossed);
+
+                    this.ctx.beginPath();
+                    this.ctx.arc(n.x, n.y, (n === this.draggingNode) ? this.nodeRadius * 1.3 : this.nodeRadius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = isSafe ? this.colors.safeLine : this.colors.node;
+                    this.ctx.fill();
+
+                    this.ctx.lineWidth = 3;
+                    this.ctx.strokeStyle = this.colors.bg;
+                    this.ctx.beginPath();
+                    this.ctx.arc(n.x, n.y, this.nodeRadius - 4, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                });
+
+                requestAnimationFrame((t) => this.render(t));
             }
-            this.ctx.stroke();
-        });
-
-        this.nodes.forEach(n => {
-            const connectedEdges = this.edges.filter(e => e.a === n.id || e.b === n.id);
-            n.isSafe = connectedEdges.length > 0 && connectedEdges.every(e => !e.isCrossed);
-        });
-
-        this.nodes.forEach(n => {
-            this.ctx.shadowBlur = 15;
-            this.ctx.shadowColor = n.isSafe ? this.colors.safe : this.colors.nodeShadow;
-            
-            this.ctx.beginPath();
-            const r = (n === this.draggingNode) ? this.baseNodeRadius * 1.2 : this.baseNodeRadius;
-            this.ctx.arc(n.x, n.y, r, 0, Math.PI*2);
-            
-            this.ctx.fillStyle = n.isSafe ? this.colors.safe : this.colors.node;
-            this.ctx.fill();
-            
-            if (n === this.draggingNode) {
-                this.ctx.shadowBlur = 0;
-                this.ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-                this.ctx.lineWidth = 4;
-                this.ctx.beginPath();
-                this.ctx.arc(n.x, n.y, r + 8, 0, Math.PI*2);
-                this.ctx.stroke();
-            }
-        });
-        
-        this.ctx.shadowBlur = 0;
-        this.particles.forEach(p => {
-            this.ctx.globalAlpha = p.life;
-            this.ctx.fillStyle = p.color;
-            this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
-            this.ctx.fill();
-        });
-        this.ctx.globalAlpha = 1;
-
-        this.animationId = requestAnimationFrame((t) => this.loop(t));
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const game = new Game();
-        const loader = document.getElementById('loading-screen');
-        if (loader) loader.classList.remove('active');
-    }, 0);
-});
-
-</script>
-    <script src="../shared/crisis-support.js"></script>
-
-    <script src="../shared/supabase-auth.js"></script>
-    <script>
-      /* ── Sidebar toggle ── */
-      (function() {
-        var hamburger = document.getElementById('ymHamburger');
-        var sidebar = document.getElementById('ymSidebar');
-        var backdrop = document.getElementById('ymSidebarBackdrop');
-        var topbar = document.getElementById('ymTopbar');
-
-        function toggleSidebar() {
-          var isOpen = sidebar.classList.contains('open');
-          sidebar.classList.toggle('open');
-          backdrop.classList.toggle('open');
-          hamburger.classList.toggle('open');
-          document.body.style.overflow = isOpen ? '' : 'hidden';
         }
 
-        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
-        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
-
-        /* ── Scroll shadow ── */
-        if (topbar) {
-          window.addEventListener('scroll', function() {
-            topbar.classList.toggle('scrolled', window.scrollY > 10);
-          }, { passive: true });
+        // Safer Initialization to ensure DOM is fully loaded before JS engine executes
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => new Game());
+        } else {
+            new Game();
         }
-
-        /* ── Highlight active sidebar link ── */
-        var currentPath = window.location.pathname;
-        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
-          var href = link.getAttribute('href');
-          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
-            link.classList.add('active');
-          }
-        });
-      })();
     </script>
 </body>
+
 </html>
-
-
