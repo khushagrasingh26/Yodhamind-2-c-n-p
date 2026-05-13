@@ -1,178 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <script src="../shared/theme.js"></script>
-    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Memory Matrix - YodhaMind</title>
+    <title>Memory Matrix</title>
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 
         :root {
-            --bg: var(--color-bg, #fdfcfc);
-            --panel: rgba(255, 255, 255, 0.85);
-            --panel-border: rgba(0, 0, 0, 0.08);
-            --text: var(--color-text-primary, #0a0514);
-            --muted: var(--color-text-secondary, #6b5f80);
-            --accent: var(--ym-purple-600, #6236ff);
-            --accent-2: #f97316;
-            --accent-soft: rgba(98, 54, 255, 0.1);
+            --bg-base: #050810;
+            --panel: rgba(13, 18, 30, 0.65);
+            --panel-border: rgba(148, 163, 184, 0.15);
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.4);
+            --accent-2: #ff0055;
             --ok: #10b981;
             --warn: #f59e0b;
-            --tile: #eee8f8;
-            --tile-hover: #ddd1f2;
-            --glow: rgba(98, 54, 255, 0.25);
+            --fail: #ef4444;
+            --tile: rgba(255, 255, 255, 0.03);
+            --tile-hover: rgba(255, 255, 255, 0.08);
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
+        /* Lock the body strictly to the viewport size */
+        html,
         body {
             margin: 0;
-            min-height: 100vh;
-            font-family: var(--font-body, "Space Grotesk"), "Segoe UI", sans-serif;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            /* Fallback */
+            height: 100dvh;
+            /* Dynamic viewport height for mobile */
+            overflow: hidden;
+            /* Absolutely no scrolling */
+            font-family: "Space Grotesk", "Segoe UI", Tahoma, sans-serif;
             color: var(--text);
-            background: var(--bg);
-            padding-top: 60px;
+            background-color: var(--bg-base);
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.15) 0%, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: center top, center center, center center;
+            /* Prevent pull-to-refresh on mobile */
+            overscroll-behavior-y: none;
         }
 
         .page {
-            min-height: 100vh;
+            height: 100%;
             display: flex;
             flex-direction: column;
         }
 
+        /* --- Topbar --- */
         .topbar {
-            position: sticky;
-            top: 60px;
             z-index: 10;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            background: rgba(5, 8, 16, 0.85);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--panel-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
         }
 
         .topbar h2 {
             margin: 0;
-            font-size: 1.1rem;
-            letter-spacing: 0.3px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            letter-spacing: 1px;
             font-weight: 700;
-            font-family: "Fraunces", "Space Grotesk", serif;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .btn {
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--panel-border);
-            background: rgba(255, 255, 255, 0.9);
             color: var(--text);
-            padding: 9px 16px;
-            border-radius: 999px;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            letter-spacing: 0.5px;
         }
 
-        .btn:hover { background: rgba(238, 232, 248, 0.95); border-color: rgba(98, 54, 255, 0.3); transform: translateY(-1px); }
-        .btn:active { transform: translateY(0); }
-        .btn:focus-visible { outline: 2px solid rgba(98, 54, 255, 0.5); outline-offset: 2px; }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
 
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* --- Stage & Shell --- */
         .stage {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            animation: fadeIn 0.6s ease;
+            padding: clamp(8px, 2vh, 20px);
+            overflow: hidden;
         }
 
         .shell {
-            width: min(560px, 100%);
+            width: min(520px, 100%);
+            max-height: 100%;
             background: var(--panel);
-            border: 1px solid var(--panel-border);
-            border-radius: 22px;
-            padding: 22px;
-            box-shadow: 0 16px 48px rgba(98, 54, 255, 0.08), 0 8px 16px rgba(0,0,0,0.04);
-            max-height: calc(100vh - 160px);
-            overflow: auto;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: clamp(16px, 3vh, 32px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        .shell.shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+            border-color: rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.2), inset 0 0 20px rgba(239, 68, 68, 0.1);
+        }
+
+        #game-ui {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(12px, 2vh, 24px);
+            /* Scales gaps down on short screens */
+        }
+
+        /* --- Typography --- */
         .headline {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
             flex-wrap: wrap;
-        }
-
-        .headline-copy {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            gap: 10px;
         }
 
         .eyebrow {
-            margin: 0;
+            margin: 0 0 4px 0;
             text-transform: uppercase;
-            letter-spacing: 2.2px;
-            font-size: 0.66rem;
-            color: rgba(226, 232, 240, 0.7);
+            letter-spacing: 2px;
+            font-size: 0.65rem;
+            color: var(--accent);
+            font-weight: 700;
         }
 
         .headline h1 {
-            margin: 0;
-            font-size: 2.1rem;
-            letter-spacing: 0.2px;
-            font-family: "Fraunces", "Space Grotesk", serif;
+            margin: 0 0 4px 0;
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
         }
 
         .hint {
             margin: 0;
             color: var(--muted);
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
         }
 
+        /* --- Status Indicators --- */
         .status-pill {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             padding: 8px 14px;
-            border-radius: 999px;
-            font-weight: 600;
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        .status-pill[data-state="watch"] {
-            background: rgba(98, 54, 255, 0.08);
-            border-color: rgba(98, 54, 255, 0.3);
-            color: var(--accent);
-        }
-
-        .status-pill[data-state="play"] {
-            background: rgba(249, 115, 22, 0.1);
-            border-color: rgba(249, 115, 22, 0.4);
-            color: #c2410c;
-        }
-
-        .status-pill[data-state="ok"] {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: rgba(16, 185, 129, 0.4);
-            color: #059669;
-        }
-
-        .status-pill[data-state="fail"] {
-            background: rgba(239, 68, 68, 0.08);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #dc2626;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .status-dot {
@@ -180,254 +205,241 @@
             height: 8px;
             border-radius: 50%;
             background: currentColor;
-            box-shadow: 0 0 12px currentColor;
+            box-shadow: 0 0 10px currentColor;
         }
 
+        .status-pill[data-state="watch"] {
+            color: var(--accent);
+            border-color: var(--accent-glow);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .status-pill[data-state="play"] {
+            color: var(--warn);
+            border-color: rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .status-pill[data-state="ok"] {
+            color: var(--ok);
+            border-color: rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .status-pill[data-state="fail"] {
+            color: var(--fail);
+            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        /* --- Meta Cards --- */
         .meta {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 18px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(10px, 2vw, 16px);
         }
 
         .meta-card {
-            background: var(--accent-soft);
-            border: 1px solid var(--panel-border);
-            border-radius: 14px;
-            padding: 12px 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: clamp(8px, 1.5vh, 12px);
             color: var(--muted);
-            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
         }
 
         .meta-card span {
             display: block;
             color: var(--text);
-            font-size: 1.35rem;
+            font-size: clamp(1.2rem, 3vh, 1.5rem);
             margin-top: 4px;
             font-weight: 700;
         }
 
+        /* --- Game Grid --- */
         #grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: min(100%, 420px);
+            gap: clamp(8px, 1.5vh, 14px);
+            /* The magic line that forces the grid to shrink on short screens */
+            width: min(100%, 380px, 42dvh);
             aspect-ratio: 1 / 1;
-            background: rgba(248, 246, 252, 0.6);
-            border: 1px solid var(--panel-border);
-            padding: 12px;
-            border-radius: 18px;
             margin: 0 auto;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: clamp(10px, 2vh, 16px);
+            border-radius: 20px;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
         }
 
         .tile {
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            border-radius: 14px;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+            border-radius: 12px;
             cursor: pointer;
-            background: none;
             position: relative;
             overflow: hidden;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tile-idle {
-            background: linear-gradient(160deg, #eee8f8, #ddd1f2);
-            box-shadow: 0 4px 12px rgba(98, 54, 255, 0.08);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 3px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .tile-idle:hover:not(:disabled) { background: linear-gradient(160deg, #ddd1f2, #c4b5fd); }
-        .tile-idle:active:not(:disabled) { transform: scale(0.98); }
+        .tile-idle:active:not(:disabled) {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
 
         .tile-active {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            box-shadow: 0 0 0 2px rgba(98, 54, 255, 0.4), 0 0 20px rgba(98, 54, 255, 0.25);
-            transform: scale(0.98);
-            animation: tilePulse 0.5s ease;
+            background: var(--accent);
+            border: 1px solid #fff;
+            transform: translateY(2px);
+            box-shadow: 0 0 15px var(--accent-glow), inset 0 0 15px rgba(255, 255, 255, 0.8);
+            border-bottom-width: 1px;
+            z-index: 2;
         }
 
         .tile:focus-visible {
-            outline: 2px solid rgba(98, 54, 255, 0.5);
+            outline: 2px solid var(--accent);
             outline-offset: 2px;
         }
 
+        /* --- Result Screen --- */
         .result {
             display: none;
             text-align: center;
-            margin-top: 12px;
+            animation: fadeIn 0.4s ease;
         }
 
-        .result.show { display: block; }
+        .result.show {
+            display: block;
+        }
 
         .result h3 {
             margin: 0;
-            font-size: 1.7rem;
-            font-family: "Fraunces", "Space Grotesk", serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--fail);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .result #final-level {
-            font-size: 2.8rem;
-            margin: 8px 0 0;
-            font-weight: 800;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin: 5px 0;
+            font-weight: 700;
+            color: var(--text);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
         .subtle {
             color: var(--muted);
-            margin: 6px 0 20px;
+            margin: 5px 0 20px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         .btn-primary {
             border: 0;
             width: 100%;
-            padding: 13px 14px;
-            border-radius: 14px;
+            padding: clamp(12px, 2vh, 16px);
+            border-radius: 12px;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             cursor: pointer;
-            color: white;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            box-shadow: 0 8px 24px rgba(98, 54, 255, 0.25);
+            color: #000;
+            background: linear-gradient(135deg, var(--accent), #00a2ff);
+            box-shadow: 0 10px 25px var(--accent-glow);
+            transition: all 0.2s ease;
         }
 
-        .btn-primary:focus-visible { outline: 2px solid rgba(98, 54, 255, 0.5); outline-offset: 2px; }
-
-        .hidden { display: none !important; }
-
-        @media (max-width: 520px) {
-            .headline h1 { font-size: 1.6rem; }
-            .shell { padding: 16px; border-radius: 16px; }
-            .meta-card span { font-size: 1.1rem; }
-            #grid { width: min(100%, 340px); }
-            .status-pill { width: 100%; justify-content: center; }
+        .btn-primary:active {
+            transform: translateY(1px);
         }
 
-        @media (max-height: 760px) {
-            .topbar { padding: 10px 12px; }
-            .stage { padding: 10px; }
-            .shell { padding: 14px; border-radius: 14px; max-height: calc(100vh - 74px); }
-            .headline h1 { font-size: 1.4rem; }
-            .meta { margin-bottom: 10px; }
-            .meta-card { padding: 8px 10px; }
-            .meta-card span { font-size: 1rem; }
-            #grid { gap: 8px; padding: 8px; width: min(100%, 320px); }
+        .hidden {
+            display: none !important;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
 
-        @keyframes tilePulse {
-            0% { transform: scale(0.96); }
-            60% { transform: scale(1.02); }
-            100% { transform: scale(0.98); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            * { animation: none !important; transition: none !important; }
-        }
-
-        /* --- Floating Sound Button Positioning & Style --- */
-        .ym-sound-container {
-            position: fixed !important;
-            bottom: 25px !important;
-            right: 25px !important;
-            top: auto !important;
-            left: auto !important;
-            z-index: 9999 !important;
-
-            background: rgba(255, 255, 255, 0.9) !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            color: var(--text) !important;
-            padding: 12px !important;
-            border-radius: 50px !important;
-            box-shadow: 0 8px 24px rgba(98, 54, 255, 0.08) !important;
-            backdrop-filter: blur(8px) !important;
-            transition: transform 0.2s ease, background 0.2s ease !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-
-        .ym-sound-container:hover {
-            background: rgba(238, 232, 248, 0.95) !important;
-            transform: scale(1.05) !important;
-        }
-
-        .ym-sound-container .ym-sound-toggle {
-            background: transparent !important;
-            border: none !important;
-            color: inherit !important;
-            padding: 0 !important;
-            cursor: pointer !important;
-        }
-
-        .ym-sound-container .ym-sound-slider {
-            position: static !important;
-            top: auto !important;
-            right: auto !important;
-            bottom: auto !important;
-            left: auto !important;
-        }
-
-        /* On very small screens, tuck it slightly tighter into the corner */
-        @media (max-width: 520px) {
-            .ym-sound-container {
-                bottom: 15px !important;
-                right: 15px !important;
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
 
-        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-2px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(4px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-6px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(6px, 0, 0);
+            }
+        }
+
+        /* Responsive behavior for very narrow screens (e.g. older iPhones) */
+        @media (max-width: 400px) {
+            .headline {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .headline-copy {
+                align-items: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
+
 <body>
-    <!-- YM SIDEBAR -->
-    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
-    <aside class="ym-sidebar" id="ymSidebar">
-      <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
-        <span class="ym-sidebar__logo">YodhaMind</span>
-      </div>
-      <nav class="ym-sidebar__nav">
-        <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
-        <div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
-      </nav>
-      <div class="ym-sidebar__footer">
-        © 2026 YodhaMind<br>
-        Made with 💛 for Indian students<br>
-        <a href="/pages/privacy.html">Privacy Policy</a>
-      </div>
-    </aside>
-
-    <!-- YM TOPBAR -->
-    <header class="ym-topbar" id="ymTopbar">
-      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
-      <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span>
-        YodhaMind
-      </a>
-      <div class="ym-topbar__right">
-        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
-        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
-        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
-      </div>
-    </header>
-
     <div class="page">
         <header class="topbar">
             <button id="resetBtn" class="btn" type="button">↺ Reset</button>
             <h2>Memory Matrix</h2>
-            <a href="/games" class="btn">✕ Exit</a>
+            <a href="../pages/games.html" class="btn">✕ Exit</a>
         </header>
 
         <main class="stage">
@@ -435,9 +447,9 @@
                 <div id="game-ui">
                     <div class="headline">
                         <div class="headline-copy">
-                            <p class="eyebrow">Focus. Recall. Repeat.</p>
+                            <p class="eyebrow">System Active</p>
                             <h1>Memory Matrix</h1>
-                            <p class="hint">Tap the tiles in the exact order.</p>
+                            <p class="hint">Replicate the sequence precisely.</p>
                         </div>
                         <div class="status-pill" id="status-pill" data-state="watch">
                             <span class="status-dot"></span>
@@ -446,18 +458,18 @@
                     </div>
 
                     <div class="meta">
-                        <div class="meta-card">Level<span id="level-display">1</span></div>
-                        <div class="meta-card">Best<span id="best-display">1</span></div>
+                        <div class="meta-card">Current Level<span id="level-display">1</span></div>
+                        <div class="meta-card">Highest Node<span id="best-display">1</span></div>
                     </div>
 
                     <div id="grid"></div>
                 </div>
 
                 <div id="result-screen" class="result">
-                    <h3>Pattern Broken</h3>
+                    <h3>Connection Lost</h3>
                     <div id="final-level">Level 1</div>
-                    <p class="subtle">Working memory capacity</p>
-                    <button id="tryAgainBtn" class="btn-primary" type="button">Try Again</button>
+                    <p class="subtle">Sequence broken. Rebooting required.</p>
+                    <button id="tryAgainBtn" class="btn-primary" type="button">Initialize Reboot</button>
                 </div>
             </section>
         </main>
@@ -481,8 +493,11 @@
         const finalLevelDisplay = document.getElementById('final-level');
         const resetBtn = document.getElementById('resetBtn');
         const tryAgainBtn = document.getElementById('tryAgainBtn');
+        const shellEl = document.querySelector('.shell');
+
         const bestKey = 'memoryMatrixBest';
         let bestLevel = Number(window.localStorage.getItem(bestKey)) || 1;
+
         function setStatus(label, state) {
             statusDisplay.innerText = label;
             statusPill.dataset.state = state;
@@ -495,7 +510,6 @@
             }
             bestDisplay.innerText = bestLevel;
         }
-
 
         function queueTimeout(callback, delay) {
             const id = window.setTimeout(() => {
@@ -608,6 +622,9 @@
             isShowing = false;
             resetTileVisuals();
             setTilesDisabled(true);
+
+            shellEl.classList.add('shake');
+
             gameUI.classList.add('hidden');
             resultScreen.classList.add('show');
             finalLevelDisplay.innerText = `Level ${level}`;
@@ -622,6 +639,8 @@
             playerStep = 0;
             isShowing = false;
             gameOver = false;
+
+            shellEl.classList.remove('shake');
             resetTileVisuals();
             gameUI.classList.remove('hidden');
             resultScreen.classList.remove('show');
@@ -638,37 +657,6 @@
     </script>
     <script src="../shared/game-sound-toggle.js"></script>
     <script src="../shared/crisis-support.js"></script>
-    <script src="../shared/supabase-auth.js"></script>
-    <script>
-      (function() {
-        var hamburger = document.getElementById('ymHamburger');
-        var sidebar = document.getElementById('ymSidebar');
-        var backdrop = document.getElementById('ymSidebarBackdrop');
-        var topbar = document.getElementById('ymTopbar');
-        function toggleSidebar() {
-          var isOpen = sidebar.classList.contains('open');
-          sidebar.classList.toggle('open');
-          backdrop.classList.toggle('open');
-          hamburger.classList.toggle('open');
-          document.body.style.overflow = isOpen ? '' : 'hidden';
-        }
-        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
-        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
-        if (topbar) {
-          window.addEventListener('scroll', function() {
-            topbar.classList.toggle('scrolled', window.scrollY > 10);
-          }, { passive: true });
-        }
-        var currentPath = window.location.pathname;
-        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
-          var href = link.getAttribute('href');
-          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
-            link.classList.add('active');
-          }
-        });
-      })();
-    </script>
 </body>
+
 </html>
-
-

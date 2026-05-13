@@ -1,79 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <script src="../shared/theme.js"></script>
-    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yodha Check-in</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aspirant Check-in | YodhaMind</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        /* =========================================
+           1. CSS Variables & Reset
+           ========================================= */
         :root {
-            --primary: #6366f1;
-            --success: #10b981;
-            --danger: #ef4444;
-            --color-surface-variant: #f0eafa;
+            /* Deep, professional focus-oriented palette */
+            --ym-bg-gradient: linear-gradient(135deg, #09090b 0%, #18181b 100%);
+            --ym-card-bg: rgba(39, 39, 42, 0.6);
+            --ym-card-border: rgba(255, 255, 255, 0.08);
+            --ym-text-main: #f4f4f5;
+            --ym-text-muted: #a1a1aa;
+            --ym-accent: #6366f1;
+            /* Professional Indigo */
+            --ym-success: #10b981;
+            --ym-danger: #f43f5e;
         }
 
-        * { box-sizing: border-box; user-select: none; touch-action: none; -webkit-tap-highlight-color: transparent; }
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
+        html,
         body {
-            margin: 0; padding: 0;
-            background: var(--color-bg);
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            /* Mobile viewport lock */
+            background: var(--ym-bg-gradient);
             font-family: 'Outfit', sans-serif;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; width: 100vw;
+            color: var(--ym-text-main);
             overflow: hidden;
-            transition: background 0.3s, color 0.3s;
+            /* No scrolling */
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- UI Layers --- */
-        .top-bar {
-            position: absolute; top: 60px; width: 100%;
+        /* Fix default link styling (solves the purple text issue) */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* =========================================
+           2. Top Navigation Bar (Fixed Version)
+           ========================================= */
+        .ym-tool-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 1000;
+        }
+
+        .ym-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .ym-logo-icon {
+            color: var(--ym-accent);
+        }
+
+        .ym-header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .ym-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--ym-text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ym-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .ym-nav-btn:active {
+            transform: translateY(1px);
+        }
+
+        .ym-btn-exit {
+            color: var(--ym-danger);
+            background: rgba(244, 63, 94, 0.05);
+            border-color: rgba(244, 63, 94, 0.2);
+        }
+
+        .ym-btn-exit:hover {
+            background: rgba(244, 63, 94, 0.15);
+            color: #fb7185;
+            border-color: rgba(244, 63, 94, 0.4);
+        }
+
+        /* =========================================
+           3. Game Layout & Elements
+           ========================================= */
+        .game-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             padding: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 10;
+            margin-top: 60px;
+            /* Space for the header */
         }
 
         .progress-pill {
-            background: var(--color-surface-variant);
-            padding: 5px 15px; border-radius: 20px;
-            font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary);
-        }
-
-        .close-btn {
-            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text-primary);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--ym-card-border);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--ym-text-muted);
+            text-transform: uppercase;
+            margin-bottom: 24px;
         }
 
         /* --- Card Stack --- */
         .stack-container {
             position: relative;
-            width: 90%; max-width: 360px;
-            height: 60vh; max-height: 500px;
-            display: flex; align-items: center; justify-content: center;
+            width: min(100%, 340px);
+            aspect-ratio: 3 / 4;
+            max-height: 55vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             perspective: 1000px;
+            margin-bottom: 30px;
         }
 
         .card {
             position: absolute;
-            width: 100%; height: 100%;
-            background: var(--color-surface);
+            width: 100%;
+            height: 100%;
+            background: var(--ym-card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--ym-card-border);
             border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 24px;
             text-align: center;
-            transition: transform 0.1s; /* Fast transition for drag */
             cursor: grab;
             will-change: transform, opacity;
             transform-origin: 50% 100%;
         }
 
-        .card h2 { font-size: 1.8rem; margin-bottom: 10px; color: var(--color-text-primary); line-height: 1.3; }
-        .card p { color: var(--color-text-secondary); font-size: 1rem; margin-top: 0; }
-        .card-icon { font-size: 4rem; margin-bottom: 20px; }
+        .card:active {
+            cursor: grabbing;
+        }
 
-        /* Hide content of cards behind the top card so text doesn't bleed through */
+        .card-icon {
+            font-size: clamp(3rem, 8vh, 4rem);
+            margin-bottom: 24px;
+            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.3));
+        }
+
+        .card h2 {
+            font-size: clamp(1.3rem, 4vw, 1.6rem);
+            margin: 0 0 12px;
+            font-weight: 600;
+            line-height: 1.35;
+            color: #ffffff;
+        }
+
+        .card p {
+            color: var(--ym-text-muted);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            margin: 0;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        /* Hide content of underlying cards */
         .card:not(:last-child) .card-icon,
         .card:not(:last-child) h2,
         .card:not(:last-child) p,
@@ -81,172 +231,276 @@
             visibility: hidden;
         }
 
-        /* Status stamps that appear on swipe */
+        /* Status stamps */
         .stamp {
-            position: absolute; top: 40px;
-            border: 4px solid; border-radius: 10px;
-            padding: 5px 10px;
-            font-size: 2rem; font-weight: 800; text-transform: uppercase;
-            opacity: 0; transform: scale(0.5);
-            transition: all 0.2s;
+            position: absolute;
+            top: 30px;
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.2s;
+            backdrop-filter: blur(4px);
         }
-        .stamp-nope { right: 40px; color: var(--danger); border-color: var(--danger); transform: rotate(15deg); }
-        .stamp-like { left: 40px; color: var(--success); border-color: var(--success); transform: rotate(-15deg); }
+
+        .stamp-nope {
+            right: 20px;
+            color: var(--ym-danger);
+            border-color: var(--ym-danger);
+            transform: rotate(15deg);
+            background: rgba(244, 63, 94, 0.1);
+        }
+
+        .stamp-like {
+            left: 20px;
+            color: var(--ym-success);
+            border-color: var(--ym-success);
+            transform: rotate(-15deg);
+            background: rgba(16, 185, 129, 0.1);
+        }
 
         /* --- Controls --- */
         .controls {
-            margin-top: 30px;
-            display: flex; gap: 30px;
+            display: flex;
+            gap: 24px;
             z-index: 10;
         }
 
         .action-btn {
-            width: 60px; height: 60px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            border: none;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-            font-size: 1.5rem; cursor: pointer;
-            transition: transform 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid rgba(0,0,0,0.06);
+            border: 1px solid var(--ym-card-border);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            font-size: 1.6rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .action-btn:active { transform: scale(0.9); }
-        .btn-no { color: var(--danger); }
-        .btn-yes { color: var(--success); }
+
+        .action-btn:active {
+            transform: scale(0.92);
+        }
+
+        .btn-no {
+            color: var(--ym-danger);
+        }
+
+        .btn-yes {
+            color: var(--ym-success);
+        }
+
+        .action-btn.btn-no:hover {
+            background: rgba(244, 63, 94, 0.15);
+            border-color: var(--ym-danger);
+        }
+
+        .action-btn.btn-yes:hover {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--ym-success);
+        }
 
         /* --- End Screen --- */
         .end-screen {
             display: none;
             text-align: center;
-            padding: 40px;
-            animation: fadeIn 0.5s;
+            padding: 35px 24px;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            width: min(100%, 360px);
+            background: var(--ym-card-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--ym-card-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
+
         .score-circle {
-            width: 120px; height: 120px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--ym-accent), #312e81);
             color: white;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
         }
-        .score-number { font-size: 2.5rem; font-weight: 800; }
-        .score-label { font-size: 0.8rem; opacity: 0.9; }
-        
+
+        .score-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 6px;
+        }
+
+        .end-screen h2 {
+            margin: 0 0 10px;
+            font-size: 1.6rem;
+            color: #fff;
+        }
+
         .restart-btn {
-            background: linear-gradient(135deg, #6236ff, #3b82f6); color: white;
-            padding: 15px 30px; border-radius: 30px;
-            border: none; font-weight: 600; font-size: 1rem;
-            cursor: pointer; margin-top: 20px;
-            box-shadow: 0 8px 24px rgba(98, 54, 255, 0.25);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: #fff;
+            color: #09090b;
+            padding: 14px 32px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 24px;
+            width: 100%;
+            transition: transform 0.2s;
         }
-        .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(98, 54, 255, 0.35); }
-        .restart-btn:active { transform: scale(0.97); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .restart-btn:active {
+            transform: scale(0.96);
+        }
 
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================
+           4. Mobile Responsive Tweaks
+           ========================================= */
+        @media (max-width: 480px) {
+            .ym-tool-header {
+                padding: 10px 16px;
+            }
+
+            .ym-nav-btn {
+                padding: 8px 12px;
+                font-size: 0;
+                gap: 0;
+            }
+
+            .ym-nav-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .progress-pill {
+                margin-bottom: 16px;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
+
 <body>
 
-    <!-- ═══════════ YM SIDEBAR ═══════════ -->
-    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
-    <aside class="ym-sidebar" id="ymSidebar">
-      <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
-        <span class="ym-sidebar__logo">YodhaMind</span>
-      </div>
-      <nav class="ym-sidebar__nav">
-        <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>Journal</a>
-        <div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg></span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Community</a>
-<div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>Vandrevala: 1860-266-2345</a>
-      </nav>
-      <div class="ym-sidebar__footer">
-        © 2026 YodhaMind<br>
-        Made with 💛 for Indian students<br>
-        <a href="/pages/privacy.html">Privacy Policy</a>
-      </div>
-    </aside>
+    <!-- ═══════════ NEW HEADER ═══════════ -->
+    <header class="ym-tool-header">
+        <a href="/" class="ym-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="ym-logo-icon">
+                <path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5" />
+                <path d="M12 2v20" />
+                <path d="M12 12h5" />
+                <path d="M12 8h4" />
+                <path d="M12 16h3" />
+                <path d="M12 12h-5" />
+                <path d="M12 8h-4" />
+                <path d="M12 16h-3" />
+            </svg>
+            YodhaMind
+        </a>
 
-    <!-- ═══════════ YM TOPBAR ═══════════ -->
-    <header class="ym-topbar" id="ymTopbar">
-      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
-      <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
-        YodhaMind
-      </a>
-      <div class="ym-topbar__right">
-        <button class="ym-theme-toggle" onclick="window.ymToggleTheme()" id="ymThemeToggleBtn" aria-label="Toggle dark mode">&#x1F319;</button>
-        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
-        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
-        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
-      </div>
+        <div class="ym-header-actions">
+            <!-- Home Button -->
+            <a href="/" class="ym-nav-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Home
+            </a>
+            <!-- Exit Game Button -->
+            <button onclick="exitGame()" class="ym-nav-btn ym-btn-exit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Exit
+            </button>
+        </div>
     </header>
 
+    <!-- ═══════════ GAME UI ═══════════ -->
+    <main class="game-wrapper">
 
-    <div class="top-bar">
-        <div class="progress-pill" id="progress">1 / 10</div>
-        <button class="close-btn" onclick="exitGame()">&times;</button>
-    </div>
+        <div class="progress-pill" id="progress">Check-in: 1 / 8</div>
 
-    <div class="stack-container" id="stack">
+        <div class="stack-container" id="stack">
+            <!-- Cards are injected here via Javascript -->
         </div>
 
-    <div class="controls" id="controls">
-        <button class="action-btn btn-no" onclick="triggerSwipe('left')">&times;</button>
-        <button class="action-btn btn-yes" onclick="triggerSwipe('right')">&#10003;</button>
-    </div>
-
-    <div class="end-screen" id="endScreen">
-        <div class="score-circle">
-            <span class="score-number" id="finalScore">0</span>
-            <span class="score-label">Positive</span>
+        <div class="controls" id="controls">
+            <button class="action-btn btn-no" onclick="triggerSwipe('left')">✕</button>
+            <button class="action-btn btn-yes" onclick="triggerSwipe('right')">✓</button>
         </div>
-        <h2 id="finalTitle">Well Done!</h2>
-        <p id="finalMsg" style="color:#6b7280; margin-bottom: 20px;">You've completed your daily check-in.</p>
-        <button class="restart-btn" onclick="init()">Check Again</button>
-    </div>
 
+        <div class="end-screen" id="endScreen">
+            <div class="score-circle">
+                <span class="score-number" id="finalScore">0</span>
+                <span class="score-label">Resilience</span>
+            </div>
+            <h2 id="finalTitle">Analysis Complete</h2>
+            <p id="finalMsg"
+                style="color: var(--ym-text-muted); margin-bottom: 10px; line-height: 1.5; font-size: 0.95rem;">
+                Reviewing your current mental bandwidth...</p>
+            <button class="restart-btn" onclick="init()">Recalibrate Mindset</button>
+        </div>
+    </main>
+
+    <!-- ═══════════ GAME LOGIC ═══════════ -->
     <script>
-        /**
-         * Yodha Cards - Mobile Optimized
-         * Features: Touch Physics, Wellness Questions, Dynamic Feedback
-         */
-        
         const stack = document.getElementById('stack');
         const progressEl = document.getElementById('progress');
         const controls = document.getElementById('controls');
         const endScreen = document.getElementById('endScreen');
 
-        // Relevant Wellness Questions
+        // Note: `reverse: true` means answering "No" is the healthy/correct answer.
         const questions = [
-            { id: 1, text: "Did you get enough sleep last night?", sub: "7-8 hours is ideal.", icon: "&#x1F634;" },
-            { id: 2, text: "Have you drank water recently?", sub: "Hydration fuels the brain.", icon: "&#x1F4A7;" },
-            { id: 3, text: "Are you feeling stressed right now?", sub: "Be honest with yourself.", icon: "&#x26A1;", reverse: true }, // 'No' is good
-            { id: 4, text: "Did you move your body today?", sub: "Even a walk counts.", icon: "&#x1F3C3;" },
-            { id: 5, text: "Have you connected with a friend?", sub: "Socializing boosts mood.", icon: "&#x1F465;" },
-            { id: 6, text: "Are you holding onto tension?", sub: "Check your shoulders and jaw.", icon: "&#x1F62C;", reverse: true },
-            { id: 7, text: "Did you eat something healthy?", sub: "Fuel your vessel.", icon: "&#x1F34E;" },
-            { id: 8, text: "Did you learn something new?", sub: "Growth mindset.", icon: "&#x1F9E0;" },
-            { id: 9, text: "Are you being kind to yourself?", sub: "No negative self-talk.", icon: "&#x2764;&#xFE0F;" },
-            { id: 10, text: "Are you ready to own the day?", sub: "Let's go!", icon: "&#x1F680;" }
+            { id: 1, text: "Did you sleep for at least 6 hours last night?", sub: "Sleep is when your brain actually stores the formulas and concepts you studied.", icon: "🛌", reverse: false },
+            { id: 2, text: "Are you obsessing over your last mock test score?", sub: "Mocks are diagnostic tools, not crystal balls. Learn from the mistakes and move on.", icon: "📊", reverse: true },
+            { id: 3, text: "Have you stepped away from your desk in the last 3 hours?", sub: "Continuous sitting causes brain fog. A 10-minute walk resets your focus.", icon: "🚶🏽‍♂️", reverse: false },
+            { id: 4, text: "Are you comparing your prep level with your peers or toppers?", sub: "Every aspirant has a different timeline and trajectory. Focus strictly on your own paper.", icon: "⚖️", reverse: true },
+            { id: 5, text: "Are you feeling crushed by syllabus backlogs right now?", sub: "You can't finish it all in one day. Focus only on today's micro-target.", icon: "📚", reverse: true },
+            { id: 6, text: "Have you relied only on caffeine or chai to stay awake today?", sub: "You need real hydration and food to maintain sustained, high-level cognitive function.", icon: "☕", reverse: true },
+            { id: 7, text: "Are your neck and shoulders carrying heavy physical tension?", sub: "Drop your shoulders. Do a quick 30-second neck stretch before your next session.", icon: "💆‍♂️", reverse: true },
+            { id: 8, text: "Did you forgive yourself for a less productive study day?", sub: "Burnout is real. A 4-hour day is better than a 0-hour day. Be kind to yourself.", icon: "🛡️", reverse: false }
         ];
 
         let activeIndex = 0;
@@ -259,8 +513,8 @@
             stack.style.display = 'flex';
             controls.style.display = 'flex';
             endScreen.style.display = 'none';
-            
-            // Load cards in reverse order so first is on top
+
+            // Load cards in reverse order so the first card is physically on top of the DOM stack
             for (let i = questions.length - 1; i >= 0; i--) {
                 createCard(questions[i], i);
             }
@@ -270,22 +524,21 @@
         function createCard(q, index) {
             const el = document.createElement('div');
             el.className = 'card';
-            el.style.zIndex = 100 - index; // Stack order
-            // Scale effect for depth
+            el.style.zIndex = 100 - index;
+
             if (index > 0) {
-                el.style.transform = `scale(${1 - index * 0.05}) translateY(${index * 10}px)`;
-                el.style.opacity = 1 - index * 0.2;
+                el.style.transform = `scale(${1 - index * 0.05}) translateY(${index * 12}px)`;
+                el.style.opacity = 1 - index * 0.15;
             }
 
             el.innerHTML = `
-                <div class="stamp stamp-nope">NOPE</div>
+                <div class="stamp stamp-nope">NO</div>
                 <div class="stamp stamp-like">YES</div>
                 <div class="card-icon">${q.icon}</div>
                 <h2>${q.text}</h2>
                 <p>${q.sub}</p>
             `;
-            
-            // Touch Physics
+
             initCardEvents(el, q);
             stack.appendChild(el);
         }
@@ -296,9 +549,8 @@
             let isDragging = false;
 
             const onStart = (e) => {
-                if(activeIndex >= questions.length) return;
-                // Only allow dragging top card
-                if(card !== stack.lastElementChild) return;
+                if (activeIndex >= questions.length) return;
+                if (card !== stack.lastElementChild) return; // Only allow dragging the top card
 
                 isDragging = true;
                 startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
@@ -307,26 +559,24 @@
 
             const onMove = (e) => {
                 if (!isDragging) return;
-                e.preventDefault(); // Prevent scroll
-                
+                e.preventDefault();
+
                 const x = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
                 currentX = x - startX;
-                const rotate = currentX * 0.1; // Rotate while dragging
-                
+                const rotate = currentX * 0.08;
+
                 card.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
 
-                // Opacity of Stamps
                 const nope = card.querySelector('.stamp-nope');
                 const like = card.querySelector('.stamp-like');
-                
+
+                // Show stamps based on direction
                 if (currentX > 0) {
-                    like.style.opacity = Math.min(currentX / 100, 1);
+                    like.style.opacity = Math.min(currentX / 80, 1);
                     nope.style.opacity = 0;
-                    document.body.style.background = `rgba(16, 185, 129, ${Math.min(currentX/500, 0.2)})`; // Green tint
                 } else {
-                    nope.style.opacity = Math.min(Math.abs(currentX) / 100, 1);
+                    nope.style.opacity = Math.min(Math.abs(currentX) / 80, 1);
                     like.style.opacity = 0;
-                    document.body.style.background = `rgba(239, 68, 68, ${Math.min(Math.abs(currentX)/500, 0.2)})`; // Red tint
                 }
             };
 
@@ -334,16 +584,15 @@
                 if (!isDragging) return;
                 isDragging = false;
                 card.style.transition = 'transform 0.3s ease-out';
-                document.body.style.background = ''; // Reset to CSS var
 
-                const threshold = 100; // Pixel distance to trigger swipe
+                const threshold = window.innerWidth * 0.25;
 
                 if (currentX > threshold) {
                     dismissCard(card, 'right', data);
                 } else if (currentX < -threshold) {
                     dismissCard(card, 'left', data);
                 } else {
-                    // Reset position
+                    // Snap back to center
                     card.style.transform = `translateX(0) rotate(0)`;
                     card.querySelector('.stamp-nope').style.opacity = 0;
                     card.querySelector('.stamp-like').style.opacity = 0;
@@ -351,140 +600,114 @@
             };
 
             card.addEventListener('mousedown', onStart);
-            card.addEventListener('touchstart', onStart);
-            
+            card.addEventListener('touchstart', onStart, { passive: false });
+
             window.addEventListener('mousemove', onMove);
-            window.addEventListener('touchmove', onMove, {passive: false});
-            
+            window.addEventListener('touchmove', onMove, { passive: false });
+
             window.addEventListener('mouseup', onEnd);
             window.addEventListener('touchend', onEnd);
         }
 
-        // Button Trigger
+        // Exposed to global scope for the HTML buttons
         window.triggerSwipe = (dir) => {
             const card = stack.lastElementChild;
-            if(!card) return;
+            if (!card) return;
             const data = questions[activeIndex];
             dismissCard(card, dir, data);
         };
 
         function dismissCard(card, dir, data) {
-            const x = dir === 'right' ? window.innerWidth : -window.innerWidth;
+            const x = dir === 'right' ? window.innerWidth * 1.5 : -window.innerWidth * 1.5;
             const rotate = dir === 'right' ? 30 : -30;
-            
+
+            card.style.transition = 'transform 0.4s ease-out';
             card.style.transform = `translateX(${x}px) rotate(${rotate}deg)`;
-            
-            // Logic
+
+            // Scoring logic
             const isYes = dir === 'right';
-            // If question is regular: Yes = +1. If reverse (e.g. Stress): No = +1
             if (data.reverse) {
-                if (!isYes) positiveCount++;
+                if (!isYes) positiveCount++; // Answering "No" is good for reverse questions
             } else {
-                if (isYes) positiveCount++;
+                if (isYes) positiveCount++;  // Answering "Yes" is good for standard questions
             }
 
             activeIndex++;
-            
+
+            // Remove card from DOM after animation
             setTimeout(() => {
                 card.remove();
                 updateStackVisuals();
                 updateProgress();
-                
+
                 if (activeIndex >= questions.length) {
                     showEndScreen();
                 }
-            }, 300);
+            }, 250);
         }
 
         function updateStackVisuals() {
-            // Move remaining cards up
             const remaining = stack.querySelectorAll('.card');
             remaining.forEach((c, i) => {
                 const depth = remaining.length - 1 - i;
-                c.style.transition = 'transform 0.3s';
-                c.style.transform = `scale(${1 - depth * 0.05}) translateY(${depth * 10}px)`;
-                c.style.opacity = 1 - depth * 0.2;
+                c.style.transition = 'transform 0.3s ease-out';
+                c.style.transform = `scale(${1 - depth * 0.05}) translateY(${depth * 12}px)`;
+                c.style.opacity = 1 - depth * 0.15;
             });
         }
 
         function updateProgress() {
-            progressEl.innerText = `${Math.min(activeIndex + 1, questions.length)} / ${questions.length}`;
+            progressEl.innerText = `Check-in: ${Math.min(activeIndex + 1, questions.length)} / ${questions.length}`;
         }
 
         function showEndScreen() {
             stack.style.display = 'none';
             controls.style.display = 'none';
             endScreen.style.display = 'block';
-            
+
             const scoreEl = document.getElementById('finalScore');
             const titleEl = document.getElementById('finalTitle');
             const msgEl = document.getElementById('finalMsg');
-            
-            // Animate Score
-            let s = 0;
-            const timer = setInterval(() => {
-                s++;
-                scoreEl.innerText = s;
-                if(s >= positiveCount) clearInterval(timer);
-            }, 50);
 
-            // Dynamic Feedback
-            if(positiveCount >= 8) {
-                titleEl.innerText = "Yodha Master!";
-                msgEl.innerText = "You are in great balance today. Keep this energy flowing.";
-            } else if (positiveCount >= 5) {
-                titleEl.innerText = "Good Balance";
-                msgEl.innerText = "You're doing okay, but there's room to treat yourself better.";
+            const percentage = Math.round((positiveCount / questions.length) * 100);
+
+            // Animate Score Counter
+            let s = 0;
+            const target = percentage;
+            const timer = setInterval(() => {
+                s += Math.ceil((target - s) / 4) + 1;
+                if (s >= target) {
+                    s = target;
+                    clearInterval(timer);
+                }
+                scoreEl.innerText = s + '%';
+            }, 30);
+
+            // Competitive Prep Specific Feedback
+            if (percentage >= 80) {
+                titleEl.innerText = "Zone of Focus";
+                msgEl.innerText = "You are managing the immense pressure incredibly well. Trust your process and keep your momentum steady.";
+            } else if (percentage >= 50) {
+                titleEl.innerText = "Grinding, but Strained";
+                msgEl.innerText = "You are putting in the work, but don't let the prep consume your physical and mental health. Adjust your pace to avoid burnout.";
             } else {
-                titleEl.innerText = "Take a Breath";
-                msgEl.innerText = "It seems like a tough day. Try to rest and drink some water.";
+                titleEl.innerText = "High Burnout Risk";
+                msgEl.innerText = "Aspirant, you are running on empty. You cannot crack a competitive exam with a broken machine. Close the books and take a genuine break today.";
             }
         }
 
-        function exitGame() {
+        window.exitGame = function () {
+            // Either use history.back() or redirect to a specific page
             window.location.href = '/games';
         }
 
-        // Start
-        init();
+        // Initialize the app on load
+        window.addEventListener('DOMContentLoaded', init);
 
     </script>
-    <script src="../shared/supabase-auth.js"></script>
-    <script>
-      /* ── Sidebar toggle ── */
-      (function() {
-        var hamburger = document.getElementById('ymHamburger');
-        var sidebar = document.getElementById('ymSidebar');
-        var backdrop = document.getElementById('ymSidebarBackdrop');
-        var topbar = document.getElementById('ymTopbar');
 
-        function toggleSidebar() {
-          var isOpen = sidebar.classList.contains('open');
-          sidebar.classList.toggle('open');
-          backdrop.classList.toggle('open');
-          hamburger.classList.toggle('open');
-          document.body.style.overflow = isOpen ? '' : 'hidden';
-        }
-
-        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
-        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
-
-        /* ── Scroll shadow ── */
-        if (topbar) {
-          window.addEventListener('scroll', function() {
-            topbar.classList.toggle('scrolled', window.scrollY > 10);
-          }, { passive: true });
-        }
-
-        /* ── Highlight active sidebar link ── */
-        var currentPath = window.location.pathname;
-        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
-          var href = link.getAttribute('href');
-          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
-            link.classList.add('active');
-          }
-        });
-      })();
-    </script>
+    <!-- External integrations (Leave these if you need your backend to work) -->
+    <!-- <script src="../shared/supabase-auth.js"></script> -->
 </body>
+
 </html>

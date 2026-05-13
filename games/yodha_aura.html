@@ -1,467 +1,855 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <script src="../shared/theme.js"></script>
-    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Yodha Aura - Energy Flow</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
-        /* --- YodhaMind Design --- */
+        /* ═══════════ YODHAMIND TOKENS & THEME ═══════════ */
         :root {
-            --bg: var(--color-bg);
-            --text: var(--color-text-primary);
-            --primary: var(--color-accent);
-        }
-        body {
-            margin: 0; padding: 0; background: var(--bg); color: var(--text);
-            font-family: 'Poppins', sans-serif; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh;
-            user-select: none; /* Prevents text selection on touch */
-            -webkit-user-select: none;
-            transition: background 0.3s, color 0.3s;
-        }
-        
-        /* Canvas */
-        canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; cursor: crosshair;
-            touch-action: none; /* Prevents scrolling on mobile */
-            will-change: transform;
+            --ym-primary: #667eea;
+            --ym-secondary: #764ba2;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+            /* Dark Theme Base */
+            --bg-deep: #0f172a;
+            --bg-glow: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+            --trail-bg: rgba(15, 23, 42, 0.25);
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-glow: #a78bfa;
+            --particle-base: #8b5cf6;
+            --particle-repel: #38bdf8;
+            --particle-attract: #fcd34d;
+            --danger-color: #e53e3e;
         }
 
-        /* UI Layer */
-        .ui-layer {
-            position: absolute; bottom: 40px; z-index: 10;
-            display: flex; gap: 10px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 8px 12px; border-radius: 50px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            max-width: 90%;
-            flex-wrap: wrap;
+        :root[data-theme="light"] {
+            --bg-deep: #f4f7fe;
+            --bg-glow: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.15) 0%, rgba(244, 247, 254, 0) 70%);
+            --trail-bg: rgba(244, 247, 254, 0.35);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --glass-shadow: 0 8px 32px rgba(148, 163, 184, 0.15);
+
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent-glow: #667eea;
+            --particle-base: #667eea;
+            --particle-repel: #0ea5e9;
+            --particle-attract: #eab308;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: var(--bg-glow);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            overscroll-behavior-y: none;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* ═══════════ NAVIGATION UI ═══════════ */
+        nav {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 12px 25px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            box-shadow: var(--glass-shadow);
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        .nav-center {
+            display: flex;
             justify-content: center;
         }
 
-        .mode-btn {
-            background: transparent; border: 1px solid rgba(0,0,0,0.1);
-            color: var(--text);
-            padding: 10px 20px; border-radius: 20px; cursor: pointer;
-            font-family: inherit; font-weight: 600; font-size: 0.85rem;
-            transition: all 0.3s;
-            white-space: nowrap;
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
         }
-        .mode-btn:hover { background: rgba(98, 54, 255, 0.06); color: var(--text); }
-        .mode-btn.active {
-            background: linear-gradient(135deg, #6236ff, #3b82f6);
-            color: white; border-color: transparent;
-            box-shadow: 0 0 15px rgba(98, 54, 255, 0.4);
-            transform: scale(1.05);
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-nav {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: var(--text-main);
+            padding: 8px 16px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .btn-nav:hover {
+            background: rgba(148, 163, 184, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-exit {
+            color: var(--danger-color);
+            border-color: rgba(229, 62, 62, 0.3);
+        }
+
+        .btn-exit:hover {
+            background: rgba(229, 62, 62, 0.1);
+            border-color: rgba(229, 62, 62, 0.5);
+        }
+
+        /* ═══════════ APP UI ═══════════ */
+        .app-container {
+            position: fixed;
+            top: 60px;
+            /* Below nav */
+            left: 0;
+            width: 100vw;
+            height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            cursor: crosshair;
         }
 
         .instruction {
-            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
-            pointer-events: none; text-align: center; opacity: 0.7;
-            animation: fadeOut 3s forwards 2.5s; z-index: 5;
-            width: 80%;
-            font-size: 0.9rem;
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 20;
+            animation: fadeOut 3s forwards 2.5s;
         }
-        @keyframes fadeOut { to { opacity: 0; } }
 
-        /* Minimalist Ghost Buttons */
-        .ghost-btn {
-            position: absolute; top: 80px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            color: var(--text);
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
+        .instruction h2 {
+            font-weight: 400;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .instruction p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        /* Apple-Inspired Toolbar */
+        .toolbar {
+            position: absolute;
+            bottom: 30px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            z-index: 50;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .tool-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
             cursor: pointer;
-            z-index: 100;
-            transition: all 0.3s;
-            backdrop-filter: blur(4px);
-            display: flex; align-items: center; gap: 6px;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            padding: 5px;
+            min-width: 60px;
         }
-        .ghost-btn:hover {
-            background: rgba(238, 232, 248, 0.95);
-            border-color: rgba(98, 54, 255, 0.3);
-            color: var(--text);
+
+        .tool-btn:hover {
+            color: var(--text-main);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(98, 54, 255, 0.1);
         }
 
-        /* Mobile specific adjustments */
-        @media (max-width: 600px) {
-            .mode-btn { padding: 8px 16px; font-size: 0.8rem; }
-            .ui-layer { bottom: 30px; padding: 6px 10px; }
-            .instruction { font-size: 0.8rem; }
+        .tool-btn.active {
+            color: var(--accent-glow);
         }
 
-/* Catch-all to find the injected sound button, ignoring the buttons we already know */
-body > button:not(.ghost-btn):not(.mode-btn),
-body > div[onclick*="sound"], 
-body > div[onclick*="audio"],
-body > div[id*="sound"] {
-    position: absolute !important;
-    top: 80px !important;       /* Places it right below the Home button */
-    left: 25px !important; 
-    transform: none !important;
-    z-index: 9999 !important;
-    bottom: auto !important;
-    right: auto !important;
-    
-    /* Styling to match your theme */
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 30px !important;
-    padding: 8px 16px !important;
-    color: white !important;
-    backdrop-filter: blur(4px) !important;
-}
+        .icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
+        .icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .tool-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Sliders */
+        .sliders-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-left: 20px;
+            border-left: 1px solid var(--glass-border);
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input[type="range"] {
+            width: 100px;
+            height: 4px;
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 4px;
+            appearance: none;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* Start Overlay */
+        .start-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-deep);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            text-align: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .start-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .start-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+            max-width: 320px;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 14px 45px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Mobile Breakpoints */
+        @media (max-width: 700px) {
+            nav {
+                padding: 12px 15px;
+            }
+
+            .btn-nav span {
+                display: none;
+            }
+
+            .btn-nav {
+                padding: 8px;
+                border-radius: 50%;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            .logo svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .toolbar {
+                bottom: 20px;
+                padding: 10px 15px;
+                gap: 10px;
+                border-radius: 20px;
+                flex-wrap: wrap;
+                width: 92%;
+                max-width: 380px;
+            }
+
+            .tool-btn {
+                min-width: 50px;
+            }
+
+            .sliders-container {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--glass-border);
+                padding: 12px 0 0 0;
+                align-items: center;
+                flex-direction: row;
+                justify-content: space-around;
+            }
+
+            input[type="range"] {
+                width: 110px;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
+
 <body>
 
-    <!-- ═══════════ YM SIDEBAR ═══════════ -->
-    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
-    <aside class="ym-sidebar" id="ymSidebar">
-      <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
-        <span class="ym-sidebar__logo">YodhaMind</span>
-      </div>
-      <nav class="ym-sidebar__nav">
-        <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
-        <a href="/assessment" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☑</span>Self Assessment</a>
-        <a href="/journal" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">✎</span>Journal</a>
-        <div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Wellness</div>
-        <a href="/tools/spirit-breathing-tool.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◎</span>Breathing</a>
-        <a href="/tools/Focusrealm.html" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◷</span>Focus Timer</a>
-        <a href="/community" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">◻</span>Community</a>
-<div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
-      </nav>
-      <div class="ym-sidebar__footer">
-        © 2026 YodhaMind<br>
-        Made with 💛 for Indian students<br>
-        <a href="/pages/privacy.html">Privacy Policy</a>
-      </div>
-    </aside>
+    <!-- ═══════════ NAVIGATION ═══════════ -->
+    <nav>
+        <div class="nav-left">
+            <a href="/" class="btn-nav" title="Back to Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home</span>
+            </a>
+            <a href="/games" class="btn-nav btn-exit" title="Exit to Mind Gym">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Exit</span>
+            </a>
+        </div>
 
-    <!-- ═══════════ YM TOPBAR ═══════════ -->
-    <header class="ym-topbar" id="ymTopbar">
-      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
-      <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5"/><path d="M12 2v20"/><path d="M12 12h5"/><path d="M12 8h4"/><path d="M12 16h3"/><path d="M12 12h-5"/><path d="M12 8h-4"/><path d="M12 16h-3"/></svg></span>
-        YodhaMind
-      </a>
-      <div class="ym-topbar__right">
-        <button class="ym-theme-toggle" onclick="window.ymToggleTheme()" id="ymThemeToggleBtn" aria-label="Toggle dark mode">🌙</button>
-        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
-        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
-        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
-      </div>
-    </header>
+        <div class="nav-center">
+            <a href="/" class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#667eea" />
+                            <stop offset="100%" stop-color="#764ba2" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+                YodhaMind
+            </a>
+        </div>
 
+        <div class="nav-right">
+            <button class="btn-nav" id="ymThemeToggleBtn" type="button" title="Toggle Theme">
+                <span id="zenIcon">☀️</span>
+                <span id="zenText">Light Mode</span>
+            </button>
+        </div>
+    </nav>
 
-    <div id="loading-screen" style="position: absolute; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:50; display:flex; align-items:center; justify-content:center; flex-direction:column;">
-        <div style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <p style="margin-top: 20px;">Loading Aura...</p>
-        <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+    <!-- ═══════════ APP ═══════════ -->
+    <div class="app-container">
+        <canvas id="auraCanvas"></canvas>
+
+        <div class="instruction">
+            <h2>Shape the Energy</h2>
+            <p>Guide the aura with your touch</p>
+        </div>
+
+        <div class="toolbar">
+            <button class="tool-btn active" id="btnRepel" onclick="setMode('repel')">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 3l-6 6"></path>
+                        <path d="M21 3v6"></path>
+                        <path d="M21 3h-6"></path>
+                        <path d="M3 21l6-6"></path>
+                        <path d="M3 21v-6"></path>
+                        <path d="M3 21h6"></path>
+                        <path d="M15 15l6 6"></path>
+                        <path d="M21 21v-6"></path>
+                        <path d="M21 21h-6"></path>
+                        <path d="M9 9L3 3"></path>
+                        <path d="M3 3v6"></path>
+                        <path d="M3 3h6"></path>
+                    </svg>
+                </div>
+                <span class="tool-label">Repel</span>
+            </button>
+
+            <button class="tool-btn" id="btnAttract" onclick="setMode('attract')">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15 9l6-6"></path>
+                        <path d="M15 9v-6"></path>
+                        <path d="M15 9h6"></path>
+                        <path d="M9 15l-6 6"></path>
+                        <path d="M9 15v6"></path>
+                        <path d="M9 15H3"></path>
+                        <path d="M21 21l-6-6"></path>
+                        <path d="M15 15v6"></path>
+                        <path d="M15 15h6"></path>
+                        <path d="M3 3l6 6"></path>
+                        <path d="M9 9V3"></path>
+                        <path d="M9 9H3"></path>
+                    </svg>
+                </div>
+                <span class="tool-label">Attract</span>
+            </button>
+
+            <button class="tool-btn" id="btnCalm" onclick="setMode('calm')">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                </div>
+                <span class="tool-label">Calm</span>
+            </button>
+
+            <div class="sliders-container">
+                <div class="slider-group">
+                    <div class="icon" style="width: 14px; height: 14px; color: var(--text-muted);" title="Speed">
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <input type="range" id="speedSlider" min="0.2" max="1.5" step="0.1" value="0.5">
+                </div>
+                <div class="slider-group">
+                    <div class="icon" style="width: 14px; height: 14px; color: var(--text-muted);" title="Volume">
+                        <svg viewBox="0 0 24 24">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                        </svg>
+                    </div>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+                </div>
+            </div>
+        </div>
+
+        <div class="start-overlay" id="startOverlay">
+            <h2 class="start-title">Yodha Aura</h2>
+            <p class="start-subtitle">Guide the flowing energy to find your center and relieve stress.</p>
+            <button class="start-btn" onclick="startEngine()">Begin Journey</button>
+        </div>
     </div>
 
-    <canvas id="c"></canvas>
-
-    <button class="ghost-btn" onclick="window.location.href='/dashboard'" style="left: 25px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ym-nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home
-    </button>
-    <button class="ghost-btn" onclick="window.location.href='/games'" style="right: 25px;">
-        ✕ Exit
-    </button>
-
-    <div class="instruction">
-        <h2>Interact with the Energy</h2>
-        <p>Touch or move cursor to influence the aura</p>
-    </div>
-
-    <div class="ui-layer">
-        <button class="mode-btn active" onclick="setMode('repel', this)">Repel</button>
-        <button class="mode-btn" onclick="setMode('attract', this)">Attract</button>
-        <button class="mode-btn" onclick="setMode('calm', this)">Calm</button>
-        <div style="border-left: 1px solid rgba(255,255,255,0.2); margin: 0 5px; height: 20px; align-self: center;"></div>
-        <button class="mode-btn" onclick="adjustSpeed(-0.2)">- Speed</button>
-        <button class="mode-btn" onclick="adjustSpeed(0.2)">+ Speed</button>
-    </div>
-
+    <!-- ═══════════ JAVASCRIPT LOGIC ═══════════ -->
     <script>
-        /**
-         * Yodha Aura - Particle Physics Engine
-         * Optimized for Mobile & Retina Displays
-         */
-        const canvas = document.getElementById('c');
+        // --- 1. UI & Theme Logic ---
+        const themeBtn = document.getElementById('ymThemeToggleBtn');
+
+        function updateThemeUI(theme) {
+            const zenIcon = document.getElementById('zenIcon');
+            const zenText = document.getElementById('zenText');
+            if (theme === 'dark') {
+                zenIcon.innerText = '☀️';
+                if (zenText) zenText.innerText = 'Light Mode';
+            } else {
+                zenIcon.innerText = '🌙';
+                if (zenText) zenText.innerText = 'Zen Mode';
+            }
+        }
+        updateThemeUI('dark'); // Default
+
+        themeBtn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            updateThemeUI(next);
+        });
+
+        // --- 2. Physics & Graphics Engine ---
+        const canvas = document.getElementById('auraCanvas');
         const ctx = canvas.getContext('2d');
-        
+
+        const IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const PIXEL_RATIO = Math.min(window.devicePixelRatio || 1, 2);
+        const PARTICLE_COUNT = IS_MOBILE ? 200 : 450;
+        const CONNECT_DIST = 70;
+        const MOUSE_RADIUS = IS_MOBILE ? 120 : 200;
+
         let width, height;
         let particles = [];
         let mouse = { x: -1000, y: -1000, active: false };
-        let mode = 'repel'; // repel, attract, calm
-        let simulationSpeed = parseFloat(localStorage.getItem('yodha_aura_speed')) || 0.4;
-        
-        // Audio Drone
-        const audioCtx = window.AudioContext ? new AudioContext() : null;
-        let droneOsc = null;
-        let droneGain = null;
+        let mode = 'repel'; // 'repel', 'attract', 'calm'
+        let simulationSpeed = 0.5;
+        let isRunning = false;
+        let animationId;
+
+        // Audio System
+        let audioCtx, masterGain, droneOsc, filterNode, lfo;
 
         function initAudio() {
-            if (!audioCtx || droneOsc) return;
-            droneOsc = audioCtx.createOscillator();
-            droneGain = audioCtx.createGain();
-            droneOsc.type = 'sine';
-            droneOsc.frequency.value = 100;
-            droneGain.gain.value = 0;
-            droneOsc.connect(droneGain);
-            droneGain.connect(audioCtx.destination);
-            droneOsc.start();
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = parseFloat(document.getElementById('volumeSlider').value);
+                masterGain.connect(audioCtx.destination);
+
+                // Deep resonant filter
+                filterNode = audioCtx.createBiquadFilter();
+                filterNode.type = 'lowpass';
+                filterNode.frequency.value = 200;
+                filterNode.Q.value = 5;
+                filterNode.connect(masterGain);
+
+                // Base Drone (Binaural feel)
+                droneOsc = audioCtx.createOscillator();
+                droneOsc.type = 'triangle';
+                droneOsc.frequency.value = 85;
+
+                // LFO for slow volume swelling (breathing effect)
+                lfo = audioCtx.createOscillator();
+                lfo.type = 'sine';
+                lfo.frequency.value = 0.1; // 10 second cycle
+                const lfoGain = audioCtx.createGain();
+                lfoGain.gain.value = 0.3;
+
+                lfo.connect(lfoGain);
+                droneOsc.connect(lfoGain);
+                lfoGain.connect(filterNode);
+
+                droneOsc.start();
+                lfo.start();
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
         }
-        
-        // Configuration
-        const IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const PIXEL_RATIO = Math.min(window.devicePixelRatio || 1, 2);
-        let animationId;
-        
-        // Optimisation: Reduce particles on mobile, standard on desktop
-        const PARTICLE_COUNT = IS_MOBILE ? 350 : 800;
-        const CONNECT_DIST = 60;
-        const MOUSE_RADIUS = IS_MOBILE ? 120 : 180;
 
         class Particle {
-            constructor() {
-                this.init();
-            }
+            constructor() { this.init(); }
 
             init() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = (Math.random() - 0.5) * 2;
-                this.size = (Math.random() * 2 + 1) * (IS_MOBILE ? 0.8 : 1); // Slightly smaller on mobile
-                this.baseColor = `hsl(${Math.random()*60 + 200}, 70%, 60%)`; // Blue/Purple range
-                this.color = this.baseColor;
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = (Math.random() - 0.5) * 1.5;
+                this.size = (Math.random() * 2 + 1.5) * (IS_MOBILE ? 0.8 : 1);
+
+                // Colors will be fetched dynamically in draw to support theme switching
+                this.colorAlpha = Math.random() * 0.5 + 0.3;
             }
 
             update() {
-                // Mode Logic
-                if (mode !== 'calm') {
+                if (mode !== 'calm' && mouse.active) {
                     const dx = mouse.x - this.x;
                     const dy = mouse.y - this.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const distSq = dx * dx + dy * dy;
+                    const radSq = MOUSE_RADIUS * MOUSE_RADIUS * PIXEL_RATIO * PIXEL_RATIO;
 
-                    if (dist < MOUSE_RADIUS) {
-                        const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+                    if (distSq < radSq) {
+                        const dist = Math.sqrt(distSq);
+                        const force = (MOUSE_RADIUS * PIXEL_RATIO - dist) / (MOUSE_RADIUS * PIXEL_RATIO);
                         const dirX = dx / dist;
                         const dirY = dy / dist;
 
                         if (mode === 'repel') {
-                            this.vx -= dirX * force * 2;
-                            this.vy -= dirY * force * 2;
-                            this.color = '#fff'; // Flash white
+                            this.vx -= dirX * force * 1.5;
+                            this.vy -= dirY * force * 1.5;
+                            this.state = 'repel';
                         } else if (mode === 'attract') {
-                            this.vx += dirX * force * 1.5;
-                            this.vy += dirY * force * 1.5;
-                            this.color = '#ffd700'; // Flash gold
+                            this.vx += dirX * force * 1.2;
+                            this.vy += dirY * force * 1.2;
+                            this.state = 'attract';
                         }
                     } else {
-                        this.color = this.baseColor;
+                        this.state = 'base';
                     }
                 } else {
-                    // Calm mode: drift slowly
-                    this.vx *= 0.9;
-                    this.vy *= 0.9;
+                    this.state = 'base';
+                    if (mode === 'calm') {
+                        this.vx *= 0.92;
+                        this.vy *= 0.92;
+                    }
                 }
 
-                // Physics
+                // Apply physics
                 this.x += this.vx * simulationSpeed;
                 this.y += this.vy * simulationSpeed;
 
-                // Boundaries (Bounce)
-                if(this.x < 0 || this.x > width) this.vx *= -1;
-                if(this.y < 0 || this.y > height) this.vy *= -1;
+                // Bounce off walls
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
 
-                // Calm drift base speed
-                if(mode === 'calm') {
-                    this.x += (Math.random()-0.5)*0.5;
-                    this.y += (Math.random()-0.5)*0.5;
+                // Ambient drift
+                if (mode === 'calm') {
+                    this.x += (Math.random() - 0.5) * 0.3;
+                    this.y += (Math.random() - 0.5) * 0.3;
                 } else {
-                    // Maintain some movement
-                    if (Math.abs(this.vx) < 0.5) this.vx += (Math.random()-0.5)*0.2;
-                    if (Math.abs(this.vy) < 0.5) this.vy += (Math.random()-0.5)*0.2;
+                    if (Math.abs(this.vx) < 0.2) this.vx += (Math.random() - 0.5) * 0.1;
+                    if (Math.abs(this.vy) < 0.2) this.vy += (Math.random() - 0.5) * 0.1;
                 }
-                
-                // Friction limits speed
-                this.vx *= 0.98;
+
+                this.vx *= 0.98; // Friction
                 this.vy *= 0.98;
             }
 
-            draw() {
+            draw(baseCol, repelCol, attractCol) {
+                let targetCol = baseCol;
+                if (this.state === 'repel') targetCol = repelCol;
+                if (this.state === 'attract') targetCol = attractCol;
+
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
+
+                ctx.fillStyle = targetCol;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = targetCol;
+
                 ctx.fill();
+                ctx.shadowBlur = 0; // Reset for performance
             }
         }
 
-        function init() {
+        function initEngine() {
             resize();
             window.addEventListener('resize', resize);
-            
-            // Mouse Input
-            canvas.addEventListener('mousemove', e => {
-                const r = canvas.getBoundingClientRect();
-                mouse.x = (e.clientX - r.left) * (width / r.width);
-                mouse.y = (e.clientY - r.top) * (height / r.height);
-                mouse.active = true;
-            });
-            canvas.addEventListener('mouseleave', () => { mouse.active = false; });
-            canvas.addEventListener('mousedown', pulse);
-            
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    cancelAnimationFrame(animationId);
-                } else {
-                    animationId = requestAnimationFrame(loop);
-                }
-            });
 
-            // Touch Input (Mobile Optimized)
+            // Mouse
+            canvas.addEventListener('mousemove', e => updatePointer(e.clientX, e.clientY));
+            canvas.addEventListener('mouseleave', () => mouse.active = false);
+            canvas.addEventListener('mousedown', pulseInteraction);
+
+            // Touch
             canvas.addEventListener('touchstart', e => {
                 e.preventDefault();
-                mouse.active = true;
-                updateTouch(e);
-                pulse(); // Pulse on tap
-            }, {passive: false});
-
+                updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+                pulseInteraction();
+            }, { passive: false });
             canvas.addEventListener('touchmove', e => {
-                e.preventDefault(); // Prevent scrolling
-                updateTouch(e);
-            }, {passive: false});
+                e.preventDefault();
+                updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: false });
+            canvas.addEventListener('touchend', () => mouse.active = false);
 
-            canvas.addEventListener('touchend', () => {
-                mouse.active = false;
+            // Controls
+            document.getElementById('speedSlider').addEventListener('input', e => simulationSpeed = parseFloat(e.target.value));
+            document.getElementById('volumeSlider').addEventListener('input', e => {
+                if (masterGain) masterGain.gain.setTargetAtTime(parseFloat(e.target.value), audioCtx.currentTime, 0.05);
             });
 
-            // Create Particles
-            for(let i=0; i<PARTICLE_COUNT; i++) {
-                particles.push(new Particle());
-            }
-            
-            loop();
+            // Visibility
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && isRunning) cancelAnimationFrame(animationId);
+                else if (!document.hidden && isRunning) animationId = requestAnimationFrame(loop);
+            });
+
+            // Populate Particles
+            for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
         }
 
-        function updateTouch(e) {
+        function updatePointer(cx, cy) {
             const r = canvas.getBoundingClientRect();
-            mouse.x = (e.touches[0].clientX - r.left) * (width / r.width);
-            mouse.y = (e.touches[0].clientY - r.top) * (height / r.height);
+            mouse.x = (cx - r.left) * (width / r.width);
+            mouse.y = (cy - r.top) * (height / r.height);
+            mouse.active = true;
         }
 
         function resize() {
-            // High DPI Canvas Scaling
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            
-            canvas.style.width = w + "px";
-            canvas.style.height = h + "px";
-            
-            width = canvas.width = w * PIXEL_RATIO;
-            height = canvas.height = h * PIXEL_RATIO;
-            
-            // Scale context to match DPI
-            // Note: Since we are using coordinates directly mapped to canvas size, 
-            // we don't strictly need ctx.scale if we handle logic with 'width/height', 
-            // but resetting the particles ensures they don't get stuck off-screen.
+            const r = canvas.parentElement.getBoundingClientRect();
+            canvas.style.width = r.width + "px";
+            canvas.style.height = r.height + "px";
+            width = canvas.width = r.width * PIXEL_RATIO;
+            height = canvas.height = r.height * PIXEL_RATIO;
         }
 
-        // Expose to window for HTML buttons
-        window.setMode = function(m, btn) {
+        // Global function for UI buttons
+        window.setMode = function (m) {
             mode = m;
-            document.querySelectorAll('.mode-btn').forEach(b => {
-                if(b.textContent === 'Repel' || b.textContent === 'Attract' || b.textContent === 'Calm') {
-                    b.classList.remove('active');
-                }
-            });
-            if(btn) btn.classList.add('active');
+            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+            if (m === 'repel') document.getElementById('btnRepel').classList.add('active');
+            if (m === 'attract') document.getElementById('btnAttract').classList.add('active');
+            if (m === 'calm') document.getElementById('btnCalm').classList.add('active');
         };
 
-        window.adjustSpeed = function(delta) {
-            simulationSpeed = Math.max(0.1, Math.min(2.0, simulationSpeed + delta));
-            localStorage.setItem('yodha_aura_speed', simulationSpeed);
+        window.startEngine = function () {
+            document.getElementById('startOverlay').style.opacity = '0';
+            setTimeout(() => document.getElementById('startOverlay').style.visibility = 'hidden', 800);
+            initAudio();
+            if (!isRunning) {
+                isRunning = true;
+                initEngine();
+                loop();
+            }
         };
 
-        function pulse() {
-            initAudio(); // Initialize audio on first interaction
-            const cx = mouse.active ? mouse.x : width/2;
-            const cy = mouse.active ? mouse.y : height/2;
-            
+        function pulseInteraction() {
+            if (!mouse.active) return;
+            // Quick burst of energy on tap/click
             particles.forEach(p => {
-                const dx = p.x - cx;
-                const dy = p.y - cy;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if(dist < 300 * PIXEL_RATIO) {
-                    const force = (300 * PIXEL_RATIO - dist) / (300 * PIXEL_RATIO);
-                    p.vx += (dx/dist) * force * 20;
-                    p.vy += (dy/dist) * force * 20;
+                const dx = p.x - mouse.x;
+                const dy = p.y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 200 * PIXEL_RATIO) {
+                    const force = (200 * PIXEL_RATIO - dist) / (200 * PIXEL_RATIO);
+                    p.vx += (dx / dist) * force * (mode === 'attract' ? -15 : 15);
+                    p.vy += (dy / dist) * force * (mode === 'attract' ? -15 : 15);
                 }
             });
         }
 
         function loop() {
+            // Get Theme Colors
+            const style = getComputedStyle(document.documentElement);
+            const trailBg = style.getPropertyValue('--trail-bg').trim();
+            const colBase = style.getPropertyValue('--particle-base').trim();
+            const colRepel = style.getPropertyValue('--particle-repel').trim();
+            const colAttract = style.getPropertyValue('--particle-attract').trim();
+            const lineCol = colBase.replace(')', ', 0.15)').replace('rgb', 'rgba'); // Hacky but works for hex/rgb
+
             // Trails effect
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.2)'; 
+            ctx.fillStyle = trailBg;
             ctx.fillRect(0, 0, width, height);
 
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            let totalSpeed = 0;
 
-            // Draw connections
-            ctx.strokeStyle = 'rgba(102, 126, 234, 0.15)';
-            ctx.lineWidth = 1 * PIXEL_RATIO; // Thicker lines on retina
-            
-            if(mode !== 'calm' && mouse.active) {
-                const connectLimit = CONNECT_DIST * PIXEL_RATIO; // Scale connection distance
-                const mouseRange = 200 * PIXEL_RATIO;
+            // Draw Connections
+            ctx.strokeStyle = lineCol;
+            ctx.lineWidth = 1 * PIXEL_RATIO;
 
-                for(let i=0; i<particles.length; i++) {
-                    const p1 = particles[i];
-                    // Optimization: Check Taxicab distance to mouse first (faster than sqrt)
+            const connectLimitSq = (CONNECT_DIST * PIXEL_RATIO) * (CONNECT_DIST * PIXEL_RATIO);
+            const mouseRange = 250 * PIXEL_RATIO;
+
+            for (let i = 0; i < particles.length; i++) {
+                const p1 = particles[i];
+                p1.update();
+                p1.draw(colBase, colRepel, colAttract);
+
+                totalSpeed += Math.abs(p1.vx) + Math.abs(p1.vy);
+
+                if (mode !== 'calm' && mouse.active) {
                     if (Math.abs(p1.x - mouse.x) > mouseRange || Math.abs(p1.y - mouse.y) > mouseRange) continue;
 
-                    for(let j=i+1; j<particles.length; j++) {
+                    for (let j = i + 1; j < particles.length; j++) {
                         const p2 = particles[j];
                         const dx = p1.x - p2.x;
                         const dy = p1.y - p2.y;
-                        
-                        // Simple box check before expensive square calculation
-                        if (Math.abs(dx) > connectLimit || Math.abs(dy) > connectLimit) continue;
 
-                        const distSq = dx*dx + dy*dy;
-                        if(distSq < connectLimit * connectLimit) {
+                        if (dx * dx + dy * dy < connectLimitSq) {
                             ctx.beginPath();
                             ctx.moveTo(p1.x, p1.y);
                             ctx.lineTo(p2.x, p2.y);
@@ -469,71 +857,26 @@ body > div[id*="sound"] {
                         }
                     }
                 }
+            }
 
-                // Update drone frequency based on mouse movement
-                if (droneOsc && droneGain) {
-                    const centerDist = Math.sqrt(Math.pow(mouse.x - width/2, 2) + Math.pow(mouse.y - height/2, 2));
-                    const targetFreq = 100 + (centerDist / (width/2)) * 100;
-                    droneOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.5);
-                    droneGain.gain.setTargetAtTime(0.1, audioCtx.currentTime, 0.5);
-                }
-            } else {
-                if (droneGain) {
-                    droneGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1.0);
-                }
+            // Audio Modulation based on average particle speed and mouse pos
+            if (filterNode && droneOsc && mouse.active) {
+                const avgSpeed = totalSpeed / particles.length;
+                const targetCutoff = 100 + (avgSpeed * 200);
+                filterNode.frequency.setTargetAtTime(Math.min(targetCutoff, 2000), audioCtx.currentTime, 0.2);
+
+                // Slight pitch bend based on horizontal mouse pos
+                const pitchShift = ((mouse.x / width) - 0.5) * 10;
+                droneOsc.frequency.setTargetAtTime(85 + pitchShift, audioCtx.currentTime, 0.5);
+            } else if (filterNode) {
+                // Relax filter when calm
+                filterNode.frequency.setTargetAtTime(150, audioCtx.currentTime, 1.0);
             }
 
             animationId = requestAnimationFrame(loop);
         }
 
-        setTimeout(() => {
-            init();
-            const loader = document.getElementById('loading-screen');
-            if (loader) loader.style.display = 'none';
-        }, 0);
-
-    </script>
-    <script src="../shared/game-sound-toggle.js"></script>
-    <script src="../shared/crisis-support.js"></script>
-
-    <script src="../shared/supabase-auth.js"></script>
-    <script>
-      /* ── Sidebar toggle ── */
-      (function() {
-        var hamburger = document.getElementById('ymHamburger');
-        var sidebar = document.getElementById('ymSidebar');
-        var backdrop = document.getElementById('ymSidebarBackdrop');
-        var topbar = document.getElementById('ymTopbar');
-
-        function toggleSidebar() {
-          var isOpen = sidebar.classList.contains('open');
-          sidebar.classList.toggle('open');
-          backdrop.classList.toggle('open');
-          hamburger.classList.toggle('open');
-          document.body.style.overflow = isOpen ? '' : 'hidden';
-        }
-
-        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
-        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
-
-        /* ── Scroll shadow ── */
-        if (topbar) {
-          window.addEventListener('scroll', function() {
-            topbar.classList.toggle('scrolled', window.scrollY > 10);
-          }, { passive: true });
-        }
-
-        /* ── Highlight active sidebar link ── */
-        var currentPath = window.location.pathname;
-        document.querySelectorAll('.ym-sidebar__link').forEach(function(link) {
-          var href = link.getAttribute('href');
-          if (href === currentPath || (href !== '/' && currentPath.indexOf(href) === 0)) {
-            link.classList.add('active');
-          }
-        });
-      })();
     </script>
 </body>
+
 </html>
-
-

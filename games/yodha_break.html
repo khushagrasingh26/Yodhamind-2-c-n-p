@@ -1,201 +1,410 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <script src="../shared/theme.js"></script>
-    <link rel="stylesheet" href="../css/tokens.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yodha Break - Lumina</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Focus Challenge | YodhaMind</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* =========================================
+           1. YodhaMind Core Variables
+           ========================================= */
         :root {
-            --bg: #0f172a;
-            --text: #f8fafc;
-            --accent: #6366f1;
-            --paddle: #a855f7;
-            --ball: #22d3ee;
+            --ym-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --ym-card-bg: rgba(255, 255, 255, 0.03);
+            --ym-card-border: rgba(255, 255, 255, 0.08);
+            --ym-text-main: #f8fafc;
+            --ym-text-muted: #94a3b8;
+            --ym-accent: #818cf8;
+            --ym-cyan: #22d3ee;
+            --ym-danger: #fb7185;
+            --ym-success: #10b981;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
+        html,
         body {
-            background-color: var(--bg);
-            color: var(--text);
+            background: var(--ym-bg-gradient);
+            color: var(--ym-text-main);
             font-family: 'Outfit', sans-serif;
             overflow: hidden;
-            height: 100vh; width: 100vw;
-            display: flex; flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Canvas container */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* =========================================
+           2. Top Navigation Header
+           ========================================= */
+        .ym-tool-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--ym-card-border);
+            z-index: 1000;
+        }
+
+        .ym-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .ym-logo-icon {
+            color: var(--ym-accent);
+        }
+
+        .ym-header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .ym-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--ym-text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ym-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .ym-nav-btn:active {
+            transform: translateY(1px);
+        }
+
+        .ym-btn-exit {
+            color: var(--ym-danger);
+        }
+
+        .ym-btn-exit:hover {
+            background: rgba(251, 113, 133, 0.1);
+            color: #fff;
+            border-color: var(--ym-danger);
+        }
+
+        @media (max-width: 480px) {
+            .ym-tool-header {
+                padding: 10px 16px;
+            }
+
+            .ym-nav-btn {
+                padding: 8px 12px;
+                font-size: 0;
+                gap: 0;
+            }
+
+            .ym-nav-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        /* =========================================
+           3. Game Container & Challenge HUD
+           ========================================= */
         #gameContainer {
             position: relative;
             flex: 1;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             overflow: hidden;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
         }
 
-        canvas { display: block; width: 100%; height: 100%; }
-
-        /* UI Overlay */
-        .ui-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; z-index: 10;
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
 
-        .header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            font-size: 1.2rem; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            width: 100%; max-width: 800px; margin: 0 auto;
+        .game-hud {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 24px;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        .score-box span { color: var(--accent); font-size: 1.5rem; }
-        .lives-box { letter-spacing: 5px; }
-        .nav-actions { display: flex; gap: 10px; pointer-events: auto; }
-        .nav-btn {
-            background: rgba(15, 23, 42, 0.7);
-            color: var(--text);
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 8px 14px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s, background 0.2s;
+        .hud-pill {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--ym-card-border);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--ym-text-muted);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .nav-btn:hover { border-color: rgba(255,255,255,0.35); background: rgba(30, 41, 59, 0.9); }
-        .nav-btn:active { transform: scale(0.96); }
 
-        /* Screens */
+        #scoreEl {
+            color: var(--ym-cyan);
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .lives-box {
+            color: var(--ym-danger);
+            display: flex;
+            gap: 4px;
+        }
+
+        .lives-box svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* =========================================
+           4. Overlay Screens
+           ========================================= */
         .screen {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
-            padding: 40px; border-radius: 24px; text-align: center;
-            border: 1px solid rgba(255,255,255,0.1); pointer-events: auto;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); min-width: 320px;
-            transition: opacity 0.3s; z-index: 20;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            padding: 45px 30px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid var(--ym-card-border);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            min-width: min(90%, 380px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .hidden { opacity: 0; pointer-events: none; display: none; }
-
-        h1 { font-size: 2.5rem; background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-        p { color: #94a3b8; margin-bottom: 30px; line-height: 1.5; font-size: 1.1rem; }
-
-        .btn {
-            background: linear-gradient(135deg, var(--accent), var(--paddle));
-            color: white; border: none; padding: 16px 48px; font-size: 1.1rem; font-weight: 700;
-            border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s; text-transform: uppercase; letter-spacing: 1px; margin: 5px;
+        .screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -45%);
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-sec { background: transparent; border: 1px solid #475569; box-shadow: none; }
-        
-        .mobile-hint { display: none; font-size: 0.9rem; opacity: 0.7; margin-top: 25px; color: var(--ball); }
-        @media (hover: none) and (pointer: coarse) { .mobile-hint { display: block; } }
 
+        .screen-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(34, 211, 238, 0.4));
+            line-height: 1;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            color: var(--ym-text-muted);
+            margin-bottom: 35px;
+            line-height: 1.6;
+            font-size: 1.05rem;
+            max-width: 280px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ym-accent), #4f46e5);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+            transition: transform 0.2s, filter 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.96);
+        }
+
+        .mobile-hint {
+            display: none;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 24px;
+            color: var(--ym-cyan);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .mobile-hint {
+                display: block;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../shared/nav.css" />
 </head>
+
 <body>
 
-    <!-- YM SIDEBAR -->
-    <div class="ym-sidebar-backdrop" id="ymSidebarBackdrop"></div>
-    <aside class="ym-sidebar" id="ymSidebar">
-      <div class="ym-sidebar__header">
-        <span style="font-size:1.4rem;" aria-hidden="true">◈</span>
-        <span class="ym-sidebar__logo">YodhaMind</span>
-      </div>
-      <nav class="ym-sidebar__nav">
-        <div class="ym-sidebar__section-label">Navigate</div>
-        <a href="/" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">⌂</span>Home</a>
-        <a href="/dashboard" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▦</span>Dashboard</a>
-        <a href="/games" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">▶</span>Mind Gym</a>
-        <div class="ym-sidebar__divider"></div>
-        <div class="ym-sidebar__section-label">Support</div>
-        <a href="tel:9152987821" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>iCall: 9152987821</a>
-        <a href="tel:18602662345" class="ym-sidebar__link"><span class="ym-sidebar__link-icon">☏</span>Vandrevala: 1860-266-2345</a>
-      </nav>
-      <div class="ym-sidebar__footer">© 2026 YodhaMind</div>
-    </aside>
-
-    <!-- YM TOPBAR -->
-    <header class="ym-topbar" id="ymTopbar">
-      <button class="ym-topbar__hamburger" id="ymHamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
-      <a href="/" class="ym-topbar__logo">
-        <span class="ym-topbar__logo-icon">🧠</span> YodhaMind
-      </a>
-      <div class="ym-topbar__right">
-        <button class="ym-auth-btn" id="ymAuthBtn">Sign In</button>
-        <img class="ym-avatar" id="ymAvatar" src="" alt="User avatar" />
-        <div class="ym-avatar-fallback" id="ymAvatarFallback"></div>
-      </div>
+    <!-- YodhaMind Header -->
+    <header class="ym-tool-header">
+        <a href="/" class="ym-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="ym-logo-icon">
+                <path d="M9.5 2h5l1.5 3h3l-1.5 4l1.5 4l-3 4v3h-5l-1.5 -3l-3 3h-5v-3l-3 -4l1.5 -4l-1.5 -4h3l1.5 -3h5" />
+                <path d="M12 2v20" />
+                <path d="M12 12h5" />
+                <path d="M12 8h4" />
+                <path d="M12 16h3" />
+                <path d="M12 12h-5" />
+                <path d="M12 8h-4" />
+                <path d="M12 16h-3" />
+            </svg>
+            YodhaMind
+        </a>
+        <div class="ym-header-actions">
+            <a href="/" class="ym-nav-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Home
+            </a>
+            <button onclick="window.location.href='/games'" class="ym-nav-btn ym-btn-exit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Exit
+            </button>
+        </div>
     </header>
 
     <div id="gameContainer">
+        <!-- Challenge HUD -->
+        <div class="game-hud">
+            <div class="hud-pill">FOCUS: <span id="scoreEl">0</span></div>
+            <div class="hud-pill lives-box" id="livesEl"></div>
+        </div>
+
         <canvas id="gameCanvas"></canvas>
 
-        <div class="ui-layer">
-            <div class="header">
-                <div class="score-box">SCORE: <span id="scoreEl">0</span></div>
-                <div class="lives-box" id="livesEl">❤️❤️❤️</div>
-                <div class="nav-actions" aria-label="Game navigation">
-                    <button class="nav-btn" type="button" onclick="window.location.href='/'">Home</button>
-                    <button class="nav-btn" type="button" onclick="window.location.href='/games'">Exit</button>
-                </div>
-            </div>
-        </div>
-
+        <!-- Start Screen -->
         <div id="startScreen" class="screen">
-            <h1>Yodha Break</h1>
-            <p>Smash the walls.<br>Clear your mind.</p>
-            <button class="btn" onclick="startGame()">Start</button>
-            <div class="mobile-hint">👆 Drag anywhere to move<br>Tap to launch</div>
+            <div class="screen-icon">🎯</div>
+            <h1>Focus Challenge</h1>
+            <p>You have 3 chances. Maintain your flow and react quickly. How long can you hold your focus?</p>
+            <button class="btn-primary" onclick="startGame()">Start Challenge</button>
+            <div class="mobile-hint">👆 Slide to move<br>Tap to launch</div>
         </div>
 
+        <!-- End Screen -->
         <div id="gameOverScreen" class="screen hidden">
-            <h1 id="endTitle">Session Complete</h1>
-            <p id="endScore">Score: 0</p>
-            <button class="btn" onclick="startGame()">Restart</button>
-            <button class="btn btn-sec" onclick="window.location.href='/games'">Exit</button>
+            <div class="screen-icon">💔</div>
+            <h1 id="endTitle">Focus Broken</h1>
+            <p id="endScore" style="color: #fff; font-size: 1.2rem; font-weight: 600;">Final Score: 0</p>
+            <button class="btn-primary" onclick="startGame()">Try Again</button>
         </div>
     </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        
+
         // Constants
         const BALL_RADIUS = 8;
-        const PADDLE_HEIGHT = 18;
+        const PADDLE_HEIGHT = 14;
         const BRICK_ROWS = 5;
-        const BRICK_COLS = 6;
-        
+        const BRICK_COLS = 5;
+        const BASE_SPEED = 6;
+
         // State
         let width, height, dpr;
         let animationId;
         let score = 0;
         let lives = 3;
+        let totalBricks = 0;
+        let clearedBricks = 0;
         let gameRunning = false;
-        
+
         // Entities
-        let paddle = { x: 0, y: 0, w: 100, h: PADDLE_HEIGHT, color: '#a855f7' };
-        let ball = { x: 0, y: 0, dx: 0, dy: 0, speed: 6, active: false };
+        let paddle = { x: 0, y: 0, w: 120, h: PADDLE_HEIGHT, color: '#818cf8' };
+        let ball = { x: 0, y: 0, dx: 0, dy: 0, speed: BASE_SPEED, active: false };
         let bricks = [];
         let particles = [];
+        let ripples = [];
 
-        const heartSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+        // UI Helpers
+        const heartSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
 
         function renderLives() {
             const livesEl = document.getElementById('livesEl');
             if (livesEl) livesEl.innerHTML = heartSvg.repeat(Math.max(lives, 0));
         }
 
-        const brickColors = ['#f43f5e', '#f97316', '#eab308', '#22d3ee', '#3b82f6'];
+        // Palette
+        const brickColors = ['#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7'];
 
         // --- INIT & RESIZE ---
         function resize() {
@@ -207,9 +416,8 @@
             canvas.height = height * dpr;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-            // Paddle relative to screen
             paddle.w = Math.min(160, width * 0.35);
-            paddle.y = height - 80;
+            paddle.y = height - 90;
             if (!paddle.x) paddle.x = (width - paddle.w) / 2;
 
             if (!ball.active) resetBall();
@@ -220,7 +428,6 @@
         // --- CONTROLS ---
         function movePaddle(clientX) {
             let relativeX = clientX - paddle.w / 2;
-            // Clamp
             if (relativeX < 10) relativeX = 10;
             if (relativeX + paddle.w > width - 10) relativeX = width - paddle.w - 10;
             paddle.x = relativeX;
@@ -234,19 +441,19 @@
             movePaddle(e.touches[0].clientX);
         }, { passive: false });
 
-        document.addEventListener('click', () => { if(gameRunning && !ball.active) launchBall(); });
-        document.addEventListener('touchstart', () => { if(gameRunning && !ball.active) launchBall(); });
+        document.addEventListener('click', () => { if (gameRunning && !ball.active) launchBall(); });
+        document.addEventListener('touchstart', () => { if (gameRunning && !ball.active) launchBall(); });
 
         function launchBall() {
             ball.active = true;
             ball.dy = -ball.speed;
-            ball.dx = (Math.random() * 2 - 1) * 4;
+            ball.dx = (Math.random() * 2 - 1) * 3;
         }
 
         function resetBall() {
             ball.active = false;
             ball.x = paddle.x + paddle.w / 2;
-            ball.y = paddle.y - BALL_RADIUS - 2;
+            ball.y = paddle.y - BALL_RADIUS - 4;
             ball.dx = 0;
             ball.dy = 0;
         }
@@ -254,21 +461,23 @@
         // --- GAME LOGIC ---
         function initBricks() {
             bricks = [];
+            clearedBricks = 0;
             const padding = 10;
-            const topOffset = 80;
+            const topOffset = 130;
             const totalPad = (BRICK_COLS + 1) * padding;
             const brickW = (width - totalPad) / BRICK_COLS;
-            const brickH = 25;
+            const brickH = Math.min(26, height * 0.035);
 
-            for(let r=0; r<BRICK_ROWS; r++) {
-                for(let c=0; c<BRICK_COLS; c++) {
+            for (let r = 0; r < BRICK_ROWS; r++) {
+                for (let c = 0; c < BRICK_COLS; c++) {
                     bricks.push({
                         x: (c * (brickW + padding)) + padding,
                         y: (r * (brickH + padding)) + topOffset,
-                        w: brickW, h: brickH, status: 1, color: brickColors[r]
+                        w: brickW, h: brickH, status: 1, color: brickColors[r % brickColors.length]
                     });
                 }
             }
+            totalBricks = bricks.length;
         }
 
         function update() {
@@ -278,99 +487,137 @@
             ball.y += ball.dy;
 
             // 1. Walls
-            if (ball.x + BALL_RADIUS > width) { ball.x = width - BALL_RADIUS; ball.dx *= -1; }
-            if (ball.x - BALL_RADIUS < 0) { ball.x = BALL_RADIUS; ball.dx *= -1; }
-            if (ball.y - BALL_RADIUS < 0) { ball.y = BALL_RADIUS; ball.dy *= -1; }
-            
-            // Death
+            if (ball.x + BALL_RADIUS > width) { ball.x = width - BALL_RADIUS; ball.dx *= -1; createRipple(ball.x, ball.y); }
+            if (ball.x - BALL_RADIUS < 0) { ball.x = BALL_RADIUS; ball.dx *= -1; createRipple(ball.x, ball.y); }
+            if (ball.y - BALL_RADIUS < 60) { ball.y = 60 + BALL_RADIUS; ball.dy *= -1; createRipple(ball.x, ball.y); }
+
+            // 2. Death (Challenge Logic)
             if (ball.y - BALL_RADIUS > height) {
                 lives--;
                 renderLives();
-                if (lives > 0) resetBall();
-                else gameOver();
+                if (lives > 0) {
+                    resetBall();
+                } else {
+                    gameOver();
+                }
             }
 
-            // 2. Paddle
+            // 3. Paddle Collision
             if (ball.y + BALL_RADIUS >= paddle.y && ball.y - BALL_RADIUS <= paddle.y + paddle.h &&
                 ball.x >= paddle.x && ball.x <= paddle.x + paddle.w) {
-                
-                ball.dy = -Math.abs(ball.dy); // Force Up
-                ball.y = paddle.y - BALL_RADIUS - 2; // Unstick
-                
-                // Spin
-                let hitPoint = (ball.x - (paddle.x + paddle.w/2)) / (paddle.w/2);
-                ball.dx = hitPoint * 8;
-                
-                spawnParticles(ball.x, paddle.y, '#fff');
+
+                ball.dy = -Math.abs(ball.dy);
+                ball.y = paddle.y - BALL_RADIUS - 2;
+
+                let hitPoint = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
+                ball.dx = hitPoint * (ball.speed * 0.9);
+
+                spawnParticles(ball.x, paddle.y, '#fff', 4);
+                createRipple(ball.x, paddle.y);
             }
 
-            // 3. Bricks
-            let activeBricks = 0;
+            // 4. Bricks Collision
+            let hitOccurred = false;
             bricks.forEach(b => {
                 if (b.status === 1) {
-                    activeBricks++;
                     if (ball.x > b.x && ball.x < b.x + b.w && ball.y > b.y && ball.y < b.y + b.h) {
                         ball.dy *= -1;
                         b.status = 0;
+                        clearedBricks++;
                         score += 10;
                         document.getElementById('scoreEl').innerText = score;
-                        spawnParticles(b.x + b.w/2, b.y + b.h/2, b.color);
+                        hitOccurred = true;
+
+                        spawnParticles(b.x + b.w / 2, b.y + b.h / 2, b.color, 8);
+                        createRipple(b.x + b.w / 2, b.y + b.h / 2);
                     }
                 }
             });
 
-            if (activeBricks === 0) {
+            if (hitOccurred && Math.abs(ball.dy) < 2) {
+                ball.dy = ball.dy < 0 ? -3 : 3;
+            }
+
+            // Level Clear -> Increase speed and respawn bricks
+            if (clearedBricks === totalBricks) {
+                ball.speed += 0.8; // Increase difficulty
                 initBricks();
-                ball.speed += 1;
                 resetBall();
             }
 
-            // Particles
+            // Update Effects
             particles.forEach((p, i) => {
-                p.x += p.dx; p.y += p.dy; p.life -= 0.05;
+                p.x += p.dx; p.y += p.dy; p.life -= 0.03;
                 if (p.life <= 0) particles.splice(i, 1);
+            });
+
+            ripples.forEach((r, i) => {
+                r.radius += r.speed; r.life -= 0.04;
+                if (r.life <= 0) ripples.splice(i, 1);
             });
         }
 
         function draw() {
             ctx.clearRect(0, 0, width, height);
 
-            // Bricks
+            // Draw Ripples
+            ripples.forEach(r => {
+                ctx.globalAlpha = Math.max(0, r.life);
+                ctx.strokeStyle = '#22d3ee';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2); ctx.stroke();
+                ctx.globalAlpha = 1;
+            });
+
+            // Draw Bricks
             bricks.forEach(b => {
                 if (b.status === 1) {
                     ctx.fillStyle = b.color;
-                    ctx.shadowBlur = 15; ctx.shadowColor = b.color;
-                    ctx.beginPath(); ctx.roundRect(b.x, b.y, b.w, b.h, 5); ctx.fill();
+                    ctx.shadowBlur = 10; ctx.shadowColor = b.color;
+                    ctx.beginPath(); ctx.roundRect(b.x, b.y, b.w, b.h, 6); ctx.fill();
                     ctx.shadowBlur = 0;
-                    ctx.fillStyle = "rgba(255,255,255,0.2)";
-                    ctx.fillRect(b.x, b.y, b.w, b.h/2);
+
+                    ctx.fillStyle = "rgba(255,255,255,0.1)";
+                    ctx.beginPath(); ctx.roundRect(b.x, b.y, b.w, b.h / 2.5, 4); ctx.fill();
                 }
             });
 
-            // Paddle
+            // Draw Paddle
             ctx.fillStyle = paddle.color;
-            ctx.shadowBlur = 20; ctx.shadowColor = paddle.color;
-            ctx.beginPath(); ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, 10); ctx.fill();
+            ctx.shadowBlur = 15; ctx.shadowColor = paddle.color;
+            ctx.beginPath(); ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, 8); ctx.fill();
             ctx.shadowBlur = 0;
 
-            // Ball
-            ctx.fillStyle = '#22d3ee';
-            ctx.shadowBlur = 15; ctx.shadowColor = '#22d3ee';
-            ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, Math.PI*2); ctx.fill();
-            ctx.shadowBlur = 0;
+            // Draw Ball 
+            ctx.fillStyle = '#c084fc';
+            ctx.shadowBlur = 15; ctx.shadowColor = '#c084fc';
+            ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, Math.PI * 2); ctx.fill();
 
-            // Particles
+            ctx.fillStyle = '#fff';
+            ctx.shadowBlur = 0;
+            ctx.beginPath(); ctx.arc(ball.x - 2, ball.y - 2, BALL_RADIUS / 3, 0, Math.PI * 2); ctx.fill();
+
+            // Draw Particles
             particles.forEach(p => {
-                ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI*2); ctx.fill();
+                ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.color;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2); ctx.fill();
                 ctx.globalAlpha = 1;
             });
         }
 
-        function spawnParticles(x, y, color) {
-            for(let i=0; i<8; i++) {
-                particles.push({ x, y, dx: (Math.random()-0.5)*6, dy: (Math.random()-0.5)*6, life: 1, color });
+        function spawnParticles(x, y, color, amount) {
+            for (let i = 0; i < amount; i++) {
+                particles.push({
+                    x, y,
+                    dx: (Math.random() - 0.5) * 5,
+                    dy: (Math.random() - 0.5) * 5,
+                    life: 1, color
+                });
             }
+        }
+
+        function createRipple(x, y) {
+            ripples.push({ x, y, radius: 2, speed: 2, life: 0.6 });
         }
 
         function loop() {
@@ -384,9 +631,13 @@
         function startGame() {
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('gameOverScreen').classList.add('hidden');
-            score = 0; lives = 3;
+
+            score = 0;
+            lives = 3;
+            ball.speed = BASE_SPEED;
             document.getElementById('scoreEl').innerText = score;
             renderLives();
+
             gameRunning = true;
             resize();
             initBricks();
@@ -397,39 +648,23 @@
         function gameOver() {
             gameRunning = false;
             cancelAnimationFrame(animationId);
-            document.getElementById('endTitle').innerText = score > 200 ? "Amazing Focus!" : "Session Complete";
-            document.getElementById('endScore').innerText = "Score: " + score;
+
+            const title = score > 500 ? "Incredible Focus" : "Focus Broken";
+
+            document.getElementById('endTitle').innerText = title;
+            document.getElementById('endScore').innerText = "Final Score: " + score;
             document.getElementById('gameOverScreen').classList.remove('hidden');
-            document.getElementById('gameOverScreen').style.display = "block";
         }
 
-        // Polyfill
+        // Canvas RoundRect Polyfill
         if (!ctx.roundRect) {
-            ctx.roundRect = function(x, y, w, h, r) {
+            ctx.roundRect = function (x, y, w, h, r) {
                 if (w < 2 * r) r = w / 2; if (h < 2 * r) r = h / 2;
-                this.beginPath(); this.moveTo(x+r, y); this.arcTo(x+w, y, x+w, y+h, r);
-                this.arcTo(x+w, y+h, x, y+h, r); this.arcTo(x, y+h, x, y, r); this.arcTo(x, y, x+w, y, r); this.closePath();
+                this.beginPath(); this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r); this.arcTo(x, y + h, x, y, r); this.arcTo(x, y, x + w, y, r); this.closePath();
             };
         }
     </script>
-    <script src="../shared/game-sound-toggle.js"></script>
-    <script src="../shared/crisis-support.js"></script>
-    <script src="../shared/supabase-auth.js"></script>
-    <script>
-      (function() {
-        var hamburger = document.getElementById('ymHamburger');
-        var sidebar = document.getElementById('ymSidebar');
-        var backdrop = document.getElementById('ymSidebarBackdrop');
-        function toggleSidebar() {
-          var isOpen = sidebar.classList.contains('open');
-          sidebar.classList.toggle('open');
-          backdrop.classList.toggle('open');
-          hamburger.classList.toggle('open');
-          document.body.style.overflow = isOpen ? '' : 'hidden';
-        }
-        if (hamburger) hamburger.addEventListener('click', toggleSidebar);
-        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
-      })();
-    </script>
 </body>
+
 </html>

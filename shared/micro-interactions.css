@@ -1,0 +1,468 @@
+/* ══════════════════════════════════════════════════════════════
+   YodhaMind Micro-Interactions & Polish Layer
+   ══════════════════════════════════════════════════════════════
+   Include AFTER tokens.css and nav.css on every page:
+     <link rel="stylesheet" href="/shared/micro-interactions.css" />
+   ══════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────
+   1. GLASS CARD HOVER MICRO-INTERACTIONS
+   Subtle backdrop-filter increase + soft glow
+   on any element with .card, .quick-card,
+   .game-card, .feat-card, .assess-card, etc.
+────────────────────────────────────────────── */
+
+/* Base cards — add will-change for GPU layer */
+.card,
+.quick-card,
+.game-card,
+.game-chip,
+.feat-card,
+.assess-card,
+.assess-banner,
+.psych-card,
+.testimonial,
+.mood-mirror,
+.coming-soon-card {
+  transition:
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.32s ease;
+  will-change: transform, box-shadow;
+}
+
+/* Hover: soft purple glow + subtle lift */
+.card:hover,
+.quick-card:hover,
+.feat-card:hover,
+.assess-card:hover,
+.testimonial:hover,
+.mood-mirror:hover {
+  box-shadow:
+    0 8px 32px rgba(124, 92, 191, 0.12),
+    0 0 0 1px rgba(124, 92, 191, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  transform: translateY(-3px);
+}
+
+/* Game cards get a more dynamic lift */
+.game-card:hover {
+  box-shadow:
+    0 16px 48px rgba(124, 92, 191, 0.18),
+    0 0 0 1px rgba(86, 207, 178, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Glass-effect cards — increase blur on hover */
+.card::before,
+.quick-card::before,
+.game-card::before,
+.mood-mirror::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition: backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Only apply backdrop-filter hover to elements that already have position: relative */
+.game-card:hover::before {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Hover glow ring for interactive elements */
+.mood-emoji-btn:hover,
+.mood-btn:hover,
+.assess-tag:hover {
+  box-shadow:
+    0 4px 16px rgba(124, 92, 191, 0.18),
+    0 0 0 2px rgba(124, 92, 191, 0.08);
+}
+
+/* Active press effect for all interactive cards */
+.card:active,
+.quick-card:active,
+.game-card:active,
+.game-chip:active,
+.feat-card:active,
+.assess-card:active,
+.mood-emoji-btn:active,
+.mood-btn:active {
+  transform: scale(0.97) !important;
+  transition-duration: 0.1s !important;
+}
+
+/* ──────────────────────────────────────────────
+   2. SKELETON LOADERS
+   Use .ym-skeleton on any element that is
+   loading data. Add .ym-skeleton--text for
+   text-sized skeletons, .ym-skeleton--circle
+   for avatars, .ym-skeleton--chart for charts.
+────────────────────────────────────────────── */
+
+@keyframes ym-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.ym-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(124, 92, 191, 0.06) 25%,
+    rgba(124, 92, 191, 0.12) 50%,
+    rgba(124, 92, 191, 0.06) 75%
+  );
+  background-size: 800px 100%;
+  animation: ym-shimmer 1.8s infinite ease-in-out;
+  border-radius: 10px;
+  color: transparent !important;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+.ym-skeleton * {
+  visibility: hidden;
+}
+
+.ym-skeleton--text {
+  height: 14px;
+  width: 70%;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.ym-skeleton--text-short {
+  height: 14px;
+  width: 40%;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.ym-skeleton--heading {
+  height: 24px;
+  width: 55%;
+  margin-bottom: 12px;
+  border-radius: 8px;
+}
+
+.ym-skeleton--circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.ym-skeleton--chart {
+  height: 150px;
+  width: 100%;
+  border-radius: 16px;
+}
+
+.ym-skeleton--card {
+  height: 180px;
+  width: 100%;
+  border-radius: 20px;
+}
+
+.ym-skeleton--ring {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+}
+
+/* Skeleton group: stack multiple skeleton lines */
+.ym-skeleton-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ──────────────────────────────────────────────
+   3. MOBILE RESPONSIVENESS ENHANCEMENTS
+   Better spacing for interactive tools on
+   small screens, vertical stacking for grids,
+   and improved touch targets.
+────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Quick actions: stack to 1-column on very small */
+  .quick-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* Mood emoji buttons — ensure comfy touch targets */
+  .mood-emojis {
+    gap: 6px;
+  }
+  .mood-emoji-btn {
+    padding: 10px 2px;
+    font-size: 1.3rem;
+    min-height: 64px;
+    border-radius: 14px;
+  }
+
+  /* Mood options (games page) */
+  .mood-options {
+    gap: 8px;
+  }
+  .mood-btn {
+    min-height: 48px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+  }
+
+  /* Assessment tags — wrap nicely */
+  .assess-tags {
+    gap: 6px;
+  }
+  .assess-tag {
+    padding: 8px 14px;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Section gaps — tighter on mobile */
+  .section-gap {
+    margin-bottom: 16px;
+  }
+
+  /* Game chips row — better mobile scrolling */
+  .games-row {
+    gap: 10px;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .game-chip {
+    scroll-snap-align: start;
+    min-width: 90px;
+    padding: 12px 10px;
+  }
+
+  /* Interactive cards — add touch feedback */
+  .quick-card,
+  .game-card,
+  .assess-tag,
+  .mood-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Switch quick grid to single column for small phones */
+  .quick-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Assessment banner — vertical stack */
+  .assess-banner {
+    flex-direction: column;
+    padding: 20px;
+    gap: 12px;
+  }
+
+  /* Mood emojis — wrap to 2 rows if needed */
+  .mood-emojis {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .mood-emoji-btn {
+    flex: 0 0 calc(33.33% - 6px);
+    min-width: 60px;
+  }
+
+  /* Card padding reduction */
+  .card {
+    padding: 20px;
+  }
+
+  /* Greeting text */
+  .greeting-name {
+    font-size: 1.6rem;
+  }
+
+  /* Wellness card inner — ensure vertical on small */
+  .wellness-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   4. TYPOGRAPHY CONTRAST IMPROVEMENTS
+   Boost secondary/muted text for WCAG AA on
+   light backgrounds. Ensures readability
+   without losing the premium muted aesthetic.
+────────────────────────────────────────────── */
+
+/* Strengthen secondary text from #64748b to a darker shade */
+:root {
+  /* Override muted/secondary for better contrast */
+  --text-light-accessible:  #4a5568;   /* WCAG AA on white: 7.0:1 */
+  --text-muted-accessible:  #6b7280;   /* WCAG AA on white: 4.6:1 */
+}
+
+/* Apply to common secondary text classes */
+.greeting-sub,
+.quick-sub,
+.game-chip-sub,
+.mood-label,
+.journal-empty-text,
+.journal-entry-date,
+.assess-sub,
+.time-badge,
+.anon-meta,
+.card-link,
+.crisis-strip,
+.footer-desc,
+.stat-lbl,
+.section-sub,
+.section-desc,
+.section-header p,
+.game-card p,
+.feat-card p,
+.step p,
+.assess-card p,
+.game-chip p,
+.t-role,
+.psych-sub {
+  color: var(--text-light-accessible, #4a5568);
+}
+
+/* Even lighter muted captions — still accessible */
+.mood-label,
+.game-chip-sub,
+.anon-meta span,
+.w-bar-name,
+.w-bar-val,
+.score-ring-label,
+.wellness-tagline,
+.greeting-eyebrow {
+  /* Keep the style intent but ensure readability */
+  opacity: 1;
+}
+
+/* Ensure streak pill text is readable */
+.streak-pill {
+  color: #5b3dba;
+}
+
+/* Footer text on dark bg — boost from 0.5 alpha to 0.65 */
+.footer-col a,
+.footer-desc {
+  color: rgba(255, 255, 255, 0.65);
+}
+.footer-col h5 {
+  color: rgba(255, 255, 255, 0.88);
+}
+.footer-bottom {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ──────────────────────────────────────────────
+   5. SMOOTH PAGE ENTRANCE ANIMATIONS
+   Staggered fade-up for page sections
+────────────────────────────────────────────── */
+
+@keyframes ym-fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up,
+.section-gap {
+  animation: ym-fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Staggered delay for dashboard sections */
+.section-gap:nth-child(1)  { animation-delay: 0.05s; }
+.section-gap:nth-child(2)  { animation-delay: 0.1s; }
+.section-gap:nth-child(3)  { animation-delay: 0.15s; }
+.section-gap:nth-child(4)  { animation-delay: 0.2s; }
+.section-gap:nth-child(5)  { animation-delay: 0.25s; }
+.section-gap:nth-child(6)  { animation-delay: 0.3s; }
+.section-gap:nth-child(7)  { animation-delay: 0.35s; }
+.section-gap:nth-child(8)  { animation-delay: 0.4s; }
+.section-gap:nth-child(9)  { animation-delay: 0.45s; }
+.section-gap:nth-child(10) { animation-delay: 0.5s; }
+
+/* ──────────────────────────────────────────────
+   6. BUTTON & LINK MICRO-INTERACTIONS
+   Subtle glow and scale effects on CTA
+   buttons and feature links
+────────────────────────────────────────────── */
+
+.btn-cta,
+.btn-psych,
+.btn-save,
+.play-btn,
+.btn-journal-new {
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.btn-cta:hover,
+.btn-psych:hover {
+  box-shadow:
+    0 12px 32px rgba(124, 92, 191, 0.3),
+    0 0 20px rgba(124, 92, 191, 0.08);
+}
+
+/* Focus visible styles for keyboard accessibility */
+.btn-cta:focus-visible,
+.btn-psych:focus-visible,
+.btn-save:focus-visible,
+.play-btn:focus-visible,
+.quick-card:focus-visible,
+.game-card:focus-visible,
+.assess-tag:focus-visible,
+.mood-emoji-btn:focus-visible,
+.mood-btn:focus-visible {
+  outline: 2px solid rgba(124, 92, 191, 0.6);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(124, 92, 191, 0.15);
+}
+
+/* ──────────────────────────────────────────────
+   7. SCROLLBAR POLISH
+   Subtle custom scrollbar for webkit browsers
+────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 92, 191, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 92, 191, 0.3);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 92, 191, 0.15) transparent;
+}

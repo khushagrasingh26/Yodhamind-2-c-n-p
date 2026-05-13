@@ -621,6 +621,7 @@ function trackEvent(action) {
 
     </style>
     <link rel="stylesheet" href="../shared/nav.css" />
+    <link rel="stylesheet" href="../shared/micro-interactions.css" />
     <!-- Vercel Analytics -->
     <script>
       window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -813,7 +814,10 @@ function trackEvent(action) {
                 7-Day Mood Trend
                 <span id="avgMoodLabel" style="font-size:0.78rem; font-weight:600; color:var(--text-light);">No data yet</span>
             </div>
-            <div class="chart-wrap">
+            <div class="chart-wrap" style="position:relative;">
+                <!-- Skeleton loader for chart -->
+                <div id="moodChartSkeleton" class="ym-skeleton ym-skeleton--chart" style="position:absolute;inset:0;z-index:2;transition:opacity 0.4s ease;">
+                </div>
                 <canvas id="moodChart"></canvas>
             </div>
         </div>
@@ -1178,6 +1182,13 @@ function trackEvent(action) {
                 }
             }
         });
+
+        // Fade out skeleton loader once chart renders
+        const skelEl = document.getElementById('moodChartSkeleton');
+        if (skelEl) {
+            skelEl.style.opacity = '0';
+            setTimeout(() => { skelEl.style.display = 'none'; }, 400);
+        }
     }
 
     /* ──────────────────────────────────────────
